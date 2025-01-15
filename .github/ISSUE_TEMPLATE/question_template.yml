@@ -6,7 +6,7 @@ body:
   - type: textarea
     attributes:
       label: 📄 설명
-      description: 궁금하신 부분에 해대 작성해주세요.
+      description: 궁금하신 부분에 대해 작성해주세요.
       placeholder: 자세히 적을수록 좋습니다!
     validations:
       required: true
