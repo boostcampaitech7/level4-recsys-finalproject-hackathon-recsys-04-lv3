@@ -1,6 +1,7 @@
 name: "🔥 Bug"
 description: "버그 이슈"
 labels: ["🔥 Bug"]
+title: "[Bug] "
 body:
   - type: textarea
     attributes:

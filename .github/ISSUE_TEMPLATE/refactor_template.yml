@@ -1,6 +1,7 @@
-name: "♻️  Refactor"
+name: "♻️ Refactor"
 description: "코드 리팩토링"
-labels: ["♻️  Refactor"]
+labels: ["♻️ Refactor"]
+title: "[Refactor] "
 body:
   - type: textarea
     attributes:

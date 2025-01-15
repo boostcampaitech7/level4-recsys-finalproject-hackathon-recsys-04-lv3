@@ -1,6 +1,7 @@
 name: "📃 Docs"
 description: "문서 작성 이슈"
 labels: ["📃 Docs"]
+title: "[Docs] "
 body:
   - type: textarea
     attributes:

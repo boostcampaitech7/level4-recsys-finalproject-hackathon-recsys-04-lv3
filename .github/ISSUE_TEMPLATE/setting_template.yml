@@ -1,6 +1,7 @@
-name: "⚙Setting"
+name: "⚙ Setting"
 description: "개발 환경 & GitHub 세팅"
-labels: ["⚙Setting"]
+labels: ["⚙ Setting"]
+title: "[Refactor] "
 body:
   - type: textarea
     attributes:

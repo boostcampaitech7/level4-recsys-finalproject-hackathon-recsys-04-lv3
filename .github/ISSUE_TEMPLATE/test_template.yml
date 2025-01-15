@@ -1,6 +1,7 @@
 name: "✅ Test"
 description: "실험"
 labels: ["✅ Test"]
+title: "[Test] "
 body:
   - type: textarea
     attributes:

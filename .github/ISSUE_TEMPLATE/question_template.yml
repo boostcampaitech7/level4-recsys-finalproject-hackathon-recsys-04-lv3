@@ -1,6 +1,7 @@
 name: "🙋‍♂️ Question"
 description: "질문"
 labels: ["🙋‍♂️ Question"]
+title: "[Question] "
 body:
   - type: textarea
     attributes:
