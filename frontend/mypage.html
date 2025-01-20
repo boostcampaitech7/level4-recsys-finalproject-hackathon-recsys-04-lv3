@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 1em;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #f0f0f0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-item {
+            margin-bottom: 10px;
+        }
+
+        .profile-label {
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Online Note Analysis</div>
+            <nav>
+                <a href="index.html">홈</a>
+                <a href="new_note.html">새 메모</a>
+                <a href="notes.html">기존 메모</a>
+                <a href="quiz.html">퀴즈</a>
+                <a href="feedback.html">피드백</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="main-content" class="content">
+                <h1 class="section-title">마이페이지</h1>
+
+                <div class="profile-section">
+                    <div class="profile-item">
+                        <span class="profile-label">아이디:</span> user123
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">이메일:</span> user123@example.com
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">가입일:</span> 2025-01-01
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h2 class="section-title">활동 기록</h2>
+                    <ul>
+                        <li>작성한 메모: 15개</li>
+                        <li>완료한 퀴즈: 10개</li>
+                        <li>받은 피드백: 5개</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            &copy; 2025 Online Note Analysis
+        </footer>
+    </div>
+</body>
+</html>

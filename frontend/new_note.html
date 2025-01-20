@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 메모</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 1em;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #f0f0f0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select, .form-group textarea, .form-group button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #333;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Online Note Analysis</div>
+            <nav>
+                <a href="index.html">홈</a>
+                <a href="new_note.html">새 메모</a>
+                <a href="notes.html">기존 메모</a>
+                <a href="quiz.html">퀴즈</a>
+                <a href="feedback.html">피드백</a>
+                <a href="mypage.html">마이페이지</a>
+            </nav>
+        </header>
+
+        <main>
+            <section id="main-content" class="content">
+                <h1 class="section-title">새 메모 작성</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="note-title">노트 제목</label>
+                        <input type="text" id="note-title" placeholder="제목을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">과목 선택</label>
+                        <select id="subject">
+                            <option value="math">수학</option>
+                            <option value="science">과학</option>
+                            <option value="history">역사</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="upload">파일 업로드</label>
+                        <input type="file" id="upload">
+                    </div>
+                    <div class="form-group">
+                        <label for="note-text">텍스트 입력</label>
+                        <textarea id="note-text" rows="10" placeholder="여기에 텍스트를 입력하세요..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">분석하기</button>
+                    </div>
+                </form>
+            </section>
+        </main>
+
+        <footer>
+            &copy; 2025 Online Note Analysis
+        </footer>
+    </div>
+</body>
+</html>
