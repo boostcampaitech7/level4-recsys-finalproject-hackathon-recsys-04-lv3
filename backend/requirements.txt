@@ -1,0 +1,12 @@
+# backend/requirements.txt
+fastapi>=0.68.0
+uvicorn>=0.15.0
+sqlalchemy>=1.4.23
+pymysql>=1.0.2
+python-multipart>=0.0.5
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+pydantic-settings>=2.0.0
+python-dotenv>=0.19.0
+requests>=2.26.0
+openai>=1.2.0
