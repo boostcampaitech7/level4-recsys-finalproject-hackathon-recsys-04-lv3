@@ -1,98 +1,144 @@
-# app/services/rag_service.py
-from openai import OpenAI
-from .document_loader import DocumentLoader
-from typing import Tuple
+from glob import glob
+
 from app.core.config import settings
+from langchain_community.document_loaders import PyMuPDFLoader
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+from langchain_pinecone import PineconeVectorStore
+from langchain_teddynote.community.pinecone import preprocess_documents
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_upstage import ChatUpstage, UpstageEmbeddings
+from pinecone import Pinecone, ServerlessSpec
+from utils import logging
 
-class RAGService:
-   def __init__(self):
-       self.client = OpenAI(
-           api_key=settings.UPSTAGE_API_KEY,
-           base_url=settings.UPSTAGE_BASE_URL
-       )
-       self.doc_loader = DocumentLoader()
-   
-   async def get_relevant_context(self, query: str) -> str:
-       """Pinecone에서 관련 문서를 검색하여 컨텍스트 생성"""
-       try:
-           relevant_docs = await self.doc_loader.search_similar(query, top_k=3)
-           if not relevant_docs:
-               return ""
-           
-           context = "\n\n".join([doc['content'] for doc in relevant_docs])
-           return context
-       except Exception as e:
-           print(f"Error getting context: {str(e)}")
-           return ""
 
-   async def generate_basic_feedback(self, content: str) -> str:
-       """RAG 없이 기본 피드백 생성"""
-       try:
-           response = self.client.chat.completions.create(
-               model="solar-mini", 
-               messages=[
-                   {
-                       "role": "system",
-                       "content": "당신은 학습을 돕는 선생님입니다. 학생의 노트에 대해 건설적인 피드백을 제공해주세요."
-                   },
-                   {
-                       "role": "user",
-                       "content": f"다음 노트에 대한 피드백을 제공해주세요: {content}"
-                   }
-               ]
-           )
-           return response.choices[0].message.content
-       except Exception as e:
-           print(f"Error generating basic feedback: {str(e)}")
-           return "피드백 생성 중 오류가 발생했습니다."
+def create_vectorstore(pdf_dir):
+    """
+    PDF 파일을 로드하고 벡터 저장소를 생성합니다.
 
-   async def generate_rag_feedback(self, content: str, context: str) -> str:
-       """RAG 기반 피드백 생성"""
-       try:
-           response = self.client.chat.completions.create(
-               model="solar-mini",
-               messages=[
-                   {
-                       "role": "system",
-                       "content": """당신은 학습을 돕는 선생님입니다. 
-                       주어진 참고자료를 기반으로 학생의 노트 내용이 정확한지 평가하고,
-                       만약 틀린 내용이 있다면 참고자료를 바탕으로 올바른 정보를 제공해주세요."""
-                   },
-                   {
-                       "role": "user",
-                       "content": f"""참고자료:
-                       {context}
-                       
-                       학생 노트:
-                       {content}
-                       
-                       위 노트의 내용이 참고자료의 내용과 일치하는지 확인하고, 정확한 정보를 제공해주세요.
-                       만약 노트의 내용이 부정확하다면, 참고자료를 바탕으로 올바른 정보를 알려주세요."""
-                   }
-               ]
-           )
-           return response.choices[0].message.content
-       except Exception as e:
-           print(f"Error generating RAG feedback: {str(e)}")
-           return "RAG 피드백 생성 중 오류가 발생했습니다."
+    Args:
+        pdf_dir (str): 처리할 PDF 폴더의 경로
 
-   async def generate_feedback(self, content: str) -> Tuple[str, str]:
-       """기본 피드백과 RAG 기반 피드백을 모두 생성"""
-       try:
-           # 1. 관련 컨텍스트 검색
-           context = await self.get_relevant_context(content)
-           
-           # 2. 기본 피드백 생성
-           basic_feedback = await self.generate_basic_feedback(content)
-           
-           # 3. RAG 기반 피드백 생성
-           if context:
-               rag_feedback = await self.generate_rag_feedback(content, context)
-           else:
-               rag_feedback = "관련 참고 자료를 찾을 수 없습니다. 일반적인 피드백을 제공합니다: " + basic_feedback
-           
-           return basic_feedback, rag_feedback
-           
-       except Exception as e:
-           print(f"Error in generate_feedback: {str(e)}")
-           return "피드백 생성 실패", "피드백 생성 실패"
+    Returns:
+        PineconeVectorStore or None: 생성된 벡터 저장소 객체. 인덱스가 이미 존재하는 경우 None 반환
+    """
+    # 단계 1: DB 생성(Create DB)
+    pc = Pinecone()
+    db_index_name = settings.PINECONE_INDEX_NAME
+
+    # print(pc.list_indexes())
+    if db_index_name in [index_info["name"] for index_info in pc.list_indexes()]:
+        print(f"{db_index_name} is already exists.")
+
+        return None
+    else:
+        pc.create_index(
+            name=db_index_name,
+            dimension=4096,
+            metric="dotproduct",
+            spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+        )
+        print(f"{db_index_name} has been successfully created")
+
+        # LangSmith 시작
+        logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
+
+        # 단계 1: 문서 로드(Load Documents)
+        docs = []
+        files = sorted(glob(f"{pdf_dir}/*.pdf"))
+        print("files: ", files)
+
+        for file_path in files:
+            loader = PyMuPDFLoader(file_path)
+            docs.extend(loader.load())
+        print(f"문서의 페이지수: {len(docs)}")
+
+        # 단계 2: 문서 분할(Split Documents)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        split_documents = text_splitter.split_documents(docs)
+        print(f"분할된 청크의수: {len(split_documents)}")
+
+        # 단계 3: 문서 전처리
+        contents, metadatas = preprocess_documents(
+            split_docs=split_documents,
+            metadata_keys=["source", "page", "author"],
+            min_length=3,
+            use_basename=True,
+        )
+
+        # 단계 4: 임베딩(Embedding) 생성
+        embeddings = UpstageEmbeddings(model="embedding-passage")
+
+        # 단계 5: DB 생성(Create DB) 저장
+        vectorstore = PineconeVectorStore.from_documents(split_documents, embeddings, index_name=db_index_name)
+
+        return vectorstore
+
+
+def create_chain(db_index_name):
+    """
+    RAG(Retrieval-Augmented Generation) 체인을 생성합니다.
+
+    Args:
+        db_index_name (str): 사용할 Pinecone 인덱스의 이름
+
+    Returns:
+        Chain: 구성된 RAG 체인 객체
+    """
+    # DB 불러오기
+    pc = Pinecone()
+    index = pc.Index(db_index_name)
+    embeddings = UpstageEmbeddings(model="embedding-passage")
+    vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
+
+    # 검색기(Retriever) 생성
+    retriever = vectorstore.as_retriever()
+
+    # 프롬프트 생성(Create Prompt)
+    prompt = PromptTemplate.from_template(
+        """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
+    입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
+    참고한 정보의 페이지도 같이 알려줘.
+    만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
+
+    #정보:
+    {context}
+
+    #입력:
+    {question}
+
+    #답:"""
+    )
+
+    # 언어모델(LLM) 생성
+    llm = ChatUpstage(model="solar-pro")
+
+    # 체인(Chain) 생성
+    chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
+
+    return chain
+
+
+def analysis_note(input_data):
+    """
+    사용자 입력에 대한 분석을 수행합니다.
+
+    이 함수는 create_chain 함수로 생성된 RAG 체인을 사용하여
+    주어진 입력 데이터에 대한 분석을 수행합니다.
+
+    Args:
+        input_data (str): 분석할 사용자 입력 텍스트
+
+    Returns:
+        str: 분석 결과 및 피드백
+    """
+    # LangSmith 시작
+    logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
+
+    db_index_name = settings.PINECONE_INDEX_NAME
+    chain = create_chain(db_index_name)
+
+    response = chain.invoke(input_data)
+
+    return response

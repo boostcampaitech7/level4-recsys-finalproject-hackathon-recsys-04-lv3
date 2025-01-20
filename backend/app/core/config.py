@@ -1,32 +1,44 @@
 # app/core/config.py
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
-from typing import Optional
+
 
 class Settings(BaseSettings):
     # Project settings
     PROJECT_NAME: str = "Solar Teacher"
     API_V1_STR: str = "/api/v1"
 
-    # MySQL 설정
-    MYSQL_USER: str
-    MYSQL_PASSWORD: str
-    MYSQL_HOST: str
-    MYSQL_PORT: str = "3306"
-    MYSQL_DB: str
-    
-    # Upstage API 설정
-    UPSTAGE_API_KEY: str = "up_SI9PGgvUYZuOygwwjR7J5psU0AyYa"  # 기본값 설정
+    # DATABASE settings
+    DATABASE_USER_NAME: str
+    DATABASE_PASSWORD: str
+    DATABASE_HOST: str
+    DATABASE_PORT: str
+    DATABASE_NAME: str
+
+    # Upstage settings
     UPSTAGE_BASE_URL: str = "https://api.upstage.ai/v1/solar"
-    
-    # Pinecone 설정
-    PINECONE_API_KEY: str = "pcsk_2Ga39b_8ZL6Af8MDx2w3oWZ3wRbYbTpp2MQE4yYpJBBLNob6KLfn4x5tccf4LSHvCSzo3j"  # 기본값 설정
-    PINECONE_INDEX_NAME: str = "quickstart"
-    
+    UPSTAGE_OCR_URL: str = "https://api.upstage.ai/v1/document-ai/ocr"
+
+    # Pinecone settings
+    PINECONE_INDEX_NAME: str = "dev-01"
+
+    # LangSmith settings
+    LANGSMITH_PROJECT_NAME: str = "dev-01"
+
+    # LangChain settings
+    LANGCHAIN_PROJECT: str = "dev-01"
+    LANGCHAIN_TRACING_V2: str = "true"
+    LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
+
     @property
     def SQLALCHEMY_DATABASE_URL(self) -> str:
-        return f"mysql+pymysql://{self.MYSQL_USER}:{self.MYSQL_PASSWORD}@{self.MYSQL_HOST}:{self.MYSQL_PORT}/{self.MYSQL_DB}"
-    
+        credentials = f"{self.DATABASE_USER_NAME}:{self.DATABASE_PASSWORD}"
+        host = f"{self.DATABASE_HOST}:{self.DATABASE_PORT}"
+        return f"mysql+pymysql://{credentials}@{host}/{self.DATABASE_NAME}"
+
     class Config:
         env_file = ".env"
 
+
+load_dotenv()  # Load the .env file
 settings = Settings()

@@ -1,19 +1,22 @@
 # backend/app/api/endpoints/auth.py
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+import uuid
+
 from app.api import deps
 from app.models.user import User
+from fastapi import APIRouter, Depends, HTTPException
 from passlib.context import CryptContext
 from pydantic import BaseModel
-import uuid
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 # Pydantic 모델 수정
 class UserCreate(BaseModel):
-    id: str     # user_name에서 id로 변경
-    pw: str     # password에서 pw로 변경
+    id: str  # user_name에서 id로 변경
+    pw: str  # password에서 pw로 변경
+
 
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(deps.get_db)):
@@ -21,33 +24,24 @@ def register(user: UserCreate, db: Session = Depends(deps.get_db)):
     db_user = db.query(User).filter(User.id == user.id).first()
     if db_user:
         raise HTTPException(status_code=400, detail="ID already registered")
-    
+
     # 새로운 유저 생성
     user_id = str(uuid.uuid4())[:8]
-    db_user = User(
-        user_id=user_id,
-        id=user.id,
-        pw=user.pw,  # 실제 서비스에서는 암호화 필요
-        del_yn='N'
-    )
+    db_user = User(user_id=user_id, id=user.id, pw=user.pw, del_yn="N")  # 실제 서비스에서는 암호화 필요
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
-    
+
+    print(f"User id: {user_id}, Id: {user.id}, PW: {user.pw}")
+
     return {"user_id": user_id, "message": "User created successfully"}
+
 
 @router.post("/login")
 def login(user: UserCreate, db: Session = Depends(deps.get_db)):
-    db_user = db.query(User).filter(
-        User.id == user.id,
-        User.del_yn == 'N'
-    ).first()
-    
+    db_user = db.query(User).filter(User.id == user.id, User.del_yn == "N").first()
+
     if not db_user or db_user.pw != user.pw:
         raise HTTPException(status_code=400, detail="Incorrect ID or password")
-    
-    return {
-        "user_id": db_user.user_id,
-        "id": db_user.id,
-        "message": "Login successful"
-    }
+
+    return {"user_id": db_user.user_id, "id": db_user.id, "message": "Login successful"}
