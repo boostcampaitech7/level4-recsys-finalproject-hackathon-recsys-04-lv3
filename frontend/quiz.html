@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,153 +9,78 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff;
-            color: #000;
-            display: flex;
-            justify-content: center;
+            text-align: center;
         }
-
-        .container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid #ccc;
+            padding: 20px 50px;
+            border-bottom: 1px solid #ddd;
         }
-
-        .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        nav {
+        .header .left, .header .right {
             display: flex;
             gap: 20px;
         }
-
-        nav a {
+        .header a {
             text-decoration: none;
-            color: #000;
-            font-size: 1em;
-            padding: 5px 10px;
-            border-radius: 5px;
+            color: black;
+            font-weight: normal;
         }
-
-        nav a:hover {
-            background-color: #f0f0f0;
+        .header a.active {
+            color: #3b82f6;
+            font-weight: bold;
         }
-
-        main {
+        .container {
+            margin: 50px auto;
+            width: 50%;
+        }
+        h1 {
+            color: #3b82f6;
+            font-size: 32px;
+        }
+        p {
+            color: #555;
+            font-size: 18px;
+        }
+        .button {
+            width: 100%;
             padding: 20px;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
-        }
-
-        .quiz-container {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .quiz-question {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .quiz-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .quiz-buttons button {
-            padding: 10px 20px;
-            font-size: 1em;
             border: none;
             border-radius: 5px;
+            font-size: 18px;
             cursor: pointer;
+            margin: 10px 0;
         }
-
-        .quiz-buttons button:hover {
-            background-color: #ddd;
+        .button-primary {
+            background-color: #3b82f6;
+            color: white;
         }
-
-        .quiz-feedback {
-            margin-top: 20px;
-            font-size: 1em;
-            color: green;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid #ccc;
-            margin-top: 20px;
+        .button-secondary {
+            background-color: white;
+            color: #555;
+            border: 1px solid #888888;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">Online Note Analysis</div>
-            <nav>
-                <a href="index.html">홈</a>
-                <a href="new_note.html">새 메모</a>
-                <a href="notes.html">기존 메모</a>
-                <a href="quiz.html">퀴즈</a>
-                <a href="feedback.html">피드백</a>
-                <a href="mypage.html">마이페이지</a>
-            </nav>
-        </header>
-
-        <main>
-            <section id="main-content" class="content">
-                <h1 class="section-title">OX 퀴즈</h1>
-                <div class="quiz-container">
-                    <div class="quiz-question">
-                        이 문장이 참인가요? (예: O, 아니오: X)
-                    </div>
-                    <div class="quiz-buttons">
-                        <button id="trueButton">O</button>
-                        <button id="falseButton">X</button>
-                    </div>
-                    <div id="quizFeedback" class="quiz-feedback"></div>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            &copy; 2025 Online Note Analysis
-        </footer>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+          <a href="mypage.html">마이페이지</a>
+        </div>
     </div>
-
-    <script>
-        const trueButton = document.getElementById('trueButton');
-        const falseButton = document.getElementById('falseButton');
-        const quizFeedback = document.getElementById('quizFeedback');
-
-        trueButton.addEventListener('click', () => {
-            quizFeedback.textContent = '정답입니다!';
-            quizFeedback.style.color = 'green';
-        });
-
-        falseButton.addEventListener('click', () => {
-            quizFeedback.textContent = '틀렸습니다. 다시 시도하세요.';
-            quizFeedback.style.color = 'red';
-        });
-    </script>
+    <div class="container">
+        <h1>퀴즈</h1>
+        <p>작성한 내용을 바탕으로 오늘의 OX퀴즈를 풀어보세요!</p>
+        <button class="button button-primary" onclick="location.href='quiz_solving.html'">오늘의 퀴즈 풀러가기</button>
+        <button class="button button-secondary">전에 풀었던 퀴즈 보러가기</button>
+    </div>
 </body>
 </html>

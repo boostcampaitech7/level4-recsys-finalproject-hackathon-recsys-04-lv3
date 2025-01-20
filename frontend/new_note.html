@@ -1,152 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>새 메모</title>
+    <title>새 노트</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #fff;
-            color: #000;
-            display: flex;
-            justify-content: center;
         }
-
-        .container {
-            width: 80%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            border-bottom: 1px solid #ccc;
+            padding: 20px 50px;
+            background-color: #f5f5f5;
         }
-
-        .logo {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        nav {
+        .header .left, .header .right {
             display: flex;
             gap: 20px;
         }
-
-        nav a {
+        .header a {
             text-decoration: none;
-            color: #000;
-            font-size: 1em;
-            padding: 5px 10px;
-            border-radius: 5px;
+            color: black;
         }
-
-        nav a:hover {
-            background-color: #f0f0f0;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        .section-title {
-            font-size: 1.5em;
+        .header a.active {
+            color: #3b82f6;
             font-weight: bold;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 5px;
-            margin-bottom: 20px;
         }
-
-        .form-group {
-            margin-bottom: 15px;
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            text-align: center;
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
+        h1 {
+            color: #3b82f6;
         }
-
-        .form-group input, .form-group select, .form-group textarea, .form-group button {
+        .input-box, .analyze-button {
             width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-
-        .form-group button {
-            background-color: #000;
-            color: #fff;
+        .button-select-group {
+            display: flex;
+            justify-content: space-around;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .button {
+            background-color: white;
+            color: black;
             border: none;
+            padding: 15px 20px;
             cursor: pointer;
+            flex: 1;
         }
-
-        .form-group button:hover {
-            background-color: #333;
+        .button.active {
+            background-color: #3b82f6;
+            color: white;
         }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid #ccc;
-            margin-top: 20px;
+        .upload-box {
+            border: 2px dashed #ccc;
+            padding: 50px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .button-blue {
+            background-color: rgba(59, 130, 246, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .analyze-button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
+    <script>
+        function updateUploadBox(selection) {
+            const uploadBox = document.getElementById('upload-box');
+            const buttons = document.querySelectorAll('.button-select');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById(selection).classList.add('active');
+            
+            if (selection === '이미지') {
+                uploadBox.innerHTML = '노트 이미지를 드래그하여 넣어보세요.<br><button class="button-blue">이미지 불러오기</button>';
+            } else if (selection === '문서') {
+                uploadBox.innerHTML = '문서를 업로드하세요.<br><button class="button-blue">문서 불러오기</button>';
+            } else if (selection === '텍스트') {
+                uploadBox.innerHTML = '<textarea class="input-box" placeholder="텍스트를 입력하세요."></textarea>';
+            }
+        }
+        function analyzeNote() {
+            window.location.href = 'new_note_analysis.html';
+        }
+    </script>
 </head>
 <body>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+          <a href="mypage.html">마이페이지</a>
+        </div>
+    </div>
     <div class="container">
-        <header>
-            <div class="logo">Online Note Analysis</div>
-            <nav>
-                <a href="index.html">홈</a>
-                <a href="new_note.html">새 메모</a>
-                <a href="notes.html">기존 메모</a>
-                <a href="quiz.html">퀴즈</a>
-                <a href="feedback.html">피드백</a>
-                <a href="mypage.html">마이페이지</a>
-            </nav>
-        </header>
-
-        <main>
-            <section id="main-content" class="content">
-                <h1 class="section-title">새 메모 작성</h1>
-                <form>
-                    <div class="form-group">
-                        <label for="note-title">노트 제목</label>
-                        <input type="text" id="note-title" placeholder="제목을 입력하세요">
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">과목 선택</label>
-                        <select id="subject">
-                            <option value="math">수학</option>
-                            <option value="science">과학</option>
-                            <option value="history">역사</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="upload">파일 업로드</label>
-                        <input type="file" id="upload">
-                    </div>
-                    <div class="form-group">
-                        <label for="note-text">텍스트 입력</label>
-                        <textarea id="note-text" rows="10" placeholder="여기에 텍스트를 입력하세요..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit">분석하기</button>
-                    </div>
-                </form>
-            </section>
-        </main>
-
-        <footer>
-            &copy; 2025 Online Note Analysis
-        </footer>
+        <h1>새 노트</h1>
+        <p>새 노트 작성을 통해 AI 피드백을 받아보세요!</p>
+        <select class="input-box">
+            <option>과목 선택</option>
+            <option>지구과학2</option>
+            <option>정치와 법</option>
+        </select>
+        
+        <input type="text" class="input-box" placeholder="제목을 입력해주세요." />
+        <div class="button-select-group">
+            <button id="이미지" class="button-select button" onclick="updateUploadBox('이미지')">이미지</button>
+            <button id="문서" class="button-select button" onclick="updateUploadBox('문서')">문서</button>
+            <button id="텍스트" class="button-select button" onclick="updateUploadBox('텍스트')">텍스트</button>
+        </div>
+        <div id="upload-box" class="upload-box">
+            노트 이미지를 드래그하여 넣어보세요.<br>
+            <button class="button-blue">이미지 불러오기</button>
+        </div>
+        <button class="input-box analyze-button" onclick="analyzeNote()">분석하기</button>
     </div>
 </body>
 </html>
