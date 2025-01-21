@@ -27,7 +27,9 @@ def register(user: UserCreate, db: Session = Depends(deps.get_db)):
 
     # 새로운 유저 생성
     user_id = str(uuid.uuid4())[:8]
-    db_user = User(user_id=user_id, email=user.email, password=user.password, del_yn="N")  # 실제 서비스에서는 암호화 필요
+    db_user = User(
+        user_id=user_id, email=user.email, password=user.password, del_yn="N"
+    )  # 실제 서비스에서는 암호화 필요
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -45,3 +47,20 @@ def login(user: UserCreate, db: Session = Depends(deps.get_db)):
         raise HTTPException(status_code=400, detail="Incorrect ID or password")
 
     return {"user_id": db_user.user_id, "id": db_user.email, "message": "Login successful"}
+
+
+@router.get("/user/{user_id}")
+def get_user_info(user_id, db: Session = Depends(deps.get_db)):
+    user = db.query(User).filter(User.user_id == user_id, User.del_yn == "N").first()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Not Found User")
+
+    return {
+        "user_id": user.user_id,
+        "email": user.email,
+        "signup_date": user.created_at,
+        "notes_count": 10,  # 수정 필요
+        "quizzes_completed": 0,  # 수정 필요
+        "feedback_received": 0,  # 수정 필요
+    }
