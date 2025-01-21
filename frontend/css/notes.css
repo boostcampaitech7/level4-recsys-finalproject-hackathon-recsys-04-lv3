@@ -1,0 +1,81 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #f5f5f5;
+}
+
+.header .left, .header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.header a {
+  text-decoration: none;
+  color: black;
+}
+
+.header a.active {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.container {
+  width: 50%;
+  margin: 50px auto;
+  text-align: center;
+}
+
+h1 {
+  color: #3b82f6;
+}
+
+.main-content {
+  padding: 20px;
+}
+
+.section-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+
+.note-list {
+  list-style: none;
+  padding: 0;
+}
+
+.note-item {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+.note-item a {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+}
+
+.note-item a:hover {
+  text-decoration: underline;
+}
+
+.note-item span {
+  font-size: 0.9em;
+  color: #888;
+}

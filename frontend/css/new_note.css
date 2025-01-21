@@ -1,0 +1,95 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #f5f5f5;
+}
+
+.header .left, .header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.header a {
+  text-decoration: none;
+  color: black;
+}
+
+.header a.active {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.container {
+  width: 50%;
+  margin: 50px auto;
+  text-align: center;
+}
+
+h1 {
+  color: #3b82f6;
+}
+
+.input-box, .analyze-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* added to ensure padding is included in width */
+}
+
+.button-select-group {
+  display: flex;
+  justify-content: space-around;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px 0;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.button.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.upload-box {
+  border: 2px dashed #ccc;
+  padding: 50px;
+  margin: 20px 0;
+  border-radius: 10px;
+}
+
+.button-blue {
+  background-color: rgba(59, 130, 246, 0.8);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.analyze-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}

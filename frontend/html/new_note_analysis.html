@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>노트 분석</title>
+    <link rel="stylesheet" href="../css/new_note_analysis.css"> <!-- CSS 파일 연결 -->
+    <script defer src="../js/new_note_analysis.js"></script> <!-- JS 파일 연결 -->
+</head>
+<body>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html" class="active">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+          <a href="mypage.html">마이페이지</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <p id="subject-name">과목 없음</p>
+        <h1 class="note-title" id="note-title">제목 없음</h1>
+        <p>작성 날짜: <span id="note-date"></span></p>
+
+        <div class="note-layout">
+            <div class="note-box image">이미지</div>
+            <div class="note-box feedback">피드백 사항 3가지!</div>
+            <div class="note-box recommendation">관련 개념, 노트, 문제</div>
+        </div>
+    </div>
+</body>
+</html>

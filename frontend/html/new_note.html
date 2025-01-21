@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 노트</title>
+    <link rel="stylesheet" href="../css/new_note.css"> <!-- CSS 파일 연결 -->
+    <script defer src="../js/new_note.js"></script> <!-- JS 파일 연결 -->
+</head>
+<body>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html" class="active">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+          <a href="mypage.html">마이페이지</a>
+        </div>
+    </div>
+    <div class="container">
+        <h1>새 노트</h1>
+        <p>새 노트 작성을 통해 AI 피드백을 받아보세요!</p>
+        <select class="input-box">
+            <option>과목 선택</option>
+            <option>지구과학2</option>
+            <option>정치와 법</option>
+        </select>
+        
+        <input type="text" class="input-box" placeholder="제목을 입력해주세요." />
+        <div class="button-select-group">
+            <button id="이미지" class="button-select button" onclick="updateUploadBox('이미지')">이미지</button>
+            <button id="문서" class="button-select button" onclick="updateUploadBox('문서')">문서</button>
+            <button id="텍스트" class="button-select button" onclick="updateUploadBox('텍스트')">텍스트</button>
+        </div>
+        <div id="upload-box" class="upload-box">
+            노트 이미지를 드래그하여 넣어보세요.<br>
+            <button class="button-blue">이미지 불러오기</button>
+        </div>
+        <button class="input-box analyze-button" onclick="analyzeNote()">분석하기</button>
+    </div>
+</body>
+</html>

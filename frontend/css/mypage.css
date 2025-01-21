@@ -1,0 +1,73 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.header .left, .header .right {
+  display: flex;
+  gap: 20px;
+}
+
+.header a {
+  text-decoration: none;
+  color: black;
+  font-weight: normal;
+}
+
+.header a.active {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.container {
+  margin: 50px auto;
+  width: 60%;
+}
+
+h1 {
+  color: #3b82f6;
+  font-size: 32px;
+}
+
+p {
+  color: #555;
+  font-size: 18px;
+}
+
+.section-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-item {
+  margin-bottom: 10px;
+}
+
+.profile-label {
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+}
