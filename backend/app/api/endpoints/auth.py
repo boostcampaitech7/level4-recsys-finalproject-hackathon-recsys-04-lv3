@@ -14,34 +14,34 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Pydantic 모델 수정
 class UserCreate(BaseModel):
-    id: str  # user_name에서 id로 변경
-    pw: str  # password에서 pw로 변경
+    email: str
+    password: str
 
 
 @router.post("/register")
 def register(user: UserCreate, db: Session = Depends(deps.get_db)):
     # 기존 유저 체크
-    db_user = db.query(User).filter(User.id == user.id).first()
+    db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="ID already registered")
 
     # 새로운 유저 생성
     user_id = str(uuid.uuid4())[:8]
-    db_user = User(user_id=user_id, id=user.id, pw=user.pw, del_yn="N")  # 실제 서비스에서는 암호화 필요
+    db_user = User(user_id=user_id, email=user.email, password=user.password, del_yn="N")  # 실제 서비스에서는 암호화 필요
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
 
-    print(f"User id: {user_id}, Id: {user.id}, PW: {user.pw}")
+    print(f"User id: {user_id}, Id: {user.email}, PW: {user.password}")
 
     return {"user_id": user_id, "message": "User created successfully"}
 
 
 @router.post("/login")
 def login(user: UserCreate, db: Session = Depends(deps.get_db)):
-    db_user = db.query(User).filter(User.id == user.id, User.del_yn == "N").first()
+    db_user = db.query(User).filter(User.email == user.email, User.del_yn == "N").first()
 
-    if not db_user or db_user.pw != user.pw:
+    if not db_user or db_user.password != user.password:
         raise HTTPException(status_code=400, detail="Incorrect ID or password")
 
-    return {"user_id": db_user.user_id, "id": db_user.id, "message": "Login successful"}
+    return {"user_id": db_user.user_id, "id": db_user.email, "message": "Login successful"}
