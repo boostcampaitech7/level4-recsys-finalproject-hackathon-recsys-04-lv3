@@ -4,21 +4,20 @@ from typing import Optional
 from app.api import deps
 from app.models.note import Note
 from app.services.ocr_service import perform_ocr
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 router = APIRouter()
 
 
-class TextNote(BaseModel):
-    title: str
-    subjects_id: str
-    content: str
-
-
 @router.post("/text")
-async def create_text_note(text_note: TextNote, db: Session = Depends(deps.get_db), user_id: Optional[str] = None):
+async def create_text_note(
+    title: str = Form(...),
+    subjects_id: str = Form(...),
+    content: str = Form(...),
+    db: Session = Depends(deps.get_db),
+    user_id: Optional[str] = Form(...),
+):
     try:
         note_id = str(uuid.uuid4())[:8]
 
@@ -26,9 +25,9 @@ async def create_text_note(text_note: TextNote, db: Session = Depends(deps.get_d
             note = Note(
                 note_id=note_id,
                 user_id=user_id,
-                subjects_id=text_note.subjects_id,
-                title=text_note.title,
-                contents=text_note.content,
+                subjects_id=subjects_id,
+                title=title,
+                contents=content,
                 ocr_yn="N",
                 del_yn="N",
             )
@@ -38,9 +37,9 @@ async def create_text_note(text_note: TextNote, db: Session = Depends(deps.get_d
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
-            "subjects_id": text_note.subjects_id,
-            "title": text_note.title,
-            "content": text_note.content,
+            "subjects_id": subjects_id,
+            "title": title,
+            "content": content,
             "saved_to_db": bool(user_id),
         }
 
@@ -51,7 +50,11 @@ async def create_text_note(text_note: TextNote, db: Session = Depends(deps.get_d
 
 @router.post("/upload")
 async def upload_note(
-    file: UploadFile, title: str, subjects_id: str, db: Session = Depends(deps.get_db), user_id: Optional[str] = None
+    file: UploadFile = File(...),
+    title: str = Form(...),
+    subjects_id: str = Form(...),
+    db: Session = Depends(deps.get_db),
+    user_id: Optional[str] = Form(...),
 ):
     try:
         # OCR로 텍스트 추출
