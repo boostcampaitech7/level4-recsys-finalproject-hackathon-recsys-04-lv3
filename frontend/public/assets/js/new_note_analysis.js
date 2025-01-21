@@ -1,3 +1,8 @@
+const urlParams = new URLSearchParams(window.location.search);
+const noteId = urlParams.get("note_id");
+
+console.log("전달된 note_id", noteId);
+
 document.addEventListener('DOMContentLoaded', function () {
   // 저장된 데이터 가져오기
   const subject = localStorage.getItem('selectedSubject') || '과목 없음';

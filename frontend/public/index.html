@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새 노트</title>
-    <link rel="stylesheet" href="../css/new_note.css"> <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" href="assets/css/new_note.css"> <!-- CSS 파일 연결 -->
 </head>
 <body>
     <div class="header">
@@ -26,4 +26,9 @@
 
     </div>
 </body>
+<script>
+    if (!localStorage.getItem('user_id')) {
+        window.location.href = "login.html";
+    }
+</script>
 </html>
