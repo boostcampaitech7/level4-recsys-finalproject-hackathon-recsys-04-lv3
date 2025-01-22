@@ -1,5 +1,4 @@
 // 로그인 폼 제출 이벤트
-// 로그인 폼 제출 이벤트
 document.getElementById('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault(); // 기본 제출 동작 방지
 
