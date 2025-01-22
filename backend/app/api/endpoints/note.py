@@ -1,3 +1,4 @@
+# app/api/endpoints/note.py
 import uuid
 from typing import Optional
 
@@ -27,7 +28,7 @@ async def create_text_note(
                 user_id=user_id,
                 subjects_id=subjects_id,
                 title=title,
-                contents=content,
+                raw_text=content,  # contents -> raw_text
                 ocr_yn="N",
                 del_yn="N",
             )
@@ -57,7 +58,6 @@ async def upload_note(
     user_id: Optional[str] = Form(...),
 ):
     try:
-        # OCR로 텍스트 추출
         raw_text = await perform_ocr(file)
         note_id = str(uuid.uuid4())[:8]
 
@@ -68,8 +68,8 @@ async def upload_note(
                 subjects_id=subjects_id,
                 title=title,
                 file_path=f"uploads/{file.filename}",
-                contents=raw_text,
-                contents_ocr=raw_text,
+                raw_text=raw_text,  # contents -> raw_text
+                cleaned_text=raw_text,  # contents_ocr -> cleaned_text
                 ocr_yn="Y",
                 del_yn="N",
             )
@@ -100,7 +100,7 @@ def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
                 {
                     "note_id": note.note_id,
                     "title": note.title,
-                    "raw_text": note.contents,
+                    "raw_text": note.raw_text,  # contents -> raw_text
                     "note_date": note.created_at,
                     "is_analysis": note.ocr_yn,
                 }
@@ -131,8 +131,8 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
         return {
             "note_id": note.note_id,
             "title": note.title,
-            "raw_text": note.contents,
-            "cleaned_text": note.contents_ocr,
+            "raw_text": note.raw_text,  # contents -> raw_text
+            "cleaned_text": note.cleaned_text,  # contents_ocr -> cleaned_text
             "note_date": note.created_at,
             "is_analysis": note.ocr_yn,
             "subjects_id": note.subjects_id,
