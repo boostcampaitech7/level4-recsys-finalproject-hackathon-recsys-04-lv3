@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
           let formattedDate = `${year}-${month}-${day}`;
 
           // Note Link
-          let link = "./note_detail.html"
+          let link = "./new_note_analysis.html"
 
           noteItem.innerHTML = `<a href="${link}">${note.title}</a><span>${formattedDate}</span>`;
           noteList.appendChild(noteItem);
