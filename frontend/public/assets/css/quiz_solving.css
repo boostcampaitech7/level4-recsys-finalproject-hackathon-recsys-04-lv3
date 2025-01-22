@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #f5f5f5;  /* 기존과 동일한 배경색 */
+  border-bottom: 1px solid #ddd;
+}
+.header .left, .header .right {
+  display: flex;
+  gap: 20px;
+}
+.header a {
+  text-decoration: none;
+  color: black;
+  font-weight: normal;
+}
+.header a.active {
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.container {
+  margin: 50px auto;
+  width: 50%;
+}
+.question-box {
+  border: 1px solid #ccc;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+.answer-box {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.answer {
+  font-size: 48px;
+  font-weight: bold;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.answer.o { background-color: #dce4ff; color: #3b82f6; }
+.answer.x { background-color: #fdd; color: #f00; }
+.answer.unselected { background-color: #ddd; color: #aaa; }
+.explanation {
+  margin-top: 20px;
+  padding: 30px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  display: none;
+}
+.progress {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.progress-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #ddd;
+}
+.progress-dot.active {
+  background-color: #3b82f6;
+}
+.btn-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+.next-btn {
+  display: none;
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

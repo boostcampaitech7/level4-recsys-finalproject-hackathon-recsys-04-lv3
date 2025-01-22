@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 노트</title>
+    <link rel="stylesheet" href="assets/css/new_note.css"> <!-- CSS 파일 연결 -->
+</head>
+<body>
+    <div class="header">
+        <div class="left">
+            <a href="index.html"  class="active">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+          <a href="mypage.html">마이페이지</a>
+        </div>
+    </div>
+    <div class="container">
+        <h1>환영합니다</h1>
+        <p>인사하는 한 마디?!</p>
+        <p>상단 탭을 통해 원하는 기능을 사용하실 수 있습니다.</p>
+
+    </div>
+</body>
+<script>
+    if (!localStorage.getItem('user_id')) {
+        window.location.href = "login.html";
+    }
+</script>
+</html>

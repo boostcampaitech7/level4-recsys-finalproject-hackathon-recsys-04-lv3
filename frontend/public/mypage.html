@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="assets/css/mypage.css">
+    <script defer src="assets/js/mypage.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+            <a href="mypage.html" class="active">마이페이지</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <main>
+            <section id="main-content" class="content">
+                <h1 class="section-title">마이페이지</h1>
+
+                <div class="profile-section">
+                    <div class="profile-item">
+                        <span class="profile-label">아이디:</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">이메일:</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">가입일:</span>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h2 class="section-title">활동 기록</h2>
+                    <ul>
+                        <li>작성한 메모: 15개</li>
+                        <li>완료한 퀴즈: 10개</li>
+                        <li>받은 피드백: 5개</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            &copy; 2025 Online Note Analysis
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
