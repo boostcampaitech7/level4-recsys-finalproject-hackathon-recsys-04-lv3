@@ -1,3 +1,4 @@
+# app/api/endpoints/rag.py
 import uuid
 
 from app.api import deps
@@ -45,18 +46,16 @@ async def create_analysis_note(user_id: str, note_id: str, db: Session = Depends
         if not note:
             raise HTTPException(status_code=404, detail="Note not found")
 
-        # result = analysis_note(note.contents)
-        result = analysis_chunk(note.contents)
+        result = analysis_chunk(note.raw_text)
         print(result)
 
-        # todo: DB에 결과 저장
         analyze_id = str(uuid.uuid4())[:8]
         analysis = Analysis(
             analyze_id=analyze_id,
             note_id=note_id,
             chunk_num=0,
             rag_id=result["rag_id"],
-            field2=result["response"],
+            feedback=result["response"]  # field2 -> feedback
         )
         db.add(analysis)
         db.commit()
@@ -64,7 +63,7 @@ async def create_analysis_note(user_id: str, note_id: str, db: Session = Depends
         return {
             "user_id": user_id,
             "note_id": note.note_id,
-            "text": note.contents,
+            "text": note.raw_text,
             "llm_result": result["response"],
         }
     except Exception as e:
