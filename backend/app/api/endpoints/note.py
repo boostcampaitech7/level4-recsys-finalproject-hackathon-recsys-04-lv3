@@ -60,6 +60,16 @@ async def create_text_note(
         # 'quiz' 키 내부의 리스트를 순회
         for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
             try:
+                # quiz가 문자열일 경우 처리
+                if isinstance(quiz, str):
+                    ox_contents = quiz  # 문자열을 퀴즈 내용으로 사용
+                    ox_answer = None  # 문자열인 경우에는 정답을 처리할 수 없으므로 None으로 설정
+                    ox_explanation = None  # 설명도 없는 경우로 설정
+                else:
+                    # quiz가 딕셔너리일 경우
+                    ox_contents = quiz["question"]
+                    ox_answer = quiz["answer"]
+                    ox_explanation = quiz.get("explanation", "")  # 설명이 없으면 빈 문자열로 처리
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
                     ox_id=ox_id,
@@ -158,6 +168,16 @@ async def upload_note(
 
         # 'quiz' 키 내부의 리스트를 순회
         for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
+            # quiz가 문자열일 경우 처리
+            if isinstance(quiz, str):
+                ox_contents = quiz  # 문자열을 퀴즈 내용으로 사용
+                ox_answer = None  # 문자열인 경우에는 정답을 처리할 수 없으므로 None으로 설정
+                ox_explanation = None  # 설명도 없는 경우로 설정
+            else:
+                # quiz가 딕셔너리일 경우
+                ox_contents = quiz["question"]
+                ox_answer = quiz["answer"]
+                ox_explanation = quiz.get("explanation", "")  # 설명이 없으면 빈 문자열로 처리
             try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
