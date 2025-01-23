@@ -2,6 +2,8 @@
 import uuid
 from typing import Optional
 
+import ast
+
 from app.api import deps
 from app.models.ox import OX
 from app.models.note import Note
@@ -58,40 +60,40 @@ async def create_text_note(
         quizzes = await generate_quiz(content)  # 퀴즈 생성 요청
 
         # 'quiz' 키 내부의 리스트를 순회
-        for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
-            try:
-                # quiz가 문자열일 경우 처리
+        if isinstance(quizzes, dict) and 'quiz' in quizzes:
+            for quiz in quizzes['quiz']:  # 'quiz' 키에 있는 리스트를 순회
+                print("Quiz:", quiz)  # quiz 출력
+                print("Type of quiz:", type(quiz))  # quiz 타입 출력
+                
+                # quiz가 문자열일 경우, 딕셔너리로 변환
                 if isinstance(quiz, str):
-                    ox_contents = quiz  # 문자열을 퀴즈 내용으로 사용
-                    ox_answer = None  # 문자열인 경우에는 정답을 처리할 수 없으므로 None으로 설정
-                    ox_explanation = None  # 설명도 없는 경우로 설정
-                else:
-                    # quiz가 딕셔너리일 경우
-                    ox_contents = quiz["question"]
-                    ox_answer = quiz["answer"]
-                    ox_explanation = quiz.get("explanation", "")  # 설명이 없으면 빈 문자열로 처리
-                ox_id = str(uuid.uuid4())[:8]
-                ox = OX(
-                    ox_id=ox_id,
-                    user_id=user_id,
-                    note_id=note_id,
-                    rag_id=result.get('rag_id'),
-                    ox_contents=quiz["question"],  
-                    ox_answer=quiz["answer"],     
-                    ox_explanation=quiz["explanation"], 
-                    used_yn="N",
-                    correct_yn="N",
-                    del_yn="N",
-                )
-                db.add(ox)
-                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
-            
-            except Exception as e:
-                print(f"Error saving quiz: {e}")
-                import traceback
-                print(traceback.format_exc())
-                continue
-        
+                    quiz = ast.literal_eval(quiz)
+                    print("Converted quiz:", quiz)
+                
+                try:
+                    ox_id = str(uuid.uuid4())[:8]
+                    ox = OX(
+                        ox_id=ox_id,
+                        user_id=user_id,
+                        note_id=note_id,
+                        rag_id=result.get('rag_id'),
+                        ox_contents=quiz["question"],
+                        ox_answer=quiz["answer"],
+                        ox_explanation=quiz["explanation"],
+                        used_yn="N",
+                        correct_yn="N",
+                        del_yn="N",
+                    )
+                    db.add(ox)
+                    print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+                except Exception as e:
+                    print(f"Error saving quiz: {e}")
+                    import traceback
+                    print(traceback.format_exc())
+                    continue
+        else:
+            print("Invalid structure of quizzes")
+
         # 커밋 실행
         try:
             print("Attempting to commit changes to the database...")
@@ -103,6 +105,7 @@ async def create_text_note(
             print(traceback.format_exc())
             db.rollback()
             print("Session rolled back due to commit failure")
+
 
         return {
             "note_id": note_id if user_id else None,
@@ -165,41 +168,40 @@ async def upload_note(
             
          # O/X 퀴즈 생성
         quizzes = await generate_quiz(raw_text)  # 퀴즈 생성 요청
-
         # 'quiz' 키 내부의 리스트를 순회
-        for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
-            # quiz가 문자열일 경우 처리
-            if isinstance(quiz, str):
-                ox_contents = quiz  # 문자열을 퀴즈 내용으로 사용
-                ox_answer = None  # 문자열인 경우에는 정답을 처리할 수 없으므로 None으로 설정
-                ox_explanation = None  # 설명도 없는 경우로 설정
-            else:
-                # quiz가 딕셔너리일 경우
-                ox_contents = quiz["question"]
-                ox_answer = quiz["answer"]
-                ox_explanation = quiz.get("explanation", "")  # 설명이 없으면 빈 문자열로 처리
-            try:
-                ox_id = str(uuid.uuid4())[:8]
-                ox = OX(
-                    ox_id=ox_id,
-                    user_id=user_id,
-                    note_id=note_id,
-                    rag_id=result.get('rag_id'),
-                    ox_contents=quiz["question"],  
-                    ox_answer=quiz["answer"],     
-                    ox_explanation=quiz["explanation"], 
-                    used_yn="N",
-                    correct_yn="N",
-                    del_yn="N",
-                )
-                db.add(ox)
-                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
-            
-            except Exception as e:
-                print(f"Error saving quiz: {e}")
-                import traceback
-                print(traceback.format_exc())
-                continue
+        if isinstance(quizzes, dict) and 'quiz' in quizzes:
+            for quiz in quizzes['quiz']:  # 'quiz' 키에 있는 리스트를 순회
+                print("Quiz:", quiz)  # quiz 출력
+                print("Type of quiz:", type(quiz))  # quiz 타입 출력
+                
+                # quiz가 문자열일 경우, 딕셔너리로 변환
+                if isinstance(quiz, str):
+                    quiz = ast.literal_eval(quiz)
+                    print("Converted quiz:", quiz)
+                
+                try:
+                    ox_id = str(uuid.uuid4())[:8]
+                    ox = OX(
+                        ox_id=ox_id,
+                        user_id=user_id,
+                        note_id=note_id,
+                        rag_id=result.get('rag_id'),
+                        ox_contents=quiz["question"],
+                        ox_answer=quiz["answer"],
+                        ox_explanation=quiz["explanation"],
+                        used_yn="N",
+                        correct_yn="N",
+                        del_yn="N",
+                    )
+                    db.add(ox)
+                    print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+                except Exception as e:
+                    print(f"Error saving quiz: {e}")
+                    import traceback
+                    print(traceback.format_exc())
+                    continue
+        else:
+            print("Invalid structure of quizzes")
 
         # 커밋 실행
         try:
