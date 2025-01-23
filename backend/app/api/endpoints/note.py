@@ -54,6 +54,34 @@ async def create_text_note(
             db.add(analysis)
             db.commit()
 
+        # O/X 퀴즈 생성
+        quizzes = await generate_quiz(content)  # 퀴즈 생성 요청
+
+        # 'quiz' 키 내부의 리스트를 순회
+        for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
+            try:
+                ox_id = str(uuid.uuid4())[:8]
+                ox = OX(
+                    ox_id=ox_id,
+                    user_id=user_id,
+                    note_id=note_id,
+                    rag_id=result.get('rag_id'),
+                    ox_contents=quiz["question"],  
+                    ox_answer=quiz["answer"],     
+                    ox_explanation=quiz["explanation"], 
+                    used_yn="N",
+                    correct_yn="N",
+                    del_yn="N",
+                )
+                db.add(ox)
+                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+            
+            except Exception as e:
+                print(f"Error saving quiz: {e}")
+                import traceback
+                print(traceback.format_exc())
+                continue
+        
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
@@ -114,24 +142,10 @@ async def upload_note(
             db.commit()
             
          # O/X 퀴즈 생성
-        quizzes = await generate_quiz(content)  # 퀴즈 생성 요청
-        print("Generated quizzes:", quizzes)  # 생성된 퀴즈 데이터 출력
-        print(f"user_id: {user_id}, note_id: {note_id}, rag_id: {result.get('rag_id')}")  # 확인
+        quizzes = await generate_quiz(raw_text)  # 퀴즈 생성 요청
 
-       # 'quiz' 키 내부의 리스트를 순회
         # 'quiz' 키 내부의 리스트를 순회
         for quiz in quizzes:  # 'quiz' 키가 아니라 리스트 자체를 순회
-            print("Quiz:", quiz)  # 저장되는 퀴즈 확인
-            
-            # quiz가 문자열이라면
-            if isinstance(quiz, str):
-                print("Quiz is a string:", quiz)
-            else:
-                # quiz가 딕셔너리라면
-                print("Question:", quiz.get("question"))
-                print("Answer:", quiz.get("answer"))
-                print("Explanation:", quiz.get("explanation"))
-
             try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
@@ -166,9 +180,7 @@ async def upload_note(
             print(traceback.format_exc())
             db.rollback()
             print("Session rolled back due to commit failure")
-
-
-
+            
 
         return {
             "note_id": note_id if user_id else None,
