@@ -82,6 +82,18 @@ async def create_text_note(
                 print(traceback.format_exc())
                 continue
         
+        # 커밋 실행
+        try:
+            print("Attempting to commit changes to the database...")
+            db.commit()
+            print("Database commit successful!")
+        except Exception as commit_error:
+            print(f"Database commit failed: {commit_error}")
+            import traceback
+            print(traceback.format_exc())
+            db.rollback()
+            print("Session rolled back due to commit failure")
+
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
