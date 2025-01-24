@@ -27,8 +27,8 @@
             <div class="progress-dot"></div>
         </div>
         <div class="question-box" id="question-box">
-            <strong>Q</strong> 태양은 지구를 중심으로 돈다.
-        </div>
+            <strong>Q</strong> <span id="question-text"></span> <!-- 질문이 표시될 부분 -->
+        </div>                
         <div class="answer-box">
             <div class="answer o" onclick="selectAnswer('O')">O</div>
             <div class="answer x" onclick="selectAnswer('X')">X</div>
@@ -41,6 +41,6 @@
             <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제로 이동</button>
         </div>
     </div>
-    <script src="../js/quiz_solving.js"></script>
+    <script src="assets/js/quiz_solving.js"></script>
 </body>
 </html>
