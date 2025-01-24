@@ -36,36 +36,63 @@ h1 {
   color: #000;
 }
 
-.note-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 20px;
-}
-
-.note-box {
-  background-color: #ddd;
-  padding: 50px;
-  text-align: center;
-  border-radius: 10px;
-}
-
 .note-title {
   font-size: 24px;
   font-weight: bold;
 }
 
+.note-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.note-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.left-column {
+  flex: 1;
+  padding: 20px;
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.note-box {
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+}
+
 .image {
-  grid-column: 1 / 2;
-  grid-row: 1 / 3;
+  max-width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
 }
 
-.feedback {
-  grid-column: 2 / 3;
-  grid-row: 1 / 2;
+.feedback, .recommendation {
+  flex: 1;
 }
 
-.recommendation {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
+textarea {
+  width: 100%;
+  height: 80%;
+  resize: none;
+  border: none;
+  outline: none;
+  font-family: Arial, sans-serif;
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
 }
