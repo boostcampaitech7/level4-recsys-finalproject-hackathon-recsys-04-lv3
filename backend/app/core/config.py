@@ -20,13 +20,13 @@ class Settings(BaseSettings):
     UPSTAGE_OCR_URL: str = "https://api.upstage.ai/v1/document-ai/ocr"
 
     # Pinecone settings
-    PINECONE_INDEX_NAME: str = "dev-01"
+    PINECONE_INDEX_NAME: str = "dev-02"
 
     # LangSmith settings
-    LANGSMITH_PROJECT_NAME: str = "dev-01"
+    LANGSMITH_PROJECT_NAME: str = "dev-02"
 
     # LangChain settings
-    LANGCHAIN_PROJECT: str = "dev-01"
+    LANGCHAIN_PROJECT: str = "dev-02"
     LANGCHAIN_TRACING_V2: str = "true"
     LANGCHAIN_ENDPOINT: str = "https://api.smith.langchain.com"
 
