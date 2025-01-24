@@ -1,4 +1,5 @@
 let currentQuiz = null; // 현재 퀴즈 정보 저장
+let questionIndex = 0;  // 문제 인덱스 (0: 첫 번째 문제, 1: 두 번째 문제, 2: 세 번째 문제)
 
 // 페이지 로드 시 첫 번째 퀴즈 가져오기
 window.onload = async function () {
@@ -11,7 +12,16 @@ window.onload = async function () {
             return;
         }
 
-        // FastAPI에서 첫 번째 퀴즈 데이터 가져오기
+        // 첫 번째 퀴즈 데이터 가져오기
+        await loadQuiz(userId);
+    } catch (error) {
+        console.error("Error loading quiz:", error);
+        alert("퀴즈를 가져오는데 실패했습니다.");
+    }
+};
+
+async function loadQuiz(userId) {
+    try {
         const response = await fetch(`http://localhost:8000/api/v1/quiz/next?user_id=${userId}`);
         if (!response.ok) {
             throw new Error("Failed to fetch quiz");
@@ -26,7 +36,7 @@ window.onload = async function () {
         console.error("Error loading quiz:", error);
         alert("퀴즈를 가져오는데 실패했습니다.");
     }
-};
+}
 
 function displayQuestion(quiz) {
     // API에서 가져온 질문과 데이터를 화면에 표시
@@ -39,6 +49,14 @@ function displayQuestion(quiz) {
 
     // 선택 상태 초기화
     document.querySelectorAll('.answer').forEach(el => el.classList.remove('unselected'));
+
+    // progress-dot 업데이트
+    updateProgressDot();
+
+    // 마지막 문제라면 "결과 확인하러 가기" 버튼 표시
+    if (questionIndex === 2) {
+        document.getElementById('next-btn').textContent = "결과 확인하러 가기";
+    }
 }
 
 // 사용자가 답을 선택했을 때 처리
@@ -48,7 +66,7 @@ async function selectAnswer(choice) {
     document.querySelector(`.answer.${choice.toLowerCase()}`).classList.remove('unselected');
 
     // 로그인된 유저 아이디 가져오기
-    const userId = localStorage.getItem("user_id");  // 예: 로컬 스토리지에 저장된 user_id 사용
+    const userId = localStorage.getItem("user_id");  // 로컬 스토리지에 저장된 user_id 사용
 
     if (!userId) {
         alert("로그인된 유저가 없습니다.");
@@ -88,28 +106,30 @@ function displayResult(result) {
 
 // 다음 문제로 이동
 async function nextQuestion() {
-    try {
-        // 로그인된 유저 아이디 가져오기
-        const userId = localStorage.getItem("user_id");
+    const userId = localStorage.getItem("user_id");
 
-        if (!userId) {
-            alert("로그인된 유저가 없습니다.");
-            return;
-        }
-
-        // FastAPI에서 다음 퀴즈 가져오기
-        const response = await fetch(`http://localhost:8000/api/v1/quiz/next?user_id=${userId}`);
-        if (!response.ok) {
-            throw new Error("Failed to fetch next quiz");
-        }
-
-        const data = await response.json();
-        const quiz = data.quiz;
-
-        // 새로운 퀴즈 표시
-        displayQuestion(quiz);
-    } catch (error) {
-        console.error("Error loading next quiz:", error);
-        alert("다음 퀴즈를 가져오는데 실패했습니다.");
+    if (!userId) {
+        alert("로그인된 유저가 없습니다.");
+        return;
     }
+
+    if (questionIndex < 2) {
+        questionIndex++; // 문제 인덱스 증가
+        await loadQuiz(userId); // 다음 퀴즈 로드
+    } else {
+        // 마지막 문제에서는 결과 페이지로 이동
+        window.location.href = "quiz_result.html";
+    }
+}
+
+// progress-dot 업데이트
+function updateProgressDot() {
+    const progressDots = document.querySelectorAll('.progress-dot');
+    progressDots.forEach((dot, index) => {
+        if (index <= questionIndex) {
+            dot.classList.add('filled');
+        } else {
+            dot.classList.remove('filled');
+        }
+    });
 }
