@@ -58,41 +58,49 @@ async def create_text_note(
 
         # O/X 퀴즈 생성
         quizzes = await generate_quiz(content)  # 퀴즈 생성 요청
+        print(quizzes)
+        print("Type of quizzes:", type(quizzes))
 
-        # 'quiz' 키 내부의 리스트를 순회
+        # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and 'quiz' in quizzes:
-            for quiz in quizzes['quiz']:  # 'quiz' 키에 있는 리스트를 순회
-                print("Quiz:", quiz)  # quiz 출력
-                print("Type of quiz:", type(quiz))  # quiz 타입 출력
-                
-                # quiz가 문자열일 경우, 딕셔너리로 변환
-                if isinstance(quiz, str):
-                    quiz = ast.literal_eval(quiz)
-                    print("Converted quiz:", quiz)
-                
-                try:
-                    ox_id = str(uuid.uuid4())[:8]
-                    ox = OX(
-                        ox_id=ox_id,
-                        user_id=user_id,
-                        note_id=note_id,
-                        rag_id=result.get('rag_id'),
-                        ox_contents=quiz["question"],
-                        ox_answer=quiz["answer"],
-                        ox_explanation=quiz["explanation"],
-                        used_yn="N",
-                        correct_yn="N",
-                        del_yn="N",
-                    )
-                    db.add(ox)
-                    print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
-                except Exception as e:
-                    print(f"Error saving quiz: {e}")
-                    import traceback
-                    print(traceback.format_exc())
-                    continue
+            quiz_list = quizzes['quiz']  # 'quiz' 키의 값을 가져옴
+        elif isinstance(quizzes, list):
+            quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
             print("Invalid structure of quizzes")
+            quiz_list = []
+
+        # 'quiz_list' 순회
+        for quiz in quiz_list:
+            print("Quiz:", quiz)  # quiz 출력
+            print("Type of quiz:", type(quiz))  # quiz 타입 출력
+            
+            # quiz가 문자열일 경우, 딕셔너리로 변환
+            if isinstance(quiz, str):
+                quiz = ast.literal_eval(quiz)
+                print("Converted quiz:", quiz)
+            
+            try:
+                ox_id = str(uuid.uuid4())[:8]
+                ox = OX(
+                    ox_id=ox_id,
+                    user_id=user_id,
+                    note_id=note_id,
+                    rag_id=result.get('rag_id'),
+                    ox_contents=quiz["question"],
+                    ox_answer=quiz["answer"],
+                    ox_explanation=quiz["explanation"],
+                    used_yn="N",
+                    correct_yn="N",
+                    del_yn="N",
+                )
+                db.add(ox)
+                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+            except Exception as e:
+                print(f"Error saving quiz: {e}")
+                import traceback
+                print(traceback.format_exc())
+                continue
 
         # 커밋 실행
         try:
@@ -166,42 +174,51 @@ async def upload_note(
             db.add(analysis)
             db.commit()
             
-         # O/X 퀴즈 생성
+        # O/X 퀴즈 생성
         quizzes = await generate_quiz(raw_text)  # 퀴즈 생성 요청
-        # 'quiz' 키 내부의 리스트를 순회
+        print(quizzes)
+        print("Type of quizzes:", type(quizzes))
+
+        # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and 'quiz' in quizzes:
-            for quiz in quizzes['quiz']:  # 'quiz' 키에 있는 리스트를 순회
-                print("Quiz:", quiz)  # quiz 출력
-                print("Type of quiz:", type(quiz))  # quiz 타입 출력
-                
-                # quiz가 문자열일 경우, 딕셔너리로 변환
-                if isinstance(quiz, str):
-                    quiz = ast.literal_eval(quiz)
-                    print("Converted quiz:", quiz)
-                
-                try:
-                    ox_id = str(uuid.uuid4())[:8]
-                    ox = OX(
-                        ox_id=ox_id,
-                        user_id=user_id,
-                        note_id=note_id,
-                        rag_id=result.get('rag_id'),
-                        ox_contents=quiz["question"],
-                        ox_answer=quiz["answer"],
-                        ox_explanation=quiz["explanation"],
-                        used_yn="N",
-                        correct_yn="N",
-                        del_yn="N",
-                    )
-                    db.add(ox)
-                    print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
-                except Exception as e:
-                    print(f"Error saving quiz: {e}")
-                    import traceback
-                    print(traceback.format_exc())
-                    continue
+            quiz_list = quizzes['quiz']  # 'quiz' 키의 값을 가져옴
+        elif isinstance(quizzes, list):
+            quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
             print("Invalid structure of quizzes")
+            quiz_list = []
+
+        # 'quiz_list' 순회
+        for quiz in quiz_list:
+            print("Quiz:", quiz)  # quiz 출력
+            print("Type of quiz:", type(quiz))  # quiz 타입 출력
+            
+            # quiz가 문자열일 경우, 딕셔너리로 변환
+            if isinstance(quiz, str):
+                quiz = ast.literal_eval(quiz)
+                print("Converted quiz:", quiz)
+            
+            try:
+                ox_id = str(uuid.uuid4())[:8]
+                ox = OX(
+                    ox_id=ox_id,
+                    user_id=user_id,
+                    note_id=note_id,
+                    rag_id=result.get('rag_id'),
+                    ox_contents=quiz["question"],
+                    ox_answer=quiz["answer"],
+                    ox_explanation=quiz["explanation"],
+                    used_yn="N",
+                    correct_yn="N",
+                    del_yn="N",
+                )
+                db.add(ox)
+                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+            except Exception as e:
+                print(f"Error saving quiz: {e}")
+                import traceback
+                print(traceback.format_exc())
+                continue
 
         # 커밋 실행
         try:
