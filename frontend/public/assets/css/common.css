@@ -1,0 +1,7 @@
+/* common.css */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f8f9fa;
+  }
