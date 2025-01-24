@@ -64,6 +64,7 @@ async def create_text_note(
         # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and "quiz" in quizzes:
             quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
+
         elif isinstance(quizzes, list):
             quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
@@ -99,7 +100,6 @@ async def create_text_note(
             except Exception as e:
                 print(f"Error saving quiz: {e}")
                 import traceback
-
                 print(traceback.format_exc())
                 continue
 
@@ -184,6 +184,7 @@ async def upload_note(
         # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and "quiz" in quizzes:
             quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
+
         elif isinstance(quizzes, list):
             quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
@@ -199,7 +200,6 @@ async def upload_note(
             if isinstance(quiz, str):
                 quiz = ast.literal_eval(quiz)
                 print("Converted quiz:", quiz)
-
             try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
@@ -219,7 +219,6 @@ async def upload_note(
             except Exception as e:
                 print(f"Error saving quiz: {e}")
                 import traceback
-
                 print(traceback.format_exc())
                 continue
 
