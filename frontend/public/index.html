@@ -27,6 +27,7 @@
     </div>
 </body>
 <script>
+    console.log(localStorage.getItem('user_id'))
     if (!localStorage.getItem('user_id')) {
         window.location.href = "login.html";
     }

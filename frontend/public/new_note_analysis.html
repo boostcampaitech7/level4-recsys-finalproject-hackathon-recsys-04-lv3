@@ -17,20 +17,35 @@
             <a href="feedback.html">피드백</a>
         </div>
         <div class="right">
-          <a href="mypage.html">마이페이지</a>
+            <a href="mypage.html">마이페이지</a>
         </div>
     </div>
 
     <div class="container">
-        <p id="subject-name">과목 없음</p>
         <h1 class="note-title" id="note-title">제목 없음</h1>
+        <p>과목: <span id="subject-name"></span></p>
         <p>작성 날짜: <span id="note-date"></span></p>
 
         <div class="note-layout">
-            <div class="note-box image">이미지</div>
-            <div class="note-box feedback">피드백 사항 3가지!</div>
-            <div class="note-box recommendation">관련 개념, 노트, 문제</div>
+            <div class="note-column left-column">
+                <h3>이미지</h3>
+                <!-- <div class="note-box image" id="note-image">이미지</div> -->
+
+                <img class="note-box image" src="/assets/공사중.png" alt="공사 중 이미지" id="note-image">
+
+            </div>
+            <div class="note-column right-column">
+                <h3>피드백</h3>
+                <div class="note-box feedback" id="note-feedback">
+                    <h3>피드백</h3>
+                </div>
+                <h3>관련 개념</h3>
+                <div class="note-box recommendation" id="note-recommendation">
+                    <h3>관련 개념, 노트, 문제</h3>
+                </div>
+            </div>
         </div>
+
     </div>
 </body>
 </html>

@@ -1,5 +1,7 @@
 # app/api/endpoints/note.py
+import os
 import ast
+
 import uuid
 from typing import Optional
 
@@ -11,6 +13,7 @@ from app.services.ocr_service import perform_ocr
 from app.services.quiz_service import generate_quiz
 from app.services.rag_service import analysis_chunk
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -145,6 +148,20 @@ async def upload_note(
         raw_text = await perform_ocr(file)
         note_id = str(uuid.uuid4())[:8]
 
+        # 파일 저장 경로 설정
+        UPLOAD_DIR = "./uploads"
+        # os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+        # 고유한 파일명 생성
+        file_extension = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        file_path = os.path.join(UPLOAD_DIR, unique_filename)
+
+        # 파일 저장
+        content = await file.read()
+        with open(file_path, "wb") as f:
+            f.write(content)
+
         # 노트 저장
         if user_id:
             note = Note(
@@ -152,7 +169,7 @@ async def upload_note(
                 user_id=user_id,
                 subjects_id=subjects_id,
                 title=title,
-                file_path=f"uploads/{file.filename}",
+                file_path=os.path.join("/uploads", unique_filename),
                 raw_text=raw_text,
                 cleaned_text=raw_text,
                 ocr_yn="Y",
@@ -280,7 +297,7 @@ def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{note_id}")
+@router.get("/")
 def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
     try:
         # 노트와 분석 결과를 함께 조회
@@ -304,6 +321,7 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
         return {
             "note_id": note.note_id,
             "title": note.title,
+            "file_path": note.file_path,
             "raw_text": note.raw_text,
             "cleaned_text": note.cleaned_text,
             "note_date": note.created_at,
@@ -312,6 +330,40 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
             "feedback": analysis.feedback if analysis else None,
             "rag_id": analysis.rag_id if analysis else None,
         }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/uploads")
+def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
+    try:
+        # 노트와 분석 결과를 함께 조회
+        result = (
+            db.query(Note, Analysis)
+            .outerjoin(Analysis, Note.note_id == Analysis.note_id)
+            .filter(Note.note_id == note_id)
+            .filter(Note.user_id == user_id)
+            .filter(Note.del_yn == "N")
+            .first()
+        )
+
+        if not result:
+            raise HTTPException(status_code=404, detail="Note not found")
+
+        note, analysis = result
+
+        if note.user_id != user_id:
+            raise HTTPException(status_code=403, detail="Not authorized to access this note")
+
+        import os
+
+        current_dir = os.path.dirname(__file__)
+        print(current_dir.split("app")[0])
+
+        # file_path = note.file_path
+        file_path = current_dir.split("app")[0][:-1] + note.file_path
+        print(file_path)
+        return FileResponse(file_path)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
