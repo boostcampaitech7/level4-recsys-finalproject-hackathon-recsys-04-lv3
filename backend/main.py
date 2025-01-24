@@ -1,5 +1,5 @@
 import uvicorn
-from app.api.endpoints import auth, note, rag, quiz 
+from app.api.endpoints import auth, note, quiz, rag, user
 from app.core.config import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,7 +19,8 @@ app.add_middleware(
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(note.router, prefix=f"{settings.API_V1_STR}/note", tags=["note"])
 app.include_router(rag.router, prefix=f"{settings.API_V1_STR}/rag", tags=["rag"])
-app.include_router(quiz.router, prefix=f"{settings.API_V1_STR}/quiz", tags=["quiz"]) 
+app.include_router(quiz.router, prefix=f"{settings.API_V1_STR}/quiz", tags=["quiz"])
+app.include_router(user.router, prefix=f"{settings.API_V1_STR}/user", tags=["user"])
 
 
 if __name__ == "__main__":

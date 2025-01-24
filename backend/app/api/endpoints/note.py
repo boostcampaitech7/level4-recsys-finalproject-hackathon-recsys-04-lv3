@@ -1,20 +1,20 @@
 # app/api/endpoints/note.py
+import ast
 import uuid
 from typing import Optional
 
-import ast
-
 from app.api import deps
-from app.models.ox import OX
-from app.models.note import Note
 from app.models.analysis import Analysis
+from app.models.note import Note
+from app.models.ox import OX
 from app.services.ocr_service import perform_ocr
-from app.services.rag_service import analysis_chunk
 from app.services.quiz_service import generate_quiz
+from app.services.rag_service import analysis_chunk
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
 
 @router.post("/text")
 async def create_text_note(
@@ -43,7 +43,7 @@ async def create_text_note(
 
         # RAG 분석 수행
         result = analysis_chunk(content)
-        
+
         # 분석 결과 저장
         if user_id:
             analysis = Analysis(
@@ -51,7 +51,7 @@ async def create_text_note(
                 note_id=note_id,
                 chunk_num=0,
                 rag_id=result["rag_id"],
-                feedback=result["response"]
+                feedback=result["response"],
             )
             db.add(analysis)
             db.commit()
@@ -62,8 +62,9 @@ async def create_text_note(
         print("Type of quizzes:", type(quizzes))
 
         # quizzes가 dict인지 list인지 확인
-        if isinstance(quizzes, dict) and 'quiz' in quizzes:
-            quiz_list = quizzes['quiz']  # 'quiz' 키의 값을 가져옴
+        if isinstance(quizzes, dict) and "quiz" in quizzes:
+            quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
+
         elif isinstance(quizzes, list):
             quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
@@ -74,19 +75,19 @@ async def create_text_note(
         for quiz in quiz_list:
             print("Quiz:", quiz)  # quiz 출력
             print("Type of quiz:", type(quiz))  # quiz 타입 출력
-            
+
             # quiz가 문자열일 경우, 딕셔너리로 변환
             if isinstance(quiz, str):
                 quiz = ast.literal_eval(quiz)
                 print("Converted quiz:", quiz)
-            
+
             try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
                     ox_id=ox_id,
                     user_id=user_id,
                     note_id=note_id,
-                    rag_id=result.get('rag_id'),
+                    rag_id=result.get("rag_id"),
                     ox_contents=quiz["question"],
                     ox_answer=quiz["answer"],
                     ox_explanation=quiz["explanation"],
@@ -110,10 +111,10 @@ async def create_text_note(
         except Exception as commit_error:
             print(f"Database commit failed: {commit_error}")
             import traceback
+
             print(traceback.format_exc())
             db.rollback()
             print("Session rolled back due to commit failure")
-
 
         return {
             "note_id": note_id if user_id else None,
@@ -123,12 +124,13 @@ async def create_text_note(
             "content": content,
             "feedback": result["response"],
             "rag_id": result["rag_id"],
-            "saved_to_db": bool(user_id)
+            "saved_to_db": bool(user_id),
         }
 
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/upload")
 async def upload_note(
@@ -161,7 +163,7 @@ async def upload_note(
 
         # RAG 분석 수행
         result = analysis_chunk(raw_text)
-        
+
         # 분석 결과 저장
         if user_id:
             analysis = Analysis(
@@ -169,19 +171,20 @@ async def upload_note(
                 note_id=note_id,
                 chunk_num=0,
                 rag_id=result["rag_id"],
-                feedback=result["response"]
+                feedback=result["response"],
             )
             db.add(analysis)
             db.commit()
-            
+
         # O/X 퀴즈 생성
         quizzes = await generate_quiz(raw_text)  # 퀴즈 생성 요청
         print(quizzes)
         print("Type of quizzes:", type(quizzes))
 
         # quizzes가 dict인지 list인지 확인
-        if isinstance(quizzes, dict) and 'quiz' in quizzes:
-            quiz_list = quizzes['quiz']  # 'quiz' 키의 값을 가져옴
+        if isinstance(quizzes, dict) and "quiz" in quizzes:
+            quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
+
         elif isinstance(quizzes, list):
             quiz_list = quizzes  # quizzes 자체가 리스트인 경우
         else:
@@ -192,19 +195,18 @@ async def upload_note(
         for quiz in quiz_list:
             print("Quiz:", quiz)  # quiz 출력
             print("Type of quiz:", type(quiz))  # quiz 타입 출력
-            
+
             # quiz가 문자열일 경우, 딕셔너리로 변환
             if isinstance(quiz, str):
                 quiz = ast.literal_eval(quiz)
                 print("Converted quiz:", quiz)
-            
             try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
                     ox_id=ox_id,
                     user_id=user_id,
                     note_id=note_id,
-                    rag_id=result.get('rag_id'),
+                    rag_id=result.get("rag_id"),
                     ox_contents=quiz["question"],
                     ox_answer=quiz["answer"],
                     ox_explanation=quiz["explanation"],
@@ -228,10 +230,10 @@ async def upload_note(
         except Exception as commit_error:
             print(f"Database commit failed: {commit_error}")
             import traceback
+
             print(traceback.format_exc())
             db.rollback()
             print("Session rolled back due to commit failure")
-            
 
         return {
             "note_id": note_id if user_id else None,
@@ -241,12 +243,13 @@ async def upload_note(
             "content": raw_text,
             "feedback": result["response"],
             "rag_id": result["rag_id"],
-            "saved_to_db": bool(user_id)
+            "saved_to_db": bool(user_id),
         }
 
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/list")
 def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
@@ -267,7 +270,7 @@ def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
                     "raw_text": note.Note.raw_text,
                     "note_date": note.Note.created_at,
                     "is_analysis": note.Note.ocr_yn,
-                    "feedback": note.Analysis.feedback if note.Analysis else None
+                    "feedback": note.Analysis.feedback if note.Analysis else None,
                 }
                 for note in notes
             ]
@@ -275,6 +278,7 @@ def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/{note_id}")
 def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
@@ -291,7 +295,7 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
 
         if not result:
             raise HTTPException(status_code=404, detail="Note not found")
-        
+
         note, analysis = result
 
         if note.user_id != user_id:
@@ -306,7 +310,7 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
             "is_analysis": note.ocr_yn,
             "subjects_id": note.subjects_id,
             "feedback": analysis.feedback if analysis else None,
-            "rag_id": analysis.rag_id if analysis else None
+            "rag_id": analysis.rag_id if analysis else None,
         }
 
     except Exception as e:
