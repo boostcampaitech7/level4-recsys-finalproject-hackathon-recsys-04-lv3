@@ -1,7 +1,6 @@
 # app/api/endpoints/note.py
-import os
 import ast
-
+import os
 import uuid
 from typing import Optional
 
@@ -103,6 +102,7 @@ async def create_text_note(
             except Exception as e:
                 print(f"Error saving quiz: {e}")
                 import traceback
+
                 print(traceback.format_exc())
                 continue
 
@@ -144,9 +144,12 @@ async def upload_note(
     user_id: Optional[str] = Form(...),
 ):
     try:
-        # OCR 수행
+        # print("Starting OCR...")
         raw_text = await perform_ocr(file)
+        # print(f"OCR completed: {raw_text[:100]}")  # 처음 100자만 출력
+
         note_id = str(uuid.uuid4())[:8]
+        # print(f"Generated note_id: {note_id}")
 
         # 파일 저장 경로 설정
         UPLOAD_DIR = "./uploads"
@@ -236,6 +239,7 @@ async def upload_note(
             except Exception as e:
                 print(f"Error saving quiz: {e}")
                 import traceback
+
                 print(traceback.format_exc())
                 continue
 
@@ -269,15 +273,32 @@ async def upload_note(
 
 
 @router.get("/list")
-def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
+def get_user_notes(
+    user_id: str,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    subject: Optional[str] = None,
+    sort: Optional[str] = "newest",
+    db: Session = Depends(deps.get_db),
+):
     try:
-        notes = (
+        query = (
             db.query(Note, Analysis)
             .outerjoin(Analysis, Note.note_id == Analysis.note_id)
             .filter(Note.user_id == user_id)
             .filter(Note.del_yn == "N")
-            .all()
         )
+
+        if start_date:
+            query = query.filter(Note.created_at >= start_date)
+        if end_date:
+            query = query.filter(Note.created_at <= end_date)
+        if subject:
+            query = query.filter(Note.subjects_id == subject)
+
+        query = query.order_by(Note.created_at.desc() if sort == "newest" else Note.created_at.asc())
+
+        notes = query.all()
 
         return {
             "notes": [
@@ -300,7 +321,6 @@ def get_user_notes(user_id: str, db: Session = Depends(deps.get_db)):
 @router.get("/")
 def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
     try:
-        # 노트와 분석 결과를 함께 조회
         result = (
             db.query(Note, Analysis)
             .outerjoin(Analysis, Note.note_id == Analysis.note_id)
@@ -315,13 +335,15 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
 
         note, analysis = result
 
-        if note.user_id != user_id:
-            raise HTTPException(status_code=403, detail="Not authorized to access this note")
+        # 이미지 파일의 실제 파일 경로 확인
+        file_path = None
+        if note.ocr_yn == "Y" and note.file_path:
+            file_path = os.path.join(os.getcwd(), note.file_path.lstrip("/"))
 
         return {
             "note_id": note.note_id,
             "title": note.title,
-            "file_path": note.file_path,
+            "file_path": file_path,
             "raw_text": note.raw_text,
             "cleaned_text": note.cleaned_text,
             "note_date": note.created_at,
@@ -330,9 +352,9 @@ def get_note_detail(note_id: str, user_id: str, db: Session = Depends(deps.get_d
             "feedback": analysis.feedback if analysis else None,
             "rag_id": analysis.rag_id if analysis else None,
         }
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/uploads")
 def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
@@ -367,3 +389,15 @@ def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/count/{user_id}")
+def get_notes_count(user_id: str, db: Session = Depends(deps.get_db)):
+    count = db.query(Note).filter(Note.user_id == user_id, Note.del_yn == "N").count()
+    return {"count": count}
+
+
+@router.get("/subjects")
+def get_subjects(user_id: str, db: Session = Depends(deps.get_db)):
+    subjects = db.query(Note.subjects_id).distinct().filter(Note.user_id == user_id, Note.del_yn == "N").all()
+    return {"subjects": [subject[0] for subject in subjects if subject[0]]}

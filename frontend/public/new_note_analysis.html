@@ -1,51 +1,57 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>노트 분석</title>
-    <link rel="stylesheet" href="assets/css/new_note_analysis.css"> <!-- CSS 파일 연결 -->
-    <script defer src="assets/js/new_note_analysis.js"></script> <!-- JS 파일 연결 -->
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>노트 분석</title>
+   <link rel="stylesheet" href="assets/css/new_note_analysis.css">
+   <script defer src="assets/js/new_note_analysis.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="index.html">로고</a>
-            <a href="new_note.html" class="active">새 노트</a>
-            <a href="notes.html">기존 노트</a>
-            <a href="quiz.html">퀴즈</a>
-            <a href="feedback.html">피드백</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html">마이페이지</a>
-        </div>
-    </div>
+   <div class="header">
+       <div class="left">
+           <a href="index.html">로고</a>
+           <a href="new_note.html" class="active">새 노트</a>
+           <a href="notes.html">기존 노트</a>
+           <a href="quiz.html">퀴즈</a>
+           <a href="feedback.html">피드백</a>
+       </div>
+       <div class="right">
+           <a href="mypage.html">마이페이지</a>
+       </div>
+   </div>
 
-    <div class="container">
-        <h1 class="note-title" id="note-title">제목 없음</h1>
-        <p>과목: <span id="subject-name"></span></p>
-        <p>작성 날짜: <span id="note-date"></span></p>
+   <div class="container">
+       <div class="note-header">
+           <p id="subject-name">과목: </p>
+           <h1 class="note-title" id="note-title">제목 없음</h1>
+           <p>작성 날짜: <span id="note-date"></span></p>
+       </div>
 
-        <div class="note-layout">
-            <div class="note-column left-column">
-                <h3>이미지</h3>
-                <!-- <div class="note-box image" id="note-image">이미지</div> -->
+       <div class="note-layout">
+           <div class="note-content">
+               <div class="note-box image">
+                   <!-- 이미지 또는 텍스트가 여기에 로드됩니다 -->
+               </div>
+               <div class="note-info">
+                   <div class="note-box feedback">
+                       <h3>피드백</h3>
+                       <!-- 피드백 내용이 여기에 로드됩니다 -->
+                   </div>
+                   <div class="note-box recommendation">
+                       <h3>OX 퀴즈</h3>
+                       <!-- 퀴즈가 여기에 로드됩니다 -->
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
 
-                <img class="note-box image" src="/assets/공사중.png" alt="공사 중 이미지" id="note-image">
-
-            </div>
-            <div class="note-column right-column">
-                <h3>피드백</h3>
-                <div class="note-box feedback" id="note-feedback">
-                    <h3>피드백</h3>
-                </div>
-                <h3>관련 개념</h3>
-                <div class="note-box recommendation" id="note-recommendation">
-                    <h3>관련 개념, 노트, 문제</h3>
-                </div>
-            </div>
-        </div>
-
-    </div>
+   <script>
+       // 토큰이 없으면 로그인 페이지로 리다이렉트
+       if (!localStorage.getItem('token')) {
+           window.location.href = 'login.html';
+       }
+   </script>
 </body>
 </html>
