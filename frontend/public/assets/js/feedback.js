@@ -7,33 +7,26 @@ async function loadFeedback() {
     try {
         const userId = localStorage.getItem('user_id');
         if (!userId) {
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
             return;
         }
 
-        // 피드백 가져오기
-        const feedbackResponse = await fetch(`/api/v1/user/${userId}/feedbacks`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const feedbacks = await feedbackResponse.json();
+        const [feedbackResponse, quizzesResponse] = await Promise.all([
+            fetch(`http://localhost:8000/api/v1/user/${userId}/feedbacks`),
+            fetch(`http://localhost:8000/api/v1/user/${userId}/quizzes`)
+        ]);
 
-        // 퀴즈 결과 가져오기
-        const quizzesResponse = await fetch(`/api/v1/user/${userId}/quizzes`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        const quizzes = await quizzesResponse.json();
+        const feedbackData = await feedbackResponse.json();
+        const quizData = await quizzesResponse.json();
 
-        renderFeedbacks(feedbacks);
-        renderQuizzes(quizzes);
+        console.log('Feedback Data:', feedbackData);
+        console.log('Quiz Data:', quizData);
+
+        renderFeedbacks(feedbackData.feedbacks || []);
+        renderQuizzes(quizData.quizzes || []); // quizData.quizzes로 수정
     } catch (error) {
-        console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
-        showError('데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.');
+        console.error('데이터 로드 오류:', error);
+        showError('데이터를 불러오는데 실패했습니다.');
     }
 }
 
@@ -41,10 +34,20 @@ function renderFeedbacks(feedbacks) {
     const feedbackList = document.querySelector('.feedback-list');
     feedbackList.innerHTML = '';
 
+    if (!feedbacks || feedbacks.length === 0) {
+        const li = document.createElement('li');
+        li.className = 'feedback-item';
+        li.textContent = '받은 피드백이 없습니다.';
+        feedbackList.appendChild(li);
+        return;
+    }
+
     feedbacks.forEach(feedback => {
         const li = document.createElement('li');
         li.className = 'feedback-item';
-        li.textContent = `${feedback.note_title}: ${feedback.content}`;
+        const title = feedback.note_title || '제목 없음';
+        const content = feedback.feedback || '내용 없음';
+        li.textContent = `${title}: ${content}`;
         feedbackList.appendChild(li);
     });
 }
@@ -53,16 +56,34 @@ function renderQuizzes(quizzes) {
     const quizFeedbackList = document.querySelectorAll('.feedback-list')[1];
     quizFeedbackList.innerHTML = '';
 
-    quizzes.forEach(quiz => {
-        const li = document.createElement('li');
-        li.className = 'feedback-item';
-        li.textContent = `문제 ${quiz.quiz_number}: ${quiz.is_correct ? '정답' : '오답'} (${quiz.user_answer})`;
-        quizFeedbackList.appendChild(li);
-    });
-}
+    // 답변이 있는 퀴즈만 필터링
+    const answeredQuizzes = quizzes.filter(quiz => quiz.answer || quiz.ox_answer);
+
+    if (answeredQuizzes.length === 0) {
+        quizFeedbackList.innerHTML = '<li class="feedback-item">푼 퀴즈가 없습니다.</li>';
+        return;
+    }
+
+    const quizItems = answeredQuizzes.map(quiz => `
+        <li class="feedback-item">
+            문제: ${quiz.question || quiz.ox_contents}
+            <br>
+            선택: ${quiz.answer || quiz.ox_answer},
+            정답여부: ${quiz.correct_yn === 'Y' ? '정답' : '오답'}
+        </li>
+    `).join('');
+
+    quizFeedbackList.innerHTML = quizItems;
+ }
 
 function showError(message) {
     const mainContent = document.getElementById('main-content');
+    const existingError = mainContent.querySelector('.error-message');
+
+    if (existingError) {
+        existingError.remove();
+    }
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
     errorDiv.textContent = message;

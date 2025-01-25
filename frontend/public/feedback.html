@@ -1,55 +1,53 @@
+<!-- feedback.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>피드백</title>
-    <link rel="stylesheet" href="assets/css/feedback.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>피드백</title>
+   <link rel="stylesheet" href="assets/css/feedback.css">
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="index.html">로고</a>
-            <a href="new_note.html">새 노트</a>
-            <a href="notes.html">기존 노트</a>
-            <a href="quiz.html">퀴즈</a>
-            <a href="feedback.html">피드백</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html" class="active">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+   <div class="header">
+       <div class="left">
+           <a href="index.html">로고</a>
+           <a href="new_note.html">새 노트</a>
+           <a href="notes.html">기존 노트</a>
+           <a href="quiz.html">퀴즈</a>
+           <a href="feedback.html" class="active">피드백</a>
+       </div>
+       <div class="right">
+           <a href="mypage.html">마이페이지</a>
+           <button onclick="logout()" class="logout-btn">로그아웃</button>
+       </div>
+   </div>
 
-    <div class="container">
-        <main>
-            <section id="main-content" class="content">
-                <h1 class="section-title">피드백</h1>
+   <div class="container">
+       <main>
+           <section id="main-content" class="content">
+               <h1 class="section-title">피드백</h1>
 
-                <div class="feedback-section">
-                    <div class="feedback-title">노트 피드백</div>
-                    <ul class="feedback-list">
-                        <li class="feedback-item">메모 제목 1: 오탈자가 3개 발견되었습니다.</li>
-                        <li class="feedback-item">메모 제목 2: 문법 오류가 2개 있습니다.</li>
-                        <li class="feedback-item">메모 제목 3: 추가 설명이 필요한 부분이 있습니다.</li>
-                    </ul>
-                </div>
+               <div class="feedback-section">
+                   <div class="feedback-title">노트 피드백</div>
+                   <ul class="feedback-list">
+                       <!-- 동적으로 추가될 내용 -->
+                   </ul>
+               </div>
 
-                <div class="feedback-section">
-                    <div class="feedback-title">OX 퀴즈 피드백</div>
-                    <ul class="feedback-list">
-                        <li class="feedback-item">문제 1: 답변을 잘못 선택하셨습니다. 정답은 O입니다.</li>
-                        <li class="feedback-item">문제 2: 답변을 잘못 선택하셨습니다. 정답은 X입니다.</li>
-                    </ul>
-                </div>
-            </section>
-        </main>
+               <div class="feedback-section">
+                   <div class="feedback-title">OX 퀴즈 피드백</div>
+                   <ul class="feedback-list">
+                       <!-- 동적으로 추가될 내용 -->
+                   </ul>
+               </div>
+           </section>
+       </main>
 
-        <footer>
-            &copy; 2025 Online Note Analysis
-        </footer>
-    </div>
-    <script src="assets/js/auth.js"></script>
-    <script src="assets/js/feedback.js"></script>
+       <footer>
+           &copy; 2025 Online Note Analysis
+       </footer>
+   </div>
+   <script src="assets/js/auth.js"></script>
+   <script src="assets/js/feedback.js"></script>
 </body>
 </html>
