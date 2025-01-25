@@ -12,13 +12,15 @@
             <a href="index.html">로고</a>
             <a href="new_note.html">새 노트</a>
             <a href="notes.html">기존 노트</a>
-            <a href="quiz.html" class="active">퀴즈</a>
+            <a href="quiz.html">퀴즈</a>
             <a href="feedback.html">피드백</a>
         </div>
         <div class="right">
-            <a href="mypage.html">마이페이지</a>
+            <a href="mypage.html" class="active">마이페이지</a>
+            <button onclick="logout()" class="logout-btn">로그아웃</button>
         </div>
     </div>
+
     <div class="container">
         <h1>오늘의 퀴즈 결과 <span style="color: #3b82f6;">2/3</span></h1>
         <p>3문제 중에서 2문제 맞췄어요</p>
@@ -44,5 +46,6 @@
             <p><strong>밥과정치 - 맛있겠다</strong></p>
         </div>
     </div>
+    <script src="assets/js/auth.js"></script>
 </body>
 </html>

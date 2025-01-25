@@ -7,18 +7,20 @@
    <link rel="stylesheet" href="assets/css/quiz_solving.css">
 </head>
 <body>
-   <div class="header">
-       <div class="left">
-           <a href="index.html">로고</a>
-           <a href="new_note.html">새 노트</a>
-           <a href="notes.html">기존 노트</a>
-           <a href="quiz.html" class="active">퀴즈</a>
-           <a href="feedback.html">피드백</a>
-       </div>
-       <div class="right">
-           <a href="mypage.html">마이페이지</a>
-       </div>
-   </div>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+            <a href="mypage.html" class="active">마이페이지</a>
+            <button onclick="logout()" class="logout-btn">로그아웃</button>
+        </div>
+    </div>
+
    <div class="container">
        <h1>오늘의 퀴즈</h1>
        <div class="progress" id="progress-bar">
@@ -43,6 +45,7 @@
            <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">다음 문제로 이동</button>
        </div>
    </div>
+   <script src="assets/js/auth.js"></script>
    <script src="assets/js/quiz_solving.js"></script>
 </body>
 </html>

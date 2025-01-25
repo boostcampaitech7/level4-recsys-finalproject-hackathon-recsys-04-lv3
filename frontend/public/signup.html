@@ -1,20 +1,23 @@
+<!-- signup.html -->
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>계정 생성</title>
-  <link rel="stylesheet" href="assets/css/signup.css"> <!-- CSS 파일 연결 -->
-  <script defer src="assets/js/signup.js"></script> <!-- JS 파일 연결 -->
+  <title>회원가입</title>
+  <script defer src="assets/js/auth.js"></script>
 </head>
+
 <body>
-  <h1>계정 생성하기</h1>
-    <form id="signupForm">
-        <input type="text" id="username" placeholder="아이디" required>
-        <input type="password" id="password" placeholder="비밀번호" required>
-        <button type="submit">계정 생성하기</button>
-    </form>
-    <p>이미 계정이 있으신가요? <a href="login.html">로그인</a></p>
-    <p id="status-message"></p>
+  <h1>회원가입</h1>
+  <form id="signupForm">
+    <input type="text" id="email" placeholder="이메일" required>
+    <input type="password" id="password" placeholder="비밀번호" required>
+    <button type="submit">가입하기</button>
+  </form>
+  <p>계정이 있으신가요? <a href="login.html">로그인</a></p>
+  <p id="status-message"></p>
 </body>
+
 </html>

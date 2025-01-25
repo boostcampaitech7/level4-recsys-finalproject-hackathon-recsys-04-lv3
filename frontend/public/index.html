@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새 노트</title>
-    <link rel="stylesheet" href="assets/css/new_note.css"> <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" href="assets/css/new_note.css">
+    <script defer src="assets/js/auth.js"></script>
 </head>
 <body>
     <div class="header">
@@ -16,18 +17,18 @@
             <a href="feedback.html">피드백</a>
         </div>
         <div class="right">
-          <a href="mypage.html">마이페이지</a>
+            <a href="mypage.html">마이페이지</a>
+            <button onclick="logout()" class="logout-btn">로그아웃</button>
         </div>
     </div>
     <div class="container">
         <h1>환영합니다</h1>
         <p>인사하는 한 마디?!</p>
         <p>상단 탭을 통해 원하는 기능을 사용하실 수 있습니다.</p>
-
     </div>
+    <script src="assets/js/auth.js"></script>
 </body>
 <script>
-    console.log(localStorage.getItem('user_id'))
     if (!localStorage.getItem('user_id')) {
         window.location.href = "login.html";
     }

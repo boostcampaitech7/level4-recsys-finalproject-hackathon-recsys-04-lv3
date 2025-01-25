@@ -8,18 +8,19 @@
    <script defer src="assets/js/new_note_analysis.js"></script>
 </head>
 <body>
-   <div class="header">
-       <div class="left">
-           <a href="index.html">로고</a>
-           <a href="new_note.html" class="active">새 노트</a>
-           <a href="notes.html">기존 노트</a>
-           <a href="quiz.html">퀴즈</a>
-           <a href="feedback.html">피드백</a>
-       </div>
-       <div class="right">
-           <a href="mypage.html">마이페이지</a>
-       </div>
-   </div>
+    <div class="header">
+        <div class="left">
+            <a href="index.html">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+            <a href="mypage.html" class="active">마이페이지</a>
+            <button onclick="logout()" class="logout-btn">로그아웃</button>
+        </div>
+    </div>
 
    <div class="container">
        <div class="note-header">
@@ -46,12 +47,6 @@
            </div>
        </div>
    </div>
-
-   <script>
-       // 토큰이 없으면 로그인 페이지로 리다이렉트
-    //    if (!localStorage.getItem('token')) {
-    //        window.location.href = 'login.html';
-    //    }
-   </script>
+   <script src="assets/js/auth.js"></script>
 </body>
 </html>
