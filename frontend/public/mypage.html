@@ -1,71 +1,62 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마이페이지</title>
-    <link rel="stylesheet" href="assets/css/mypage.css">
-    <!-- <script defer src="assets/js/mypage.js"></script> -->
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>마이페이지</title>
+   <link rel="stylesheet" href="assets/css/mypage.css">
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="index.html">로고</a>
-            <a href="new_note.html">새 노트</a>
-            <a href="notes.html">기존 노트</a>
-            <a href="quiz.html">퀴즈</a>
-            <a href="feedback.html">피드백</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html" class="active">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+   <div class="header">
+       <div class="left">
+           <a href="main.html">로고</a>
+           <a href="new_note.html">새 노트</a>
+           <a href="notes.html">기존 노트</a>
+           <a href="quiz.html">퀴즈</a>
+           <a href="feedback.html">피드백</a>
+       </div>
+       <div class="right">
+           <a href="mypage.html" class="active">마이페이지</a>
+           <button onclick="logout()" class="logout-btn">로그아웃</button>
+       </div>
+   </div>
 
-    <div class="container">
-        <main>
-            <section id="main-content" class="content">
-                <h1 class="section-title">마이페이지</h1>
+   <div class="container">
+       <main>
+           <section id="main-content" class="content">
+               <h1 class="section-title">마이페이지</h1>
 
-                <div class="profile-section">
-                    <div class="profile-item">
-                        <span class="profile-label">아이디:</span>
-                        <span class="profile-value"></span>
-                    </div>
-                    <div class="profile-item">
-                        <span class="profile-label">이메일:</span>
-                        <span class="profile-value"></span>
-                    </div>
-                    <div class="profile-item">
-                        <span class="profile-label">가입일:</span>
-                        <span class="profile-value"></span>
-                    </div>
-                </div>
+               <div class="profile-section">
+                   <div class="profile-item">
+                       <span class="profile-label">아이디:</span>
+                       <span class="profile-value"></span>
+                   </div>
+                   <div class="profile-item">
+                       <span class="profile-label">이메일:</span>
+                       <span class="profile-value"></span>
+                   </div>
+                   <div class="profile-item">
+                       <span class="profile-label">가입일:</span>
+                       <span class="profile-value"></span>
+                   </div>
+               </div>
 
-                <div class="stats-section">
-                    <h2>학습 통계</h2>
-                    <div id="learningStats" class="stats-grid">
-                        <!-- JS로 동적 추가될 내용 -->
-                    </div>
-                </div>
+               <div class="stats-section">
+                   <h2>학습 통계</h2>
+                   <div id="learningStats" class="stats-grid">
+                   </div>
+               </div>
 
-                <div class="recent-activity">
-                    <h2>최근 활동</h2>
-                    <div id="recentActivities">
-                        <!-- JS로 동적 추가될 내용 -->
-                    </div>
-                </div>
-
-                <div class="performance-section">
-                    <h2>성과 분석</h2>
-                    <div id="performanceMetrics">
-                        <!-- JS로 동적 추가될 내용 -->
-                    </div>
-                </div>
-            </section>
-        </main>
-        <footer>&copy; 2025 Online Note Analysis</footer>
-    </div>
-    <script src="assets/js/auth.js"></script>
+               <div class="recent-activity">
+                   <h2>최근 활동</h2>
+                   <div id="recentActivities">
+                   </div>
+               </div>
+           </section>
+       </main>
+       <footer>&copy; 2025 Online Note Analysis</footer>
+   </div>
+   <script src="assets/js/auth.js"></script>
+   <script src="assets/js/mypage.js"></script>
 </body>
 </html>

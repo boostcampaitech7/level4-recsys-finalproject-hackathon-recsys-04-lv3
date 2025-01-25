@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (response.ok) {
                     alert('회원가입 성공!');
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 } else {
                     statusMessage.textContent = data.message || '이미 존재하는 이메일입니다. 다른 이메일을 사용해주세요.';
                 }
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     localStorage.clear();
                     localStorage.setItem('user_id', data.user_id);
                     localStorage.setItem('userEmail', email);
-                    window.location.href = 'index.html';
+                    window.location.href = 'main.html';
                 } else {
                     statusMessage.textContent = data.message || '로그인 실패';
                 }
@@ -71,5 +71,5 @@ document.addEventListener('DOMContentLoaded', function () {
 function logout() {
     localStorage.removeItem('userId');
     localStorage.removeItem('userEmail');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
