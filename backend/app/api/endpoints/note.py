@@ -10,7 +10,6 @@ from app.models.analysis import Analysis
 from app.models.note import Note
 from app.models.ox import OX
 from app.services.ocr_service import perform_ocr
-from app.services.quiz_service import generate_quiz
 from app.services.rag_service import analysis_chunk
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
