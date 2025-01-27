@@ -169,45 +169,83 @@ def create_chain(db_index_name):
 
 
 def analysis_chunk(input_data):
-    # LangSmith 시작
-    logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
-    db_index_name = settings.PINECONE_INDEX_NAME
+    try:
+        # LangSmith 시작
+        logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
+        db_index_name = settings.PINECONE_INDEX_NAME
 
-    pc = Pinecone()
-    index = pc.Index(db_index_name)
-    embeddings = UpstageEmbeddings(model="embedding-query")
-    vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
+        pc = Pinecone()
+        index = pc.Index(db_index_name)
+        embeddings = UpstageEmbeddings(model="embedding-query")
+        vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
 
-    # 검색기(Retriever) 생성
-    retriever = vectorstore.as_retriever()
+        # 검색기(Retriever) 생성
+        retriever = vectorstore.as_retriever()
 
-    retrieved_docs = retriever.invoke(input_data)
-    doc = retrieved_docs[0]
-    doc_context = doc.page_content
-    rag_id = doc.id
+        retrieved_docs = retriever.invoke(input_data)
+        doc = retrieved_docs[0]
+        doc_context = doc.page_content
+        rag_id = doc.id
 
-    # 프롬프트 생성(Create Prompt)
-    prompt = PromptTemplate.from_template(
-        """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
-    입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
-    참고한 정보의 페이지도 같이 알려줘.
-    만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
+        # 피드백 프롬프트 생성(Create Prompt)
+        prompt_feedback = PromptTemplate.from_template(
+            """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
+            입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
+            참고한 정보의 페이지도 같이 알려줘.
+            만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
 
-    #정보:
-    {context}
+            #정보:
+            {context}
 
-    #입력:
-    {question}
+            #입력:
+            {raw_text}
 
-    #답:"""
-    )
-    print(doc_context)
-    # 언어모델(LLM) 생성
-    llm = ChatUpstage(model="solar-pro")
-    chain = {"context": RunnablePassthrough(), "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
-    response = chain.invoke({"context": doc_context, "question": input_data})
+            #답:"""
+        )
 
-    return {
-        "rag_id": rag_id,
-        "response": response,
-    }
+        # 퀴즈 프롬프트 생성(Create Prompt)
+        prompt_quiz = PromptTemplate.from_template(
+            """
+            아래 텍스트를 기반으로 수능 수준의 O/X 퀴즈 5개를 만들어주세요. 
+            다음 조건을 충족해야 합니다:
+            1. 질문은 개념 이해와 문제 해결 능력을 평가할 수 있어야 합니다.
+            2. 정답이 "O"인 문제와 "X"인 문제의 비율은 균형 있게 구성해주세요.
+            3. 질문의 난이도는 수능 수준에 맞춰 구체적이고 사고를 요하는 내용을 포함해야 합니다.
+            4. 각 질문의 정답에 대한 설명은 간결하지만 충분히 납득 가능하게 작성해주세요.
+
+            응답은 반드시 JSON 형식으로 반환하세요. 형식은 다음과 같습니다:
+            [
+                {{"question": "질문 내용", "answer": "O 또는 X", "explanation": "정답에 대한 간단한 설명"}}, 
+                ...
+            ]
+
+            #참고 정보:
+            {context}
+
+            #입력:
+            {raw_text}
+            """
+        )
+
+        # 언어모델(LLM) 생성
+        llm = ChatUpstage(model="solar-pro")
+
+        # 피드백 생성
+        feedback_chain = {"context": RunnablePassthrough(), "raw_text": RunnablePassthrough()} | prompt_feedback | llm | StrOutputParser()
+        response_feedback = feedback_chain.invoke({"context": doc_context, "raw_text": input_data})
+        print("Response Feedback:", response_feedback)  # 디버깅용 로그
+
+        # 퀴즈 생성
+        quiz_chain = {"context": RunnablePassthrough(), "raw_text": RunnablePassthrough()} | prompt_quiz | llm | StrOutputParser()
+        response_quiz = quiz_chain.invoke({"context": doc_context, "raw_text": input_data})
+        print("Response Quiz:", response_quiz)  # 디버깅용 로그
+
+        return {
+            "rag_id": rag_id,
+            "response": response_feedback,
+            "quiz": response_quiz
+        }
+
+    except Exception as e:
+        print(f"Error in analysis_chunk: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to analyze chunk: {str(e)}")

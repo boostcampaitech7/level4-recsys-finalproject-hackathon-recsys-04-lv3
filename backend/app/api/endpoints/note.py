@@ -2,6 +2,7 @@
 import ast
 import os
 import uuid
+import time
 from typing import Optional
 
 from app.api import deps
@@ -28,6 +29,7 @@ async def create_text_note(
 ):
     try:
         note_id = str(uuid.uuid4())[:8]
+        start_time=time.time()
 
         # 노트 저장
         if user_id:
@@ -45,6 +47,7 @@ async def create_text_note(
 
         # RAG 분석 수행
         result = analysis_chunk(content)
+        print("Analysis Result:", result)  # 디버깅용 로그
 
         # 분석 결과 저장
         if user_id:
@@ -59,9 +62,8 @@ async def create_text_note(
             db.commit()
 
         # O/X 퀴즈 생성
-        quizzes = await generate_quiz(content)  # 퀴즈 생성 요청
-        print(quizzes)
-        print("Type of quizzes:", type(quizzes))
+        quizzes = result.get('quiz', [])
+        print("Quizzes:", quizzes)  # 디버깅용 로그
 
         # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and "quiz" in quizzes:
@@ -119,6 +121,8 @@ async def create_text_note(
             db.rollback()
             print("Session rolled back due to commit failure")
 
+        end_time = time.time()
+        print(end_time-start_time)
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
@@ -133,6 +137,7 @@ async def create_text_note(
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.post("/upload")
