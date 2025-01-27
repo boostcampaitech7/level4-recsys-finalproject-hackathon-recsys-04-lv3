@@ -190,9 +190,13 @@ def analysis_chunk(input_data):
         # 피드백 프롬프트 생성(Create Prompt)
         prompt_feedback = PromptTemplate.from_template(
             """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
-            입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
-            참고한 정보의 페이지도 같이 알려줘.
-            만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
+            입력과 관련있는 정보를 참고해서 피드백을 형식화하여 작성해줘.
+            만약 틀린 부분이 있다면, 다음 형식으로 피드백을 작성해줘:
+
+            피드백 사항 {{피드백 숫자}}. {{잘못된 부분}} -> {{올바른 부분}} 
+            설명: {{잘못된 부분에 대한 설명}}
+
+            만약 틀린 부분이 없다면 칭찬을 해줘: '잘했어요!
 
             #정보:
             {context}
@@ -202,6 +206,7 @@ def analysis_chunk(input_data):
 
             #답:"""
         )
+            
 
         # 퀴즈 프롬프트 생성(Create Prompt)
         prompt_quiz = PromptTemplate.from_template(
