@@ -202,9 +202,8 @@ async def upload_note(
             db.commit()
 
         # O/X 퀴즈 생성
-        quizzes = await generate_quiz(raw_text)  # 퀴즈 생성 요청
-        print(quizzes)
-        print("Type of quizzes:", type(quizzes))
+        quizzes = result.get('quiz', [])
+        print("Quizzes:", quizzes)  # 디버깅용 로그
 
         # quizzes가 dict인지 list인지 확인
         if isinstance(quizzes, dict) and "quiz" in quizzes:
