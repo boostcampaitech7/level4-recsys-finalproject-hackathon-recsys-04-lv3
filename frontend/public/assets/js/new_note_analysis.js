@@ -23,6 +23,7 @@ async function fetchNoteData() {
         // 기본 정보 표시
         document.getElementById('note-title').textContent = noteData.title;
         document.getElementById('subject-name').textContent = `과목: ${noteData.subjects_id}`;
+        document.getElementById('note-date').textContent = formatDate(noteData.note_date);
         document.querySelector('.feedback').innerHTML = `<h3>피드백</h3><p>${noteData.feedback || '피드백이 없습니다'}</p>`;
 
         // 이미지 컨테이너 초기화
@@ -51,7 +52,7 @@ async function fetchNoteData() {
                 imageContainer.appendChild(pdfViewer);
 
                 // PDF 로드 실패시 메시지 표시
-                pdfViewer.onerror = function() {
+                pdfViewer.onerror = function () {
                     console.error('PDF 로드 실패:', fileUrl);
                     imageContainer.textContent = 'PDF를 불러올 수 없습니다.';
                 };
@@ -62,7 +63,7 @@ async function fetchNoteData() {
                 img.alt = '노트 이미지';
                 img.style.maxWidth = '100%';
 
-                img.onerror = function() {
+                img.onerror = function () {
                     console.error('이미지 로드 실패:', this.src);
                     imageContainer.textContent = '이미지를 불러올 수 없습니다.';
                 };
@@ -132,14 +133,25 @@ async function solveQuiz(answer, oxId) {
 }
 
 function displayQuizResult(result) {
+    const isCorrect = result.result.is_correct === "정답입니다!";
     const resultHtml = `
-        <div class="quiz-result">
+        <div class="quiz-result ${isCorrect ? 'correct' : 'incorrect'}">
+            <span class="result-badge ${isCorrect ? 'correct' : 'incorrect'}">
+                ${isCorrect ? '정답' : '오답'}
+            </span>
             <p>${result.result.is_correct}</p>
             <p>정답: ${result.result.correct_answer}</p>
-            <p>해설: ${result.result.explanation}</p>
+            <p class="explanation">해설: ${result.result.explanation}</p>
         </div>
     `;
     document.querySelector('.recommendation').innerHTML = resultHtml;
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    date.setHours(date.getHours() + 9); // KST 시간대 조정
+    return `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일`;
 }
 
 document.addEventListener('DOMContentLoaded', fetchNoteData);

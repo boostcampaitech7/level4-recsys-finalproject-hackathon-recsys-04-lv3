@@ -1,38 +1,74 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>새 노트</title>
-   <link rel="stylesheet" href="assets/css/new_note.css">
-   <script defer src="assets/js/auth.js"></script>
-   <script>
-       window.onload = function() {
-           const userId = localStorage.getItem('user_id');
-           if (!userId) {
-               window.location.href = "login.html";
-           }
-       }
-   </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>백지공부</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <script defer src="assets/js/auth.js"></script>
+    <script defer src="assets/js/drawing.js"></script>
+    <script>
+        window.onload = function() {
+            const userId = localStorage.getItem('user_id');
+            if (!userId) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
 </head>
 <body>
-   <div class="header">
-       <div class="left">
-           <a href="main.html" class="active">로고</a>
-           <a href="new_note.html">새 노트</a>
-           <a href="notes.html">기존 노트</a>
-           <a href="quiz.html">퀴즈</a>
-           <a href="feedback.html">피드백</a>
-       </div>
-       <div class="right">
-           <a href="mypage.html">마이페이지</a>
-           <button onclick="logout()" class="logout-btn">로그아웃</button>
-       </div>
-   </div>
-   <div class="container">
-       <h1>환영합니다</h1>
-       <p>인사하는 한 마디?!</p>
-       <p>상단 탭을 통해 원하는 기능을 사용하실 수 있습니다.</p>
-   </div>
+    <div class="header">
+        <div class="left">
+            <a href="main.html" class="active">로고</a>
+            <a href="new_note.html">새 노트</a>
+            <a href="notes.html">기존 노트</a>
+            <a href="quiz.html">퀴즈</a>
+            <a href="feedback.html">피드백</a>
+        </div>
+        <div class="right">
+            <a href="mypage.html">마이페이지</a>
+            <button onclick="logout()" class="logout-btn">로그아웃</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <h1>새 노트</h1>
+        <p>자유롭게 필기하고 AI 피드백을 받아보세요!</p>
+
+        <select id="subjectSelect" class="input-box">
+            <option value="">과목 선택</option>
+            <option value="지구과학2">지구과학2</option>
+            <option value="정치와 법">정치와 법</option>
+        </select>
+
+        <input type="text" id="noteTitle" class="input-box" placeholder="제목을 입력해주세요." />
+
+        <div class="drawing-container">
+            <div class="drawing-header">
+                <div class="tool-buttons">
+                    <button id="penBtn" class="tool-btn active">펜</button>
+                    <button id="eraserBtn" class="tool-btn">지우개</button>
+                </div>
+                <div class="action-buttons">
+                    <button id="undoBtn" class="action-btn">실행취소</button>
+                    <button id="redoBtn" class="action-btn">다시실행</button>
+                    <button id="clearBtn" class="action-btn">전체지우기</button>
+                </div>
+            </div>
+
+            <canvas id="drawingCanvas"></canvas>
+
+            <div class="drawing-footer">
+                <div class="submit-buttons">
+                    <button id="downloadBtn" class="submit-btn">다운로드하기</button>
+                    <button id="submitBtn" class="submit-btn primary">분석하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

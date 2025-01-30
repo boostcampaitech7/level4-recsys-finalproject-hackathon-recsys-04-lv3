@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!userId) {
         alert("로그인이 필요합니다.");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
 });
 

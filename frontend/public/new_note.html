@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새 노트</title>
-    <link rel="stylesheet" href="assets/css/new_note.css"> <!-- CSS 파일 연결 -->
-    <script defer src="assets/js/new_note.js"></script> <!-- JS 파일 연결 -->
+    <link rel="stylesheet" href="assets/css/new_note.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script>
-        // 페이지 로드 시 updateUploadBox('이미지') 자동 실행
-        window.onload = function() {
-            updateUploadBox('이미지');
-        };
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
     </script>
+    <script defer src="assets/js/auth.js"></script>
+    <script defer src="assets/js/new_note.js"></script>
 </head>
+
 <body>
     <div class="header">
         <div class="left">
@@ -23,8 +24,8 @@
             <a href="feedback.html">피드백</a>
         </div>
         <div class="right">
-            <a href="mypage.html" class="active">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
+            <a href="mypage.html">마이페이지</a>
+            <button class="logout-btn">로그아웃</button>
         </div>
     </div>
 
@@ -34,24 +35,23 @@
         </div>
         <h1>새 노트</h1>
         <p>새 노트 작성을 통해 AI 피드백을 받아보세요!</p>
-        <select class="input-box">
-            <option>과목 선택</option>
-            <option>지구과학2</option>
-            <option>정치와 법</option>
+        <select class="input-box" id="subjectSelect">
+            <option value="">과목 선택</option>
+            <option value="지구과학2">지구과학2</option>
+            <option value="정치와 법">정치와 법</option>
         </select>
 
-        <input type="text" class="input-box" placeholder="제목을 입력해주세요." />
+        <input type="text" class="input-box" placeholder="제목을 입력해주세요." id="titleInput" />
         <div class="button-select-group">
-            <button id="이미지" class="button-select button" onclick="updateUploadBox('이미지')">이미지</button>
-            <button id="문서" class="button-select button" onclick="updateUploadBox('문서')">문서</button>
-            <button id="텍스트" class="button-select button" onclick="updateUploadBox('텍스트')">텍스트</button>
+            <button id="업로드" class="button-select button">업로드</button>
+            <button id="텍스트" class="button-select button">텍스트</button>
         </div>
         <div id="upload-box" class="upload-box">
             <p>이미지를 업로드하세요.</p>
             <input type="file" class="input-box" accept="image/*" />
         </div>
-        <button class="input-box analyze-button" onclick="analyzeNote()">분석하기</button>
+        <button class="input-box analyze-button" id="analyzeBtn">분석하기</button>
     </div>
-    <script src="assets/js/auth.js"></script>
 </body>
+
 </html>
