@@ -63,15 +63,15 @@ async def create_text_note(
         print(quizzes)
         print("Type of quizzes:", type(quizzes))
 
-        # quizzes가 dict인지 list인지 확인
-        if isinstance(quizzes, dict) and "quiz" in quizzes:
-            quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
-
+        # quiz_list 처리
+        quiz_list = []
+        if isinstance(quizzes, dict):
+            if "quiz" in quizzes:
+                quiz_list = quizzes["quiz"]
+            elif "quizzes" in quizzes:
+                quiz_list = quizzes["quizzes"]
         elif isinstance(quizzes, list):
-            quiz_list = quizzes  # quizzes 자체가 리스트인 경우
-        else:
-            print("Invalid structure of quizzes")
-            quiz_list = []
+            quiz_list = quizzes
 
         # 'quiz_list' 순회
         for quiz in quiz_list:
@@ -98,7 +98,7 @@ async def create_text_note(
                     del_yn="N",
                 )
                 db.add(ox)
-                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
+                print(f"Successfully added OX with ox_id={ox_id} to session")
             except Exception as e:
                 print(f"Error saving quiz: {e}")
                 import traceback
@@ -199,17 +199,27 @@ async def upload_note(
 
         # O/X 퀴즈 생성 및 저장
         quizzes = await generate_quiz(raw_text)
+        print(quizzes)
+        print("Type of quizzes:", type(quizzes))
 
+        # quiz_list 처리
         quiz_list = []
-        if isinstance(quizzes, dict) and "quiz" in quizzes:
-            quiz_list = quizzes["quiz"]
+        if isinstance(quizzes, dict):
+            if "quiz" in quizzes:
+                quiz_list = quizzes["quiz"]
+            elif "quizzes" in quizzes:
+                quiz_list = quizzes["quizzes"]
         elif isinstance(quizzes, list):
             quiz_list = quizzes
 
         if user_id:
             for quiz in quiz_list:
+                print("Quiz:", quiz)  # quiz 출력
+                print("Type of quiz:", type(quiz))  # quiz 타입 출력
+
                 if isinstance(quiz, str):
                     quiz = ast.literal_eval(quiz)
+                    print("Converted quiz:", quiz)
 
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
@@ -225,7 +235,19 @@ async def upload_note(
                     del_yn="N",
                 )
                 db.add(ox)
-            db.commit()
+                print(f"Successfully added OX with ox_id={ox_id} to session")
+
+            try:
+                print("Attempting to commit changes to the database...")
+                db.commit()
+                print("Database commit successful!")
+            except Exception as commit_error:
+                print(f"Database commit failed: {commit_error}")
+                import traceback
+
+                print(traceback.format_exc())
+                db.rollback()
+                print("Session rolled back due to commit failure")
 
         return {
             "note_id": note_id if user_id else None,
@@ -235,7 +257,7 @@ async def upload_note(
             "content": raw_text,
             "feedback": result["response"],
             "rag_id": result["rag_id"],
-            "file_extension": file_extension,  # 파일 확장자 정보 추가
+            "file_extension": file_extension,
             "saved_to_db": bool(user_id),
         }
 
