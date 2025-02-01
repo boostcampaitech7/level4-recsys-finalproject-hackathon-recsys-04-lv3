@@ -242,3 +242,6 @@ pyrightconfig.json
 *.pdf
 node_modules
 uploads/
+
+*.lock
+*.toml
