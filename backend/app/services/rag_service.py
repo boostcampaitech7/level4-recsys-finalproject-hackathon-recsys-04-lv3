@@ -8,6 +8,7 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+from langchain_experimental.text_splitter import SemanticChunker
 from langchain_pinecone import PineconeVectorStore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_upstage import ChatUpstage, UpstageEmbeddings
@@ -168,6 +169,51 @@ def create_chain(db_index_name):
         raise HTTPException(status_code=500, detail=f"Failed to create RAG chain: {str(e)}")
 
 
+# def analysis_chunk(input_data):
+#     # LangSmith 시작
+#     logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
+#     db_index_name = settings.PINECONE_INDEX_NAME
+
+#     pc = Pinecone()
+#     index = pc.Index(db_index_name)
+#     embeddings = UpstageEmbeddings(model="embedding-query")
+#     vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
+
+#     # 검색기(Retriever) 생성
+#     retriever = vectorstore.as_retriever()
+
+#     retrieved_docs = retriever.invoke(input_data)
+#     doc = retrieved_docs[0]
+#     doc_context = doc.page_content
+#     rag_id = doc.id
+
+#     # 프롬프트 생성(Create Prompt)
+#     prompt = PromptTemplate.from_template(
+#         """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
+#     입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
+#     참고한 정보의 페이지도 같이 알려줘.
+#     만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
+
+#     #정보:
+#     {context}
+
+#     #입력:
+#     {question}
+
+#     #답:"""
+#     )
+#     print(doc_context)
+#     # 언어모델(LLM) 생성
+#     llm = ChatUpstage(model="solar-pro")
+#     chain = {"context": RunnablePassthrough(), "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
+#     response = chain.invoke({"context": doc_context, "question": input_data})
+
+#     return {
+#         "rag_id": rag_id,
+#         "response": response,
+#     }
+
+
 def analysis_chunk(input_data):
     # LangSmith 시작
     logging.langsmith(settings.LANGSMITH_PROJECT_NAME)
@@ -179,19 +225,39 @@ def analysis_chunk(input_data):
     vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
 
     # 검색기(Retriever) 생성
-    retriever = vectorstore.as_retriever()
+    retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 2})
 
-    retrieved_docs = retriever.invoke(input_data)
-    doc = retrieved_docs[0]
-    doc_context = doc.page_content
-    rag_id = doc.id
+    # input data 청크 나누기
+    embeddings = UpstageEmbeddings(model="embedding-passage")
+    text_splitter = SemanticChunker(
+        embeddings=embeddings,
+        breakpoint_threshold_type="percentile",
+        breakpoint_threshold_amount=95,
+    )
+    chunks = text_splitter.split_text(input_data)
+    print("input data chunk len: ", len(chunks))
+
+    # 청크별 검색
+    retrieved_docs = []  # Document list
+    retrieved_ids = []  # RAG id list
+    for chunk in chunks:
+        docs = retriever.invoke(chunk)
+        for doc in docs:
+            doc_id = doc.id
+            if doc_id not in retrieved_ids:
+                retrieved_ids.append(doc_id)
+                retrieved_docs.append(doc)
+    print("Retrieved docs len: ", len(retrieved_docs))
+    print("Retrieved ids len: ", len(retrieved_ids))
 
     # 프롬프트 생성(Create Prompt)
     prompt = PromptTemplate.from_template(
-        """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
-    입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
-    참고한 정보의 페이지도 같이 알려줘.
-    만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
+        """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야
+    아래 추가 조건과 정보를 참고해서 피드백 해줘
+    추가 조건
+    1. 참고한 정보의 이름과 페이지 알려줘
+    2. 입력에 틀린 부분이 하나도 없을 경우에만 칭찬 한 문장 해줘
+    3. 다른 미사여구 없이 본론부터 말해줘
 
     #정보:
     {context}
@@ -201,13 +267,19 @@ def analysis_chunk(input_data):
 
     #답:"""
     )
-    print(doc_context)
-    # 언어모델(LLM) 생성
-    llm = ChatUpstage(model="solar-pro")
-    chain = {"context": RunnablePassthrough(), "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
-    response = chain.invoke({"context": doc_context, "question": input_data})
 
-    return {
-        "rag_id": rag_id,
+    # 언어모델(LLM) 생성
+    llm = ChatUpstage(model="solar-pro", temperature=0.2)
+
+    # Chain 생성
+    chain = prompt | llm | StrOutputParser()
+
+    response = chain.invoke({"context": retrieved_docs, "question": input_data})
+
+    results = {
+        # "rag_id": retrieved_ids,
+        "rag_id": ",".join(retrieved_ids),
         "response": response,
     }
+
+    return results
