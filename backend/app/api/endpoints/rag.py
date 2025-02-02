@@ -11,8 +11,7 @@ router = APIRouter()
 async def post_create_vectorstore():
     """벡터 저장소를 초기화하고 생성합니다."""
     try:
-        result = initialize_pinecone()
-        print(result)
+        initialize_pinecone()
 
         return {"message": "Vector store initialized successfully"}
 
