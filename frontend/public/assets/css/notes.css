@@ -1,81 +1,205 @@
-body {
-  font-family: Arial, sans-serif;
+/* 전체 스타일 초기화 및 기본 설정 */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* 헤더 스타일링 */
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 20px 50px;
-  background-color: #f5f5f5;
+  padding: 1rem;
+  background-color: white;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header .left, .header .right {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 1rem;
 }
 
 .header a {
   text-decoration: none;
-  color: black;
+  color: #495057;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.header a:hover {
+  background-color: #f1f3f5;
 }
 
 .header a.active {
-  color: #3b82f6;
-  font-weight: bold;
+  color: #228be6;
+  font-weight: 500;
 }
 
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #e9ecef;
+}
+
+/* 컨테이너 스타일링 */
 .container {
-  width: 50%;
-  margin: 50px auto;
-  text-align: center;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 2rem;
 }
 
 h1 {
-  color: #3b82f6;
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 2rem;
+  font-weight: 700;
 }
 
-.main-content {
-  padding: 20px;
+/* 필터 영역 스타일링 */
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
 }
 
-.section-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 5px;
-  margin-bottom: 20px;
+#subjectFilter {
+  padding: 0.5rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: white;
+  min-width: 150px;
+  font-size: 0.9rem;
+  color: #495057;
+  outline: none;
+  transition: all 0.2s;
 }
 
+#subjectFilter:focus {
+  border-color: #228be6;
+  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.1);
+}
+
+#sortToggle {
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  color: #495057;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sortToggle:hover {
+  background-color: #f8f9fa;
+}
+
+/* 노트 리스트 스타일링 */
 .note-list {
   list-style: none;
-  padding: 0;
+  display: grid;
+  gap: 1rem;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .note-item {
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.2s;
+  border: 1px solid #dee2e6;
+}
+
+.note-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.note-link {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
-}
-
-.note-item a {
+  padding: 1rem 1.5rem;
   text-decoration: none;
-  color: #000;
-  font-weight: bold;
+  color: #495057;
 }
 
-.note-item a:hover {
-  text-decoration: underline;
+.note-date {
+  color: #868e96;
+  font-size: 0.9rem;
 }
 
-.note-item span {
-  font-size: 0.9em;
-  color: #888;
+/* 반응형 스타일링 */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .header .left, .header .right {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #subjectFilter, #sortToggle {
+    width: 100%;
+  }
+
+  .note-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .note-date {
+    font-size: 0.8rem;
+  }
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

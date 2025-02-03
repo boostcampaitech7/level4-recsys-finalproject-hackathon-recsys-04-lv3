@@ -62,6 +62,7 @@ async def create_text_note(
             db.commit()
 
         # O/X 퀴즈 생성
+
         quizzes = result.get('quiz', [])
         print("Quizzes:", quizzes)  # 디버깅용 로그
         print("Type of quizzes:", type(quizzes))  # quizzes의 타입 확인
@@ -85,6 +86,7 @@ async def create_text_note(
         else:
             print("Invalid structure of quizzes. Expected a string, dictionary, or list.")
             quiz_list = []
+
 
         for quiz in quiz_list:
             print("Processing quiz:", quiz)  # quiz 내용 출력
@@ -159,26 +161,27 @@ async def upload_note(
     user_id: Optional[str] = Form(...),
 ):
     try:
-        # print("Starting OCR...")
-        raw_text = await perform_ocr(file)
-        # print(f"OCR completed: {raw_text[:100]}")  # 처음 100자만 출력
-
         note_id = str(uuid.uuid4())[:8]
-        # print(f"Generated note_id: {note_id}")
-
-        # 파일 저장 경로 설정
         UPLOAD_DIR = "./uploads"
-        # os.makedirs(UPLOAD_DIR, exist_ok=True)
+        os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-        # 고유한 파일명 생성
-        file_extension = os.path.splitext(file.filename)[1]
+        # 파일 내용 읽기
+        content = await file.read()
+
+        # 파일 확장자 확인 및 저장
+        file_extension = os.path.splitext(file.filename)[1].lower()
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         file_path = os.path.join(UPLOAD_DIR, unique_filename)
 
         # 파일 저장
-        content = await file.read()
         with open(file_path, "wb") as f:
             f.write(content)
+
+        # 파일 포인터를 처음으로 되돌립니다
+        await file.seek(0)
+
+        # OCR 수행
+        raw_text = await perform_ocr(file)
 
         # 노트 저장
         if user_id:
@@ -187,7 +190,7 @@ async def upload_note(
                 user_id=user_id,
                 subjects_id=subjects_id,
                 title=title,
-                file_path=os.path.join("/uploads", unique_filename),
+                file_path=f"/{unique_filename}",
                 raw_text=raw_text,
                 cleaned_text=raw_text,
                 ocr_yn="Y",
@@ -211,36 +214,36 @@ async def upload_note(
             db.add(analysis)
             db.commit()
 
+
         # O/X 퀴즈 생성
         quizzes = result.get('quiz', [])
         print("Quizzes:", quizzes)  # 디버깅용 로그
 
-        # quizzes가 dict인지 list인지 확인
-        if isinstance(quizzes, dict) and "quiz" in quizzes:
-            quiz_list = quizzes["quiz"]  # 'quiz' 키의 값을 가져옴
-
+        # quiz_list 처리
+        quiz_list = []
+        if isinstance(quizzes, dict):
+            if "quiz" in quizzes:
+                quiz_list = quizzes["quiz"]
+            elif "quizzes" in quizzes:
+                quiz_list = quizzes["quizzes"]
         elif isinstance(quizzes, list):
-            quiz_list = quizzes  # quizzes 자체가 리스트인 경우
-        else:
-            print("Invalid structure of quizzes")
-            quiz_list = []
+            quiz_list = quizzes
 
-        # 'quiz_list' 순회
-        for quiz in quiz_list:
-            print("Quiz:", quiz)  # quiz 출력
-            print("Type of quiz:", type(quiz))  # quiz 타입 출력
+        if user_id:
+            for quiz in quiz_list:
+                print("Quiz:", quiz)  # quiz 출력
+                print("Type of quiz:", type(quiz))  # quiz 타입 출력
 
-            # quiz가 문자열일 경우, 딕셔너리로 변환
-            if isinstance(quiz, str):
-                quiz = ast.literal_eval(quiz)
-                print("Converted quiz:", quiz)
-            try:
+                if isinstance(quiz, str):
+                    quiz = ast.literal_eval(quiz)
+                    print("Converted quiz:", quiz)
+
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
                     ox_id=ox_id,
                     user_id=user_id,
                     note_id=note_id,
-                    rag_id=result.get("rag_id"),
+                    rag_id=result["rag_id"],
                     ox_contents=quiz["question"],
                     ox_answer=quiz["answer"],
                     ox_explanation=quiz["explanation"],
@@ -249,26 +252,19 @@ async def upload_note(
                     del_yn="N",
                 )
                 db.add(ox)
-                print(f"Successfully added OX with ox_id={ox_id} to session")  # 성공 로그
-            except Exception as e:
-                print(f"Error saving quiz: {e}")
+                print(f"Successfully added OX with ox_id={ox_id} to session")
+
+            try:
+                print("Attempting to commit changes to the database...")
+                db.commit()
+                print("Database commit successful!")
+            except Exception as commit_error:
+                print(f"Database commit failed: {commit_error}")
                 import traceback
 
                 print(traceback.format_exc())
-                continue
-
-        # 커밋 실행
-        try:
-            print("Attempting to commit changes to the database...")
-            db.commit()
-            print("Database commit successful!")
-        except Exception as commit_error:
-            print(f"Database commit failed: {commit_error}")
-            import traceback
-
-            print(traceback.format_exc())
-            db.rollback()
-            print("Session rolled back due to commit failure")
+                db.rollback()
+                print("Session rolled back due to commit failure")
 
         return {
             "note_id": note_id if user_id else None,
@@ -278,6 +274,7 @@ async def upload_note(
             "content": raw_text,
             "feedback": result["response"],
             "rag_id": result["rag_id"],
+            "file_extension": file_extension,
             "saved_to_db": bool(user_id),
         }
 
