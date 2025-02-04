@@ -32,7 +32,10 @@
 
         <div class="quiz-history">
             <h2>이전 퀴즈 기록</h2>
-            <button class="button button-secondary" onclick="goToQuizHistory()">전에 풀었던 퀴즈 보러가기</button>
+            <div class="quiz-history-buttons">
+                <button class="button button-secondary" onclick="goToMultipleQuizHistory()">객관식 퀴즈 기록</button>
+                <button class="button button-secondary" onclick="goToOXQuizHistory()">OX 퀴즈 기록</button>
+            </div>
         </div>
     </div>
     <script src="assets/js/auth.js"></script>

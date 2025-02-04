@@ -141,17 +141,50 @@ h1 {
 }
 
 .note-link {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
+  display: block;
+  padding: 1.5rem;
   text-decoration: none;
   color: #495057;
+}
+
+.note-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.note-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.note-title {
+  font-size: 1.1rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.note-subject {
+  font-size: 0.9rem;
+  color: #228be6;
+  padding: 0.2rem 0.5rem;
+  background-color: #e7f5ff;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .note-date {
   color: #868e96;
   font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .note-title-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+  }
 }
 
 /* 반응형 스타일링 */

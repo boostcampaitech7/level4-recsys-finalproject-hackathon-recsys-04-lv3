@@ -5,10 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let isNewest = true;
     let isLoading = false;
 
-    // 초기 로드
     initialize();
 
     async function initialize() {
+        if (!userId) {
+            window.location.href = 'index.html';
+            return;
+        }
         await Promise.all([loadSubjects(), loadNotes()]);
         setupEventListeners();
     }
@@ -20,9 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function handleFilterChange() {
         if (!isLoading) {
-            showLoadingState();
             await loadNotes();
-            hideLoadingState();
         }
     }
 
@@ -41,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw new Error('Failed to load subjects');
 
             const data = await response.json();
-            renderSubjects(data.subjects);
+            renderSubjects(data.subjects || []);
         } catch (error) {
             console.error("Error loading subjects:", error);
             showError("과목 목록을 불러오는데 실패했습니다.");
@@ -52,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
         subjectFilter.innerHTML = `
             <option value="">전체 과목</option>
             ${subjects.map(subject =>
-                `<option value="${subject}">${subject}</option>`
+                `<option value="${subject}">${escapeHtml(subject)}</option>`
             ).join('')}
         `;
     }
@@ -67,11 +68,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const subject = subjectFilter.value;
             const url = `http://localhost:8000/api/v1/note/list?user_id=${userId}&sort=${isNewest ? 'newest' : 'oldest'}${subject ? `&subject=${subject}` : ''}`;
 
+            console.log('Requesting URL:', url); // URL 확인
+
             const response = await fetch(url);
             if (!response.ok) throw new Error('Failed to load notes');
 
             const data = await response.json();
-            renderNotes(data.notes);
+            console.log('API Response:', data); // API 응답 확인
+
+            renderNotes(data.notes || []);
         } catch (error) {
             console.error("Error loading notes:", error);
             showError("노트를 불러오는데 실패했습니다.");
@@ -84,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderNotes(notes) {
         const noteList = document.getElementById('note-list');
 
-        if (!notes?.length) {
+        if (!notes.length) {
             noteList.innerHTML = `
                 <li class="note-item empty-state">
                     <div class="empty-message">
@@ -96,14 +101,30 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        noteList.innerHTML = notes.map(note => `
-            <li class="note-item">
-                <a href="new_note_analysis.html?note_id=${note.note_id}" class="note-link">
-                    <span class="note-title">${escapeHtml(note.title)}</span>
-                    <span class="note-date">${formatDate(note.note_date)}</span>
-                </a>
-            </li>
-        `).join('');
+        console.log('Notes to render:', notes); // 렌더링할 노트 데이터 확인
+
+        noteList.innerHTML = notes.map(note => {
+            console.log('Processing note:', note); // 각 노트 데이터 확인
+
+            const title = escapeHtml(note.title || '');
+            const subject = note.subjects_id ? escapeHtml(note.subjects_id) : '';
+
+            console.log('Subject:', subject); // 과목 정보 확인
+
+            return `
+                <li class="note-item">
+                    <a href="new_note_analysis.html?note_id=${note.note_id}" class="note-link">
+                        <div class="note-info">
+                            <div class="note-title-row">
+                                <span class="note-title">${title}</span>
+                                ${subject ? `<span class="note-subject">${subject}</span>` : ''}
+                            </div>
+                            <span class="note-date">${formatDate(note.note_date)}</span>
+                        </div>
+                    </a>
+                </li>
+            `;
+        }).join('');
     }
 
     function showLoadingState() {
@@ -111,6 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
         noteList.innerHTML = `
             <li class="note-item loading">
                 <div class="loading-spinner"></div>
+                <p>노트를 불러오는 중...</p>
             </li>
         `;
     }
@@ -127,17 +149,20 @@ document.addEventListener("DOMContentLoaded", function () {
         noteList.innerHTML = `
             <li class="note-item error">
                 <div class="error-message">${message}</div>
+                <button onclick="loadNotes()" class="retry-btn">다시 시도</button>
             </li>
         `;
     }
 
     function formatDate(dateStr) {
+        if (!dateStr) return '';
         const date = new Date(dateStr);
         date.setHours(date.getHours() + 9);
         return `${date.getFullYear()}년 ${String(date.getMonth() + 1).padStart(2, '0')}월 ${String(date.getDate()).padStart(2, '0')}일`;
     }
 
     function escapeHtml(unsafe) {
+        if (!unsafe) return '';
         return unsafe
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")

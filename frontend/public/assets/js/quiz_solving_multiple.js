@@ -174,10 +174,14 @@ function updateProgress() {
     progressBar.className = 'progress-bar';
     progressBar.innerHTML = `
         <div class="progress-fill" style="width: ${percentage}%"></div>
-        <div class="progress-text">${currentNumber} / ${totalQuestions}</div>
     `;
+
+    const progressText = document.createElement('div');
+    progressText.className = 'progress-text';
+    progressText.textContent = `${currentNumber} / ${totalQuestions}`;
 
     const progressContainer = document.querySelector('.progress-container');
     progressContainer.innerHTML = '';
     progressContainer.appendChild(progressBar);
+    progressContainer.appendChild(progressText);
 }

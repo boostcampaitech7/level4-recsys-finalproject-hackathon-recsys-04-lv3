@@ -63,7 +63,17 @@ def get_note_quizzes(note_id: str, user_id: str, db: Session = Depends(deps.get_
     quizzes = db.query(OX).filter(OX.note_id == note_id, OX.user_id == user_id, OX.del_yn == "N").all()
 
     return {
-        "quizzes": [{"ox_id": quiz.ox_id, "question": quiz.ox_contents, "used_yn": quiz.used_yn} for quiz in quizzes]
+        "quizzes": [
+            {
+                "ox_id": quiz.ox_id,
+                "question": quiz.ox_contents,
+                "used_yn": quiz.used_yn,
+                "answer": quiz.answer,  # 사용자 답변
+                "ox_answer": quiz.ox_answer,  # 실제 정답 - 이 필드 추가
+                "correct_yn": quiz.correct_yn,
+            }
+            for quiz in quizzes
+        ]
     }
 
 
@@ -233,6 +243,30 @@ def get_quiz_history(user_id: str, db: Session = Depends(deps.get_db)):
 
         print(f"Traceback: {traceback.format_exc()}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/history/ox")
+def get_ox_quiz_history(user_id: str, db: Session = Depends(deps.get_db)):
+    try:
+        quizzes = db.query(OX).filter(OX.user_id == user_id, OX.del_yn == "N").order_by(OX.created_at.desc()).all()
+
+        return {
+            "quizzes": [
+                {
+                    "question": quiz.ox_contents,
+                    "answer": quiz.answer,  # 사용자가 제출한 답
+                    "ox_answer": quiz.ox_answer,  # 실제 정답 - 이 필드 추가
+                    "is_correct": quiz.correct_yn,
+                    "explanation": quiz.ox_explanation,
+                    "used_yn": quiz.used_yn,
+                }
+                for quiz in quizzes
+            ]
+        }
+
+    except Exception as e:
+        print(f"Error in get_ox_quiz_history: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/reset")

@@ -46,6 +46,7 @@ async def create_text_note(
             )
             db.add(note)
             db.commit()
+
         # RAG 분석 수행
         result = analysis_chunk(content)
         print("Analysis Result:", result)
@@ -427,6 +428,7 @@ def get_user_notes(
                     "note_date": note.Note.created_at,
                     "is_analysis": note.Note.ocr_yn,
                     "feedback": note.Analysis.feedback if note.Analysis else None,
+                    "subjects_id": note.Note.subjects_id,  # 과목 정보 추가
                 }
                 for note in notes
             ]
