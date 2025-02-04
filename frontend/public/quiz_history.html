@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>퀴즈</title>
+    <title>퀴즈 기록</title>
     <link rel="stylesheet" href="assets/css/notes.css">
     <link rel="stylesheet" href="assets/css/quiz.css">
 </head>
@@ -23,19 +23,31 @@
     </div>
 
     <div class="container">
-        <h1>퀴즈</h1>
-        <p>작성한 내용을 바탕으로 퀴즈를 풀어보세요!</p>
-
-        <div class="quiz-type-container">
-            <button class="button button-primary" onclick="goToQuizSolving()">객관식 퀴즈 풀기</button>
+        <h1>퀴즈 기록</h1>
+        <div class="quiz-history-stats">
+            <div class="stat-item">
+                <h3>전체 문제</h3>
+                <p id="total-count">0개</p>
+            </div>
+            <div class="stat-item">
+                <h3>정답률</h3>
+                <p id="correct-rate">0%</p>
+            </div>
         </div>
-
-        <div class="quiz-history">
-            <h2>이전 퀴즈 기록</h2>
-            <button class="button button-secondary" onclick="goToQuizHistory()">전에 풀었던 퀴즈 보러가기</button>
+        <div id="quiz-history-list" class="quiz-history-list">
+            <!-- 여기에 퀴즈 기록이 동적으로 추가됨 -->
         </div>
     </div>
+
+    <div class="reset-buttons-container">
+        <h2>퀴즈 리셋</h2>
+        <div id="subject-reset-buttons">
+            <!-- 여기에 과목별 리셋 버튼들이 동적으로 추가됨 -->
+        </div>
+        <button onclick="resetAllQuizzes()" class="btn btn-primary">모든 퀴즈 다시풀기</button>
+    </div>
+
     <script src="assets/js/auth.js"></script>
-    <script src="assets/js/quiz.js"></script>
+    <script src="assets/js/quiz_history.js"></script>
 </body>
 </html>

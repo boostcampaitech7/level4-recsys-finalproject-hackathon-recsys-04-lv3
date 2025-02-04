@@ -1,13 +1,15 @@
 # app/api/endpoints/note.py
 import ast
-import os
-import uuid
-import time
 import json
+import os
+import time
+import traceback
+import uuid
 from typing import Optional
 
 from app.api import deps
 from app.models.analysis import Analysis
+from app.models.multiple import MultipleChoice
 from app.models.note import Note
 from app.models.ox import OX
 from app.services.ocr_service import perform_ocr
@@ -29,7 +31,7 @@ async def create_text_note(
 ):
     try:
         note_id = str(uuid.uuid4())[:8]
-        start_time=time.time()
+        start_time = time.time()
 
         # 노트 저장
         if user_id:
@@ -47,7 +49,7 @@ async def create_text_note(
 
         # RAG 분석 수행
         result = analysis_chunk(content)
-        print("Analysis Result:", result)  # 디버깅용 로그
+        print("Analysis Result:", result)
 
         # 분석 결과 저장
         if user_id:
@@ -62,38 +64,31 @@ async def create_text_note(
             db.commit()
 
         # O/X 퀴즈 생성
+        quizzes = result.get("quiz", [])
+        print("Quizzes:", quizzes)
+        print("Type of quizzes:", type(quizzes))
 
-        quizzes = result.get('quiz', [])
-        print("Quizzes:", quizzes)  # 디버깅용 로그
-        print("Type of quizzes:", type(quizzes))  # quizzes의 타입 확인
-
-        # 문자열인 경우 JSON 파싱 시도
         if isinstance(quizzes, str):
             try:
-                quizzes = json.loads(quizzes)  # 문자열을 JSON 객체로 변환
+                quizzes = json.loads(quizzes)
                 print("Quizzes after JSON parsing:", quizzes)
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON: {e}")
-                quizzes = []  # 변환 실패 시 빈 리스트로 초기화
+                quizzes = []
 
-        # 딕셔너리인 경우 'quiz' 키에서 리스트 추출
         if isinstance(quizzes, dict):
             quiz_list = quizzes.get("quiz", [])
-        # 리스트인 경우 그대로 사용
         elif isinstance(quizzes, list):
             quiz_list = quizzes
-        # 그 외의 경우 처리 불가
         else:
             print("Invalid structure of quizzes. Expected a string, dictionary, or list.")
             quiz_list = []
 
-
         for quiz in quiz_list:
-            print("Processing quiz:", quiz)  # quiz 내용 출력
+            print("Processing quiz:", quiz)
             if not isinstance(quiz, dict):
                 try:
-                    import ast
-                    quiz = ast.literal_eval(quiz)  # 문자열을 딕셔너리로 변환
+                    quiz = ast.literal_eval(quiz)
                 except (ValueError, SyntaxError) as e:
                     print(f"Error parsing quiz: {quiz} - {e}")
                     continue
@@ -116,10 +111,55 @@ async def create_text_note(
                 print(f"Successfully added OX with ox_id={ox_id} to session")
             except Exception as e:
                 print(f"Error saving quiz: {e}")
-                import traceback
                 print(traceback.format_exc())
                 continue
-            
+
+        # 객관식 퀴즈 생성 및 저장
+        multiple_quizzes = result.get("multiple", [])
+        # print("Multiple Choice Quizzes:", multiple_quizzes)
+        # print("Type of multiple quizzes:", type(multiple_quizzes))
+
+        if isinstance(multiple_quizzes, str):
+            try:
+                multiple_quizzes = json.loads(multiple_quizzes)
+                print("Multiple quizzes after JSON parsing:", multiple_quizzes)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding multiple JSON: {e}")
+                multiple_quizzes = []
+
+        multiple_list = []
+        if isinstance(multiple_quizzes, dict):
+            multiple_list = multiple_quizzes.get("questions", [])
+        elif isinstance(multiple_quizzes, list):
+            multiple_list = multiple_quizzes
+
+        for quiz in multiple_list:
+            # print("Processing multiple quiz:", quiz)
+            try:
+                quiz_id = str(uuid.uuid4())[:8]
+                multiple = MultipleChoice(
+                    quiz_id=quiz_id,
+                    user_id=user_id,
+                    note_id=note_id,
+                    rag_id=result.get("rag_id"),
+                    quiz_contents=quiz["question"],
+                    option1=quiz["option1"],
+                    option2=quiz["option2"],
+                    option3=quiz["option3"],
+                    option4=quiz["option4"],
+                    quiz_answer=quiz["answer"],
+                    quiz_explanation=quiz["explanation"],
+                    used_yn="N",
+                    correct_yn="N",
+                    del_yn="N",
+                )
+                db.add(multiple)
+                print(f"Successfully added multiple choice quiz with quiz_id={quiz_id}")
+            except Exception as e:
+                print(f"Error saving multiple quiz: {e}")
+                print(traceback.format_exc())
+                continue
+
         # 커밋 실행
         try:
             print("Attempting to commit changes to the database...")
@@ -127,14 +167,13 @@ async def create_text_note(
             print("Database commit successful!")
         except Exception as commit_error:
             print(f"Database commit failed: {commit_error}")
-            import traceback
-
             print(traceback.format_exc())
             db.rollback()
             print("Session rolled back due to commit failure")
 
         end_time = time.time()
-        print(end_time-start_time)
+        print(end_time - start_time)
+
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
@@ -151,7 +190,6 @@ async def create_text_note(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
 @router.post("/upload")
 async def upload_note(
     file: UploadFile = File(...),
@@ -162,6 +200,7 @@ async def upload_note(
 ):
     try:
         note_id = str(uuid.uuid4())[:8]
+        start_time = time.time()
         UPLOAD_DIR = "./uploads"
         os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -201,6 +240,7 @@ async def upload_note(
 
         # RAG 분석 수행
         result = analysis_chunk(raw_text)
+        print("Analysis Result:", result)
 
         # 분석 결과 저장
         if user_id:
@@ -214,36 +254,43 @@ async def upload_note(
             db.add(analysis)
             db.commit()
 
-
         # O/X 퀴즈 생성
-        quizzes = result.get('quiz', [])
-        print("Quizzes:", quizzes)  # 디버깅용 로그
+        quizzes = result.get("quiz", [])
+        print("Quizzes:", quizzes)
+        print("Type of quizzes:", type(quizzes))
 
-        # quiz_list 처리
-        quiz_list = []
+        if isinstance(quizzes, str):
+            try:
+                quizzes = json.loads(quizzes)
+                print("Quizzes after JSON parsing:", quizzes)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding JSON: {e}")
+                quizzes = []
+
         if isinstance(quizzes, dict):
-            if "quiz" in quizzes:
-                quiz_list = quizzes["quiz"]
-            elif "quizzes" in quizzes:
-                quiz_list = quizzes["quizzes"]
+            quiz_list = quizzes.get("quiz", [])
         elif isinstance(quizzes, list):
             quiz_list = quizzes
+        else:
+            print("Invalid structure of quizzes. Expected a string, dictionary, or list.")
+            quiz_list = []
 
-        if user_id:
-            for quiz in quiz_list:
-                print("Quiz:", quiz)  # quiz 출력
-                print("Type of quiz:", type(quiz))  # quiz 타입 출력
-
-                if isinstance(quiz, str):
+        for quiz in quiz_list:
+            print("Processing quiz:", quiz)
+            if not isinstance(quiz, dict):
+                try:
                     quiz = ast.literal_eval(quiz)
-                    print("Converted quiz:", quiz)
+                except (ValueError, SyntaxError) as e:
+                    print(f"Error parsing quiz: {quiz} - {e}")
+                    continue
 
+            try:
                 ox_id = str(uuid.uuid4())[:8]
                 ox = OX(
                     ox_id=ox_id,
                     user_id=user_id,
                     note_id=note_id,
-                    rag_id=result["rag_id"],
+                    rag_id=result.get("rag_id"),
                     ox_contents=quiz["question"],
                     ox_answer=quiz["answer"],
                     ox_explanation=quiz["explanation"],
@@ -253,28 +300,77 @@ async def upload_note(
                 )
                 db.add(ox)
                 print(f"Successfully added OX with ox_id={ox_id} to session")
-
-            try:
-                print("Attempting to commit changes to the database...")
-                db.commit()
-                print("Database commit successful!")
-            except Exception as commit_error:
-                print(f"Database commit failed: {commit_error}")
-                import traceback
-
+            except Exception as e:
+                print(f"Error saving quiz: {e}")
                 print(traceback.format_exc())
-                db.rollback()
-                print("Session rolled back due to commit failure")
+                continue
 
+        # 객관식 퀴즈 생성 및 저장
+        multiple_quizzes = result.get("multiple", [])
+        print("Multiple Choice Quizzes:", multiple_quizzes)
+        print("Type of multiple quizzes:", type(multiple_quizzes))
+
+        if isinstance(multiple_quizzes, str):
+            try:
+                multiple_quizzes = json.loads(multiple_quizzes)
+                print("Multiple quizzes after JSON parsing:", multiple_quizzes)
+            except json.JSONDecodeError as e:
+                print(f"Error decoding multiple JSON: {e}")
+                multiple_quizzes = []
+
+        multiple_list = []
+        if isinstance(multiple_quizzes, dict):
+            multiple_list = multiple_quizzes.get("questions", [])
+        elif isinstance(multiple_quizzes, list):
+            multiple_list = multiple_quizzes
+
+        for quiz in multiple_list:
+            print("Processing multiple quiz:", quiz)
+            try:
+                quiz_id = str(uuid.uuid4())[:8]
+                multiple = MultipleChoice(
+                    quiz_id=quiz_id,
+                    user_id=user_id,
+                    note_id=note_id,
+                    rag_id=result.get("rag_id"),
+                    quiz_contents=quiz["question"],
+                    option1=quiz["option1"],
+                    option2=quiz["option2"],
+                    option3=quiz["option3"],
+                    option4=quiz["option4"],
+                    quiz_answer=quiz["answer"],
+                    quiz_explanation=quiz["explanation"],
+                    used_yn="N",
+                    correct_yn="N",
+                    del_yn="N",
+                )
+                db.add(multiple)
+                print(f"Successfully added multiple choice quiz with quiz_id={quiz_id}")
+            except Exception as e:
+                print(f"Error saving multiple quiz: {e}")
+                print(traceback.format_exc())
+                continue
+
+        # 커밋 실행
+        try:
+            print("Attempting to commit changes to the database...")
+            db.commit()
+            print("Database commit successful!")
+        except Exception as commit_error:
+            print(f"Database commit failed: {commit_error}")
+            print(traceback.format_exc())
+            db.rollback()
+            print("Session rolled back due to commit failure")
+
+        end_time = time.time()
+        print(end_time - start_time)
         return {
             "note_id": note_id if user_id else None,
             "user_id": user_id,
             "subjects_id": subjects_id,
             "title": title,
-            "content": raw_text,
             "feedback": result["response"],
             "rag_id": result["rag_id"],
-            "file_extension": file_extension,
             "saved_to_db": bool(user_id),
         }
 
