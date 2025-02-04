@@ -195,15 +195,23 @@ def analysis_chunk(input_data):
         # 청크별 검색
         retrieved_docs = []
         retrieved_ids = []
+
+        subjects = []
+
         for chunk in chunks:
             docs = retriever.invoke(chunk)
             for doc in docs:
                 doc_id = doc.id
+                subjects.append(doc.metadata.get("subject", "default"))
                 if doc_id not in retrieved_ids:
                     retrieved_ids.append(doc_id)
                     retrieved_docs.append(doc)
         print("Retrieved docs len:", len(retrieved_docs))
         print("Retrieved ids len:", len(retrieved_ids))
+
+        # 가장 개수가 많은 subject 선택
+        subject = max(set(subjects), key=subjects.count)
+        print("Selected subject:", subject)
 
         # 피드백 프롬프트 생성
         prompt_feedback = PromptTemplate.from_template(
@@ -293,6 +301,7 @@ def analysis_chunk(input_data):
             "response": response_feedback,
             "quiz": response_quiz,
             "multiple": response_multiple,
+            "subjects_id": subject,
         }
 
     except Exception as e:

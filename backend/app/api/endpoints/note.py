@@ -46,10 +46,15 @@ async def create_text_note(
             )
             db.add(note)
             db.commit()
-
         # RAG 분석 수행
         result = analysis_chunk(content)
         print("Analysis Result:", result)
+
+        # Note db subject 수정
+        if subjects_id == "선택 안함":
+            subjects_id = result["subjects_id"]
+            note.subjects_id = subjects_id
+            db.commit()
 
         # 분석 결과 저장
         if user_id:
@@ -241,6 +246,12 @@ async def upload_note(
         # RAG 분석 수행
         result = analysis_chunk(raw_text)
         print("Analysis Result:", result)
+
+        # Note db subject 수정
+        if subjects_id == "선택 안함":
+            subjects_id = result["subjects_id"]
+            note.subjects_id = subjects_id
+            db.commit()
 
         # 분석 결과 저장
         if user_id:
