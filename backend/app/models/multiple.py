@@ -19,3 +19,4 @@ class MultipleChoice(TimeStampedBase):
     used_yn = Column(String(1), nullable=False, default="N", comment='문제 풀 여부("Y"/"N")')
     correct_yn = Column(String(1), nullable=False, default="N", comment='정답 여부("Y"/"N")')
     del_yn = Column(String(1), nullable=False, default="N", comment='삭제 여부("Y"/"N")')
+    user_answer = Column(String(1), nullable=True, comment="사용자가 선택한 답변(1/2/3/4)")

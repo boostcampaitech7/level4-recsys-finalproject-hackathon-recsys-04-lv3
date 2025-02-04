@@ -93,18 +93,48 @@ async function fetchNoteData() {
             `;
             document.querySelector('.recommendation').innerHTML = quizHtml;
         } else {
+            // 모든 퀴즈를 풀었을 때 표시
             document.querySelector('.recommendation').innerHTML = `
                 <div class="quiz-item">
-                    <p>모든 퀴즈를 푸셨습니다! 새로운 퀴즈를 불러오는 중...</p>
+                    <h3>OX 퀴즈</h3>
+                    <p>${quizData.message || '모든 OX 퀴즈를 풀었습니다!'}</p>
+                    <button onclick="resetQuizzes()" class="reset-quiz-btn">퀴즈 다시 풀기</button>
                 </div>
             `;
-            setTimeout(fetchNoteData, 1500);
         }
     } catch (error) {
         console.error('Error:', error);
         document.querySelector('.recommendation').innerHTML = `
             <div class="quiz-item">
                 <p>퀴즈를 불러오는데 실패했습니다.</p>
+                <button onclick="fetchNoteData()" class="retry-btn">다시 시도</button>
+            </div>
+        `;
+    }
+}
+
+async function resetQuizzes() {
+    try {
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        formData.append('note_id', noteId);
+        formData.append('quiz_type', 'ox');  // OX 퀴즈만 리셋
+
+        const response = await fetch(`${SERVER_BASE_URL}/api/v1/quiz/reset`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error('퀴즈 리셋 실패');
+
+        // 리셋 성공 후 퀴즈 다시 불러오기
+        fetchNoteData();
+    } catch (error) {
+        console.error('Error resetting quizzes:', error);
+        document.querySelector('.recommendation').innerHTML = `
+            <div class="quiz-item">
+                <p>퀴즈 리셋에 실패했습니다.</p>
+                <button onclick="resetQuizzes()" class="retry-btn">다시 시도</button>
             </div>
         `;
     }
@@ -126,7 +156,6 @@ async function solveQuiz(answer, oxId) {
 
         const result = await response.json();
         displayQuizResult(result);
-        setTimeout(fetchNoteData, 2000);
     } catch (error) {
         console.error('Error:', error);
     }
@@ -141,7 +170,10 @@ function displayQuizResult(result) {
             </span>
             <p>${result.result.is_correct}</p>
             <p>정답: ${result.result.correct_answer}</p>
-            <p class="explanation">해설: ${result.result.explanation}</p>
+            <p class="explanation ${isCorrect ? 'correct' : 'incorrect'}">해설: ${result.result.explanation}</p>
+            <button onclick="fetchNoteData()" class="next-quiz-btn ${isCorrect ? 'correct' : 'incorrect'}">
+                다음 문제
+            </button>
         </div>
     `;
     document.querySelector('.recommendation').innerHTML = resultHtml;

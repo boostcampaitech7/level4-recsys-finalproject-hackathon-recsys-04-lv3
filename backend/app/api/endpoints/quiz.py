@@ -4,6 +4,7 @@ from app.models.note import Note
 from app.models.ox import OX
 from fastapi import APIRouter, Depends, Form, HTTPException
 from pydantic import BaseModel
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
@@ -18,19 +19,7 @@ class QuizAnswer(BaseModel):
 
 @router.get("/next")
 def next_quiz(user_id: str, note_id: str, db: Session = Depends(deps.get_db)):
-    # 모든 퀴즈 초기화 확인
-    all_used = (
-        not db.query(OX)
-        .filter(OX.user_id == user_id, OX.note_id == note_id, OX.del_yn == "N", OX.used_yn == "N")
-        .first()
-    )
-
-    # 모든 퀴즈가 used면 초기화
-    if all_used:
-        db.query(OX).filter(OX.user_id == user_id, OX.note_id == note_id, OX.del_yn == "N").update({"used_yn": "N"})
-        db.commit()
-
-    # 초기화 후 랜덤 퀴즈 가져오기
+    # 사용하지 않은 퀴즈가 있는지 확인
     quiz = (
         db.query(OX)
         .filter(OX.user_id == user_id, OX.note_id == note_id, OX.used_yn == "N", OX.del_yn == "N")
@@ -38,9 +27,11 @@ def next_quiz(user_id: str, note_id: str, db: Session = Depends(deps.get_db)):
         .first()
     )
 
+    # 퀴즈가 없다면 (모두 풀었다면) 메시지 반환
     if not quiz:
-        raise HTTPException(status_code=400, detail="No quizzes available")
+        return {"quiz": None, "message": "모든 OX 퀴즈를 풀었습니다!"}
 
+    # 풀지 않은 퀴즈가 있다면 반환
     return {"quiz": {"question": quiz.ox_contents, "ox_id": quiz.ox_id}}
 
 
@@ -136,6 +127,7 @@ async def solve_multiple_choice_quiz(
     correct = "Y" if quiz.quiz_answer == user_answer else "N"
     quiz.correct_yn = correct
     quiz.used_yn = "Y"
+    quiz.user_answer = user_answer  # 이 줄 추가: 사용자가 선택한 답변 저장
     db.commit()
 
     return {
@@ -189,17 +181,24 @@ def get_multiple_by_subject(subject_id: str, user_id: str, db: Session = Depends
 @router.get("/history")
 def get_quiz_history(user_id: str, db: Session = Depends(deps.get_db)):
     try:
+        print(f"Fetching quiz history for user_id: {user_id}")  # 디버깅용 로그 추가
+
         quizzes = (
             db.query(MultipleChoice, Note.subjects_id)
             .join(Note, MultipleChoice.note_id == Note.note_id)
             .filter(
                 MultipleChoice.user_id == user_id,
-                MultipleChoice.used_yn == "Y",  # 푼 문제만 가져오기
+                MultipleChoice.used_yn == "Y",
                 MultipleChoice.del_yn == "N",
             )
-            .order_by(MultipleChoice.created_at.desc())  # 최신순 정렬
-            .all()
+            .order_by(MultipleChoice.created_at.desc())
         )
+
+        # 쿼리 실행 전 SQL 출력
+        print("SQL Query:", str(quizzes))
+
+        result = quizzes.all()
+        print(f"Found {len(result)} quizzes")  # 결과 수 확인
 
         return {
             "quizzes": [
@@ -214,36 +213,78 @@ def get_quiz_history(user_id: str, db: Session = Depends(deps.get_db)):
                         "4": quiz.MultipleChoice.option4,
                     },
                     "answer": quiz.MultipleChoice.quiz_answer,
+                    "user_answer": quiz.MultipleChoice.user_answer,
                     "correct_yn": quiz.MultipleChoice.correct_yn,
                     "explanation": quiz.MultipleChoice.quiz_explanation,
                     "solved_at": quiz.MultipleChoice.created_at.strftime("%Y-%m-%d %H:%M:%S"),
                 }
-                for quiz in quizzes
+                for quiz in result
             ]
         }
 
+    except SQLAlchemyError as e:  # SQLAlchemy 관련 에러 특별 처리
+        print(f"Database error in get_quiz_history: {str(e)}")
+        raise HTTPException(status_code=500, detail="Database error occurred")
+
     except Exception as e:
-        print(f"Error in get_quiz_history: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Unexpected error in get_quiz_history: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+
+        print(f"Traceback: {traceback.format_exc()}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 @router.post("/reset")
-async def reset_quizzes(user_id: str = Form(...), subject_id: str = Form(None), db: Session = Depends(deps.get_db)):
+async def reset_quizzes(
+    user_id: str = Form(...),
+    subject_id: str = Form(None),
+    note_id: str = Form(None),  # 노트 ID 추가
+    quiz_type: str = Form(None),  # 퀴즈 타입 추가 (ox, multiple, 또는 all)
+    db: Session = Depends(deps.get_db),
+):
     try:
-        if subject_id:
+        if note_id:
+            # 특정 노트의 퀴즈만 리셋
+            if quiz_type == "ox" or quiz_type == "all":
+                db.query(OX).filter(OX.user_id == user_id, OX.note_id == note_id, OX.del_yn == "N").update(
+                    {"used_yn": "N"}, synchronize_session=False
+                )
+
+            if quiz_type == "multiple" or quiz_type == "all":
+                db.query(MultipleChoice).filter(
+                    MultipleChoice.user_id == user_id, MultipleChoice.note_id == note_id, MultipleChoice.del_yn == "N"
+                ).update({"used_yn": "N"}, synchronize_session=False)
+
+        elif subject_id:
             # 특정 과목의 노트 ID들을 먼저 가져옴
             note_ids = db.query(Note.note_id).filter(Note.subjects_id == subject_id, Note.user_id == user_id).all()
             note_ids = [note[0] for note in note_ids]
 
             # 해당 노트들의 퀴즈를 리셋
-            db.query(MultipleChoice).filter(
-                MultipleChoice.user_id == user_id, MultipleChoice.note_id.in_(note_ids)
-            ).update({"used_yn": "N"}, synchronize_session=False)
+            if quiz_type == "ox" or quiz_type == "all":
+                db.query(OX).filter(OX.user_id == user_id, OX.note_id.in_(note_ids), OX.del_yn == "N").update(
+                    {"used_yn": "N"}, synchronize_session=False
+                )
+
+            if quiz_type == "multiple" or quiz_type == "all":
+                db.query(MultipleChoice).filter(
+                    MultipleChoice.user_id == user_id,
+                    MultipleChoice.note_id.in_(note_ids),
+                    MultipleChoice.del_yn == "N",
+                ).update({"used_yn": "N"}, synchronize_session=False)
+
         else:
             # 모든 퀴즈 리셋
-            db.query(MultipleChoice).filter(MultipleChoice.user_id == user_id).update(
-                {"used_yn": "N"}, synchronize_session=False
-            )
+            if quiz_type == "ox" or quiz_type == "all":
+                db.query(OX).filter(OX.user_id == user_id, OX.del_yn == "N").update(
+                    {"used_yn": "N"}, synchronize_session=False
+                )
+
+            if quiz_type == "multiple" or quiz_type == "all":
+                db.query(MultipleChoice).filter(MultipleChoice.user_id == user_id, MultipleChoice.del_yn == "N").update(
+                    {"used_yn": "N"}, synchronize_session=False
+                )
 
         db.commit()
         return {"message": "Successfully reset quizzes"}

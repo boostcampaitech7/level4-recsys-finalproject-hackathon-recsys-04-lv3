@@ -16,7 +16,13 @@ document.addEventListener('DOMContentLoaded', async function() {
 async function loadQuizHistory(userId) {
     try {
         const response = await fetch(
-            `${SERVER_BASE_URL}/api/v1/quiz/history?user_id=${userId}`
+            `${SERVER_BASE_URL}/api/v1/quiz/history?user_id=${userId}`,
+            {
+
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }
         );
 
         if (!response.ok) {
@@ -42,26 +48,45 @@ function displayQuizHistory(quizzes) {
     document.getElementById('correct-rate').textContent = `${correctRate}%`;
 
     // 퀴즈 기록 표시
-    historyList.innerHTML = quizzes.map(quiz => `
+    historyList.innerHTML = quizzes.map(quiz => {
+        const getOptionClass = (optionNumber) => {
+            const isUserAnswer = quiz.user_answer === optionNumber;
+            const isCorrectAnswer = quiz.answer === optionNumber;
+
+            if (isUserAnswer && !isCorrectAnswer) {
+                return 'incorrect-answer';  // 사용자가 선택한 오답 (빨간색)
+            }
+            if (isCorrectAnswer) {
+                return 'correct-answer';  // 정답 (초록색)
+            }
+            if (isUserAnswer) {
+                return 'user-answer';  // 사용자가 선택한 답 (기본)
+            }
+            return '';  // 나머지 선택지
+        };
+
+        return `
         <div class="quiz-history-item ${quiz.correct_yn === 'Y' ? 'correct' : 'incorrect'}">
-            <div class="quiz-subject">${quiz.subject}</div>
             <div class="quiz-content">
                 <h3>${quiz.question}</h3>
                 <div class="quiz-options">
-                    <div class="option ${quiz.answer === '1' ? 'correct-answer' : ''}">${quiz.options['1']}</div>
-                    <div class="option ${quiz.answer === '2' ? 'correct-answer' : ''}">${quiz.options['2']}</div>
-                    <div class="option ${quiz.answer === '3' ? 'correct-answer' : ''}">${quiz.options['3']}</div>
-                    <div class="option ${quiz.answer === '4' ? 'correct-answer' : ''}">${quiz.options['4']}</div>
+                    <div class="option ${getOptionClass('1')}">${quiz.options['1']}</div>
+                    <div class="option ${getOptionClass('2')}">${quiz.options['2']}</div>
+                    <div class="option ${getOptionClass('3')}">${quiz.options['3']}</div>
+                    <div class="option ${getOptionClass('4')}">${quiz.options['4']}</div>
                 </div>
-                <p class="quiz-result">
-                    ${quiz.correct_yn === 'Y' ? '정답' : '오답'} |
-                    정답: ${quiz.answer}번
-                </p>
-                <p class="quiz-explanation">${quiz.explanation || '설명 없음'}</p>
+                <div class="quiz-result">
+                    <p class="${quiz.correct_yn === 'Y' ? 'correct-text' : 'incorrect-text'}">
+                        ${quiz.correct_yn === 'Y' ? '정답입니다!' : '틀렸습니다.'}
+                    </p>
+                    <p>정답: ${quiz.answer}번</p>
+                    ${quiz.correct_yn === 'N' ? `<p>선택한 답: ${quiz.user_answer}번</p>` : ''}
+                </div>
+                <p class="quiz-explanation">${quiz.explanation || ''}</p>
             </div>
             <div class="quiz-date">${quiz.solved_at}</div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 async function loadSubjectResetButtons(userId) {
@@ -96,6 +121,7 @@ async function resetQuizzes(subject = null) {
     try {
         const formData = new FormData();
         formData.append("user_id", userId);
+        formData.append("quiz_type", "multiple");  // multiple 퀴즈만 리셋하도록 추가
         if (subject) {
             formData.append("subject_id", subject);
         }
