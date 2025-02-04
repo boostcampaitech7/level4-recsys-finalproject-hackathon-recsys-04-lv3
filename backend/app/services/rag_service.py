@@ -245,12 +245,12 @@ def analysis_chunk(input_data):
         llm = ChatUpstage(model="solar-pro", temperature=0.2)
 
         # 피드백 생성
-        feedback_chain = RunnablePassthrough() | prompt_feedback | llm | StrOutputParser()
+        feedback_chain = prompt_feedback | llm | StrOutputParser()
         response_feedback = feedback_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
         print("Response Feedback:", response_feedback)  # 디버깅용 로그
 
         # 퀴즈 생성
-        quiz_chain = RunnablePassthrough() | prompt_quiz | llm | StrOutputParser()
+        quiz_chain = prompt_quiz | llm | StrOutputParser()
         response_quiz = quiz_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
         print("Response Quiz:", response_quiz)  # 디버깅용 로그
 
