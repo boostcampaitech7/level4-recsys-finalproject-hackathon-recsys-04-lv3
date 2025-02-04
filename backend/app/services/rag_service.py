@@ -241,6 +241,35 @@ def analysis_chunk(input_data):
             """
         )
 
+        # 객관식 퀴즈 프롬프트 추가
+        prompt_multiple = PromptTemplate.from_template(
+            """
+            아래 텍스트를 기반으로 수능 수준의 4지선다형 객관식 문제 5개를 만들어주세요.
+            다음 조건을 충족해야 합니다:
+            1. 질문은 개념 이해와 문제 해결 능력을 평가할 수 있어야 합니다.
+            2. 선택지는 4개이며, 모두 그럴듯하게 구성되어야 합니다.
+            3. 오답 선택지도 관련 있는 내용으로 구성해야 합니다.
+            4. 정답에 대한 설명은 왜 그 답이 정답인지 명확하게 설명해야 합니다.
+            응답은 반드시 JSON 형식으로 반환하세요. 형식은 다음과 같습니다:
+            [
+                {{
+                    "question": "질문 내용",
+                    "option1": "선택지 1",
+                    "option2": "선택지 2",
+                    "option3": "선택지 3",
+                    "option4": "선택지 4",
+                    "answer": "1~4 중 정답 번호",
+                    "explanation": "정답에 대한 설명"
+                }},
+                ...
+            ]
+            #참고 정보:
+            {context}
+            #입력:
+            {raw_text}
+            """
+        )
+
         # 언어 모델(LLM) 생성
         llm = ChatUpstage(model="solar-pro", temperature=0.2)
 
@@ -254,7 +283,17 @@ def analysis_chunk(input_data):
         response_quiz = quiz_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
         print("Response Quiz:", response_quiz)  # 디버깅용 로그
 
-        return {"rag_id": ",".join(retrieved_ids), "response": response_feedback, "quiz": response_quiz}
+        # 객관식 퀴즈 생성
+        multiple_chain = prompt_multiple | llm | StrOutputParser()
+        response_multiple = multiple_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
+        print("Response Multiple:", response_multiple)  # 디버깅용 로그
+
+        return {
+            "rag_id": ",".join(retrieved_ids),
+            "response": response_feedback,
+            "quiz": response_quiz,
+            "multiple": response_multiple,
+        }
 
     except Exception as e:
         print(f"Error in analysis_chunk: {str(e)}")
