@@ -164,6 +164,13 @@ body {
   border-bottom: 2px solid #e9ecef;
 }
 
+.feedback pre {
+  white-space: pre-wrap; /* Preserves line breaks and wraps long lines */
+  word-wrap: break-word; /* Breaks long words if necessary */
+  overflow-wrap: break-word; /* For older browsers */
+  width: 100%; /* Ensure it takes full width of its parent */
+}
+
 /* Quiz Styles */
 .quiz-item {
   position: relative;

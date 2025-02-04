@@ -24,7 +24,7 @@ async function fetchNoteData() {
         document.getElementById('note-title').textContent = noteData.title;
         document.getElementById('subject-name').textContent = `과목: ${noteData.subjects_id}`;
         document.getElementById('note-date').textContent = formatDate(noteData.note_date);
-        document.querySelector('.feedback').innerHTML = `<h3>피드백</h3><p>${noteData.feedback || '피드백이 없습니다'}</p>`;
+        document.querySelector('.feedback').innerHTML = `<pre><h3>피드백</h3><p>${noteData.feedback || '피드백이 없습니다'}</p></pre>`;
 
         // 이미지 컨테이너 초기화
         const imageContainer = document.querySelector('.image');

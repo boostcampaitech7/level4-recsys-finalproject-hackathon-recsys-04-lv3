@@ -69,14 +69,17 @@ function renderFeedbacks(feedbacks) {
             const title = escapeHtml(feedback.note_title || '제목 없음');
             const content = escapeHtml(feedback.feedback || '내용 없음');
             const date = formatDate(feedback.created_at);
+            const subject = escapeHtml(feedback.subject || '')
 
             return `
                 <li class="feedback-item">
                     <div class="feedback-header">
                         <strong>${title}</strong>
-                        <span class="feedback-date">${date}</span>
+                        <br>
+                        <span >${subject}</span>
+                        <span class="feedback-date">| ${date}</span>
                     </div>
-                    <div class="feedback-content">${content}</div>
+                    <pre class="feedback-content">${content}</pre>
                 </li>
             `;
         })

@@ -24,6 +24,7 @@ def get_user_feedbacks(user_id: str, db: Session = Depends(deps.get_db)):
             {
                 "note_title": feedback.Note.title,
                 "feedback": feedback.Analysis.feedback,
+                "subject": feedback.Note.subjects_id,
                 "created_at": feedback.Analysis.created_at,
             }
             for feedback in feedbacks
