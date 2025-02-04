@@ -254,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const loadingOverlay = document.getElementById('loading-overlay');
 
     if (!validateInputs(subject, title)) return;
-
     try {
       state.isUploading = true;
       loadingOverlay.classList.add('active');
@@ -277,10 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function validateInputs(subject, title) {
-    if (!subject || subject === '과목 선택') {
-      alert('과목을 선택해주세요.');
-      return false;
-    }
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
       return false;
