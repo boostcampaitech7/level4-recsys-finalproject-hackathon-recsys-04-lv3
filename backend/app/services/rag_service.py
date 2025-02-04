@@ -210,7 +210,7 @@ def analysis_chunk(input_data):
             """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
             입력과 관련 있는 정보를 참고해서 피드백을 형식화하여 작성해줘.
             만약 틀린 부분이 있다면, 다음 형식으로 피드백을 작성해줘:
-            피드백 사항 {{피드백 숫자}}. {{잘못된 부분}} -> {{올바른 부분}} 
+            피드백 사항 {{피드백 숫자}}. {{잘못된 부분}} -> {{올바른 부분}}
             설명: {{잘못된 부분에 대한 설명}}
             만약 틀린 부분이 없다면 칭찬을 해줘: '잘했어요!'
             #정보:
@@ -223,7 +223,7 @@ def analysis_chunk(input_data):
         # 퀴즈 프롬프트 생성
         prompt_quiz = PromptTemplate.from_template(
             """
-            아래 텍스트를 기반으로 수능 수준의 O/X 퀴즈 5개를 만들어주세요. 
+            아래 텍스트를 기반으로 수능 수준의 O/X 퀴즈 5개를 만들어주세요.
             다음 조건을 충족해야 합니다:
             1. 질문은 개념 이해와 문제 해결 능력을 평가할 수 있어야 합니다.
             2. 정답이 "O"인 문제와 "X"인 문제의 비율은 균형 있게 구성해주세요.
@@ -231,7 +231,7 @@ def analysis_chunk(input_data):
             4. 각 질문의 정답에 대한 설명은 간결하지만 충분히 납득 가능하게 작성해주세요.
             응답은 반드시 JSON 형식으로 반환하세요. 형식은 다음과 같습니다:
             [
-                {{"question": "질문 내용", "answer": "O 또는 X", "explanation": "정답에 대한 간단한 설명"}}, 
+                {{"question": "질문 내용", "answer": "O 또는 X", "explanation": "정답에 대한 간단한 설명"}},
                 ...
             ]
             #참고 정보:
@@ -254,11 +254,7 @@ def analysis_chunk(input_data):
         response_quiz = quiz_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
         print("Response Quiz:", response_quiz)  # 디버깅용 로그
 
-        return {
-            "rag_id": ",".join(retrieved_ids),
-            "response": response_feedback,
-            "quiz": response_quiz
-        }
+        return {"rag_id": ",".join(retrieved_ids), "response": response_feedback, "quiz": response_quiz}
 
     except Exception as e:
         print(f"Error in analysis_chunk: {str(e)}")
