@@ -221,3 +221,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setTool('pen');
 });
+
+// userNameContainer 에 사용자 이름 local strage에서 가져와서 넣어주기
+document.addEventListener('DOMContentLoaded', function () {
+    const userName = localStorage.getItem('userEmail');
+    if (userName) {
+        document.getElementById('userNameContainer').textContent = userName;
+    }
+});

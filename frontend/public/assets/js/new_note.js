@@ -73,11 +73,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const uploadBox = document.getElementById('upload-box');
 
-    // 기존 미리보기 요소들 제거
+    // 기존 미리보기 및 안내 문구 제거
     clearExistingPreviews(uploadBox);
 
     // 파일 타입 표시기 생성
     const typeIndicator = createTypeIndicator();
+
+    // 숨겨진 파일 입력 필드 생성 및 추가 (기존 파일 유지)
+    const hiddenFileInput = document.createElement('input');
+    hiddenFileInput.type = 'file';
+    hiddenFileInput.className = 'input-box';
+    hiddenFileInput.accept = 'image/*,.pdf';
+    hiddenFileInput.style.display = 'none';
+    hiddenFileInput.files = event.target.files; // 기존 파일 복사
+    hiddenFileInput.addEventListener('change', handleFileSelect);
+    uploadBox.appendChild(hiddenFileInput);
 
     try {
       if (file.type.startsWith('image/')) {
@@ -93,11 +103,16 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function clearExistingPreviews(uploadBox) {
-    const existingPreview = uploadBox.querySelector('.upload-preview');
-    const existingIndicator = uploadBox.querySelector('.file-type-indicator');
-    if (existingPreview) existingPreview.remove();
-    if (existingIndicator) existingIndicator.remove();
+    // 기존 미리보기 및 안내 문구만 제거
+    const preview = uploadBox.querySelector('.upload-preview');
+    const indicator = uploadBox.querySelector('.file-type-indicator');
+    const text = uploadBox.querySelectorAll('p');
+
+    if (preview) preview.remove();
+    if (indicator) indicator.remove();
+    text.forEach(p => p.remove());
   }
+
 
   function createTypeIndicator() {
     const typeIndicator = document.createElement('div');

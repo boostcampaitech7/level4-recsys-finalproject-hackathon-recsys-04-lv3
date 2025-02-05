@@ -12,23 +12,12 @@
     </script>
     <script defer src="assets/js/auth.js"></script>
     <script defer src="assets/js/new_note.js"></script>
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
 </head>
 
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="main.html" class="logo"><img src="../logo.png" alt="로고"></a>
-            <a href="main.html">화이트보드</a>
-            <a href="new_note.html" class="active">업로드</a>
-            <a href="notes.html">노트 보관함</a>
-            <a href="quiz.html">퀴즈</a>
-            <a href="feedback.html">피드백 보관함</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html">마이페이지</a>
-            <button class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+    <div id="header"></div>
 
     <div class="container">
         <div class="loading-overlay" id="loading-overlay">
@@ -58,6 +47,7 @@
         </div>
         <button class="input-box analyze-button" id="analyzeBtn">분석하기</button>
     </div>
+    <div id="footer"></div>
 </body>
 
 </html>

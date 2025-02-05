@@ -3,6 +3,88 @@ const noteId = urlParams.get("note_id");
 const userId = localStorage.getItem("user_id");
 const SERVER_BASE_URL = 'http://127.0.0.1:8000';
 
+// 피드백 파싱 및 렌더링 함수
+function renderStructuredFeedback(feedbackXml) {
+    // XML 파서 생성
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(feedbackXml, "text/xml");
+
+    // 결과를 저장할 HTML 문자열
+    let feedbackHtml = '';
+
+    // 성공 케이스 확인
+    const successCase = xmlDoc.querySelector('feedback-case[type="success"]');
+    if (successCase) {
+        feedbackHtml = `
+            <div class="feedback-success">
+                <div class="success-icon">✓</div>
+                <p class="success-message">${successCase.textContent.trim()}</p>
+            </div>
+        `;
+    } else {
+        // 에러 케이스 처리
+        const errorCases = xmlDoc.querySelectorAll('feedback-case[type="error"] item');
+        feedbackHtml = `
+            <div class="feedback-errors">
+                ${Array.from(errorCases).map(item => `
+                    <div class="error-item">
+                        <div class="error-number">${item.querySelector('number').textContent}</div>
+                        <div class="error-content">
+                            <div class="wrong-text">
+                                <span class="label">잘못된 부분:</span>
+                                <span class="text">${item.querySelector('wrong').textContent}</span>
+                            </div>
+                            <div class="correct-text">
+                                <span class="label">수정 사항:</span>
+                                <span class="text">${item.querySelector('correct').textContent}</span>
+                            </div>
+                            <div class="explanation-text">
+                                <span class="label">설명:</span>
+                                <span class="text">${item.querySelector('explanation').textContent}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    return feedbackHtml;
+}
+
+// fetchNoteData 함수 내의 피드백 렌더링 부분 수정
+// noteData.feedback이 XML 형식인 경우에만 구조화된 렌더링 적용
+function updateFeedbackDisplay(feedbackText) {
+    const feedbackContainer = document.querySelector('.note-box.feedback');
+
+    try {
+        // XML 형식인지 확인
+        if (feedbackText.startsWith('<feedback-case')) {
+            const structuredFeedback = renderStructuredFeedback(feedbackText);
+            feedbackContainer.innerHTML = `
+                <h3>피드백</h3>
+                ${structuredFeedback}
+            `;
+        } else {
+            // 일반 텍스트인 경우 기존 방식대로 표시
+            feedbackContainer.innerHTML = `
+                <pre>
+                    <h3>피드백</h3>
+                    <p>${feedbackText || '피드백이 없습니다'}</p>
+                </pre>
+            `;
+        }
+    } catch (error) {
+        console.error('피드백 렌더링 오류:', error);
+        feedbackContainer.innerHTML = `
+            <pre>
+                <h3>피드백</h3>
+                <p>피드백을 표시하는 중 오류가 발생했습니다.</p>
+            </pre>
+        `;
+    }
+}
+
 async function fetchNoteData() {
     try {
         // 초기 로딩 상태 설정
@@ -73,10 +155,8 @@ async function fetchNoteData() {
         // 0.2초 후 피드백과 퀴즈 표시
         setTimeout(() => {
             // 피드백 렌더링
-            feedbackContainer.innerHTML = `
-                <h3>피드백</h3>
-                <p>${noteData.feedback || '피드백이 없습니다'}</p>
-            `;
+            updateFeedbackDisplay(noteData.feedback || '피드백이 없습니다');
+
             feedbackContainer.classList.add('active');
 
             // 퀴즈 렌더링
@@ -114,6 +194,51 @@ async function fetchNoteData() {
     }
 }
 
+// 퀴즈만 다시 불러오기
+async function fetchQuizOnly() {
+    try {
+        const quizContainer = document.querySelector('.note-box.recommendation');
+        const quizResponse = await fetch(`${SERVER_BASE_URL}/api/v1/quiz/next?user_id=${userId}&note_id=${noteId}`);
+
+        if (!quizResponse.ok) {
+            throw new Error('퀴즈 데이터 불러오기 실패');
+        }
+
+        const quizData = await quizResponse.json();
+
+        // 퀴즈 렌더링
+        if (quizData.quiz) {
+            quizContainer.innerHTML = `
+                <h3>OX 퀴즈</h3>
+                <div class="quiz-item">
+                    <p>${quizData.quiz.question}</p>
+                    <div class="quiz-buttons">
+                        <button onclick="solveQuiz('O', '${quizData.quiz.ox_id}')">O</button>
+                        <button onclick="solveQuiz('X', '${quizData.quiz.ox_id}')">X</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            quizContainer.innerHTML = `
+                <div class="quiz-item">
+                    <h3>OX 퀴즈</h3>
+                    <p>${quizData.message || '모든 OX 퀴즈를 풀었습니다!'}</p>
+                    <button onclick="resetQuizzes()" class="reset-quiz-btn">퀴즈 다시 풀기</button>
+                </div>
+            `;
+        }
+        quizContainer.classList.add('active');
+    } catch (error) {
+        console.error('Error:', error);
+        document.querySelector('.recommendation').innerHTML = `
+            <div class="quiz-item">
+                <p>퀴즈를 불러오는데 실패했습니다.</p>
+                <button onclick="fetchQuizOnly()" class="retry-btn">다시 시도</button>
+            </div>
+        `;
+    }
+}
+
 async function resetQuizzes() {
     try {
         const formData = new FormData();
@@ -128,8 +253,8 @@ async function resetQuizzes() {
 
         if (!response.ok) throw new Error('퀴즈 리셋 실패');
 
-        // 리셋 성공 후 퀴즈 다시 불러오기
-        fetchNoteData();
+        // 리셋 성공 후 퀴즈만 다시 불러오기
+        fetchQuizOnly();
     } catch (error) {
         console.error('Error resetting quizzes:', error);
         document.querySelector('.recommendation').innerHTML = `
@@ -172,7 +297,7 @@ function displayQuizResult(result) {
             <p>${result.result.is_correct}</p>
             <p>정답: ${result.result.correct_answer}</p>
             <p class="explanation ${isCorrect ? 'correct' : 'incorrect'}">해설: ${result.result.explanation}</p>
-            <button onclick="fetchNoteData()" class="next-quiz-btn ${isCorrect ? 'correct' : 'incorrect'}">
+            <button onclick="fetchQuizOnly()" class="next-quiz-btn ${isCorrect ? 'correct' : 'incorrect'}">
                 다음 문제
             </button>
         </div>

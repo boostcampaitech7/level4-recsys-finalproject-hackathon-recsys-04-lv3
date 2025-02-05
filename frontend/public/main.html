@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="assets/css/main.css">
     <script defer src="assets/js/auth.js"></script>
     <script defer src="assets/js/drawing.js"></script>
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
     <script>
         window.onload = function() {
             const userId = localStorage.getItem('user_id');
@@ -17,27 +19,14 @@
     </script>
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="main.html" class="logo"><img src="../logo.png" alt="로고"></a>
-            <a href="main.html" class="active">화이트보드</a>
-            <a href="new_note.html">업로드</a>
-            <a href="notes.html">노트 보관함</a>
-            <a href="quiz.html">퀴즈</a>
-            <a href="feedback.html">피드백 보관함</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+    <div id="header"></div>
 
     <div class="container">
         <div class="loading-overlay" id="loading-overlay">
             <div class="loading-spinner"></div>
         </div>
 
-        <h1>새 노트</h1>
+        <h1>안녕하세요, <span id="userNameContainer"></span>님</h1>
         <p>자유롭게 필기하고 AI 피드백을 받아보세요!</p>
 
         <select id="subjectSelect" class="input-box">
@@ -75,5 +64,6 @@
             </div>
         </div>
     </div>
+    <div id="footer"></div>
 </body>
 </html>
