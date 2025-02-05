@@ -6,22 +6,11 @@
     <title>퀴즈</title>
     <link rel="stylesheet" href="assets/css/notes.css">
     <link rel="stylesheet" href="assets/css/quiz.css">
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="main.html" class="logo"><img src="../logo.png" alt="로고"></a>
-            <a href="main.html">화이트보드</a>
-            <a href="new_note.html">업로드</a>
-            <a href="notes.html">노트 보관함</a>
-            <a href="quiz.html" class="active">퀴즈</a>
-            <a href="feedback.html">피드백 보관함</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+    <div id="header"></div>
 
     <div class="container">
         <h1>퀴즈</h1>
@@ -39,6 +28,7 @@
             </div>
         </div>
     </div>
+    <div id="footer"></div>
     <script src="assets/js/auth.js"></script>
     <script src="assets/js/quiz.js"></script>
 </body>

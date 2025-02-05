@@ -1,3 +1,52 @@
+// 피드백 파싱 및 렌더링 함수
+function renderStructuredFeedback(feedbackXml) {
+    // XML 파서 생성
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(feedbackXml, "text/xml");
+
+    // 결과를 저장할 HTML 문자열
+    let feedbackHtml = '';
+
+    // 성공 케이스 확인
+    const successCase = xmlDoc.querySelector('feedback-case[type="success"]');
+    if (successCase) {
+        feedbackHtml = `
+            <div class="feedback-success">
+                <div class="success-icon">✓</div>
+                <p class="success-message">${successCase.textContent.trim()}</p>
+            </div>
+        `;
+    } else {
+        // 에러 케이스 처리
+        const errorCases = xmlDoc.querySelectorAll('feedback-case[type="error"] item');
+        feedbackHtml = `
+            <div class="feedback-errors">
+                ${Array.from(errorCases).map(item => `
+                    <div class="error-item">
+                        <div class="error-number">${item.querySelector('number').textContent}</div>
+                        <div class="error-content">
+                            <div class="wrong-text">
+                                <span class="label">잘못된 부분:</span>
+                                <span class="text">${item.querySelector('wrong').textContent}</span>
+                            </div>
+                            <div class="correct-text">
+                                <span class="label">수정 사항:</span>
+                                <span class="text">${item.querySelector('correct').textContent}</span>
+                            </div>
+                            <div class="explanation-text">
+                                <span class="label">설명:</span>
+                                <span class="text">${item.querySelector('explanation').textContent}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    return feedbackHtml;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const userId = localStorage.getItem('user_id');
     const subjectFilter = document.getElementById('subjectFilter');
@@ -131,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 const title = escapeHtml(feedback.note_title || '제목 없음');
-                const content = escapeHtml(feedback.feedback || '내용 없음');
+                const content = feedback.feedback;
                 const date = formatDate(feedback.created_at);
 
                 // 과목명 우선순위: subject -> note_subject -> subjects_id
@@ -141,6 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     (feedback.subjects_id === "과목 없음" ? "전체" : feedback.subjects_id) ||
                     '전체'
                 );
+                const renderedFeedback = content.startsWith('<feedback-case')
+                    ? renderStructuredFeedback(content)
+                    : escapeHtml(content);
 
                 return `
                     <li class="feedback-item">
@@ -153,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="feedback-date">${date}</span>
                             </div>
                         </div>
-                        <pre class="feedback-content">${content}</pre>
+                        <pre class="feedback-content">${renderedFeedback}</pre>
                     </li>
                 `;
             })

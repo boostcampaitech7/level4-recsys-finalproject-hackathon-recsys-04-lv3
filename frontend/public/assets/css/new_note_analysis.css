@@ -1,93 +1,23 @@
-/* new_note_analysis.css */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
-  background-color: #f5f7fa;
-  color: #495057;
-  line-height: 1.6;
-}
-
-/* Header Styles */
-.header {
-  display: flex;
-  justify-content: space-between;
+/* Container & Note Header Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 1rem;
-  background-color: white;
-  border-bottom: 1px solid #dee2e6;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.header .left, .header .right {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  height: 110vh; /* 전체 뷰포트 높이 사용 */
 }
 
-.header a {
-  text-decoration: none;
-  color: #495057;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-
-.header a:hover {
-  background-color: #f1f3f5;
-}
-
-.header a.active {
-  color: #228be6;
-  font-weight: 500;
-}
-
-.logout-btn {
-  padding: 0.5rem 1rem;
-  background-color: #ff6b6b;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.logout-btn:hover {
-  background-color: #fa5252;
-}
-
-/* 로고 스타일 조정 */
-.header .logo {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-.header .logo img {
-  max-height: 60px; 
-  width: auto; /* 원본 비율 유지 */
-  object-fit: contain;
-}
-
-/* 로고에 마우스 올렸을 때 배경색 변경 방지 */
-.header .logo:hover {
-  background-color: transparent !important;
-}
+Updated Note Styles with Dynamic Heights
 
 /* Container & Note Header Styles */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  height: calc(100vh - 64px); /* 헤더 높이 제외 */
   display: flex;
   flex-direction: column;
+  height: 100vh; /* 전체 뷰포트 높이 사용 */
 }
 
 .note-header {
@@ -119,15 +49,17 @@ body {
 /* Note Layout & Content - Updated */
 .note-layout {
   flex: 1;
-  margin-top: 0;
-  min-height: 0; /* 중요: flex child가 부모 크기를 넘지 않도록 설정 */
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* flex child가 부모 크기를 넘지 않도록 설정 */
 }
 
 .note-content {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1rem;
-  height: 100%;
+  flex: 1; /* 사용 가능한 공간을 모두 채우도록 설정 */
+  min-height: 0; /* Grid 컨테이너가 부모 크기를 넘지 않도록 설정 */
 }
 
 /* Note Box Styles - Updated */
@@ -137,22 +69,21 @@ body {
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border: 1px solid #dee2e6;
+  overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
 }
 
 .note-box.image {
   grid-column: 1;
   grid-row: 1;
-  overflow-y: auto;
-  max-height: none; /* 최대 높이 제한 제거 */
-  height: 100%;
+  height: 100%; /* 부모 높이에 맞춤 */
   display: flex;
   align-items: flex-start;
+  overflow: auto;
 }
 
 .note-box.image img {
   width: 100%;
   height: auto;
-  max-height: 100%;
   object-fit: contain;
 }
 
@@ -175,16 +106,32 @@ body {
 .note-info {
   grid-column: 2;
   grid-row: 1;
-  display: grid;
-  grid-template-rows: 1fr 1fr; /* 피드백과 퀴즈 영역을 동일한 크기로 분할 */
+  height: 100%; /* 이미지 높이에 맞춤 */
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
-  height: 100%;
+  overflow: auto; /* 전체 높이가 이미지보다 크면 스크롤 */
 }
 
-.note-box.feedback,
-.note-box.recommendation {
+
+.note-box.feedback {
+  flex: 6; /* 60% of available height */
+  min-height: 0;
   overflow-y: auto;
-  max-height: 100%;
+}
+
+.note-box.recommendation {
+  flex: 4; /* 40% of available height */
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.note-box {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #dee2e6;
 }
 
 /* Section Headers */
@@ -386,24 +333,33 @@ body {
 
   .note-box.image {
     grid-row: 1;
+    height: auto;
     max-height: 50vh;
   }
 
   .note-info {
     grid-column: 1;
     grid-row: 2;
-    grid-template-rows: auto auto;
+    height: auto;
+  }
+
+  .note-box.feedback {
+    flex: 6;
+  }
+
+  .note-box.recommendation {
+    flex: 4;
+  }
+  .container {
+    padding: 0.5rem;
+    height: 150vh;
   }
 }
 
 @media (max-width: 768px) {
   .container {
-    height: auto;
     padding: 0.5rem;
-  }
-
-  .note-header {
-    padding: 0.75rem;
+    height: 200vh;
   }
 
   .note-box {
@@ -444,4 +400,91 @@ body {
 .note-box.feedback.active,
 .note-box.recommendation.active {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* feedback */
+/* 피드백 스타일 */
+.feedback-success {
+    background-color: #f0fff4;
+    border: 1px solid #68d391;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.success-icon {
+    color: #38a169;
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.success-message {
+    color: #2f855a;
+    font-size: 16px;
+    margin: 0;
+}
+
+.feedback-errors {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.error-item {
+    background-color: #fff5f5;
+    border: 1px solid #fc8181;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+}
+
+.error-number {
+    background-color: #fc8181;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.error-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.wrong-text,
+.correct-text,
+.explanation-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.label {
+    font-weight: bold;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.text {
+    color: #2d3748;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.wrong-text .text {
+    color: #e53e3e;
+}
+
+.correct-text .text {
+    color: #38a169;
 }

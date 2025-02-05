@@ -5,22 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>오늘의 퀴즈 결과</title>
     <link rel="stylesheet" href="assets/css/quiz_result.css">
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+
 </head>
 <body>
-    <div class="header">
-        <div class="left">
-            <a href="main.html" class="logo"><img src="../logo.png" alt="로고"></a>
-            <a href="main.html">화이트보드</a>
-            <a href="new_note.html">업로드</a>
-            <a href="notes.html">노트 보관함</a>
-            <a href="quiz.html" class="active">퀴즈</a>
-            <a href="feedback.html">피드백 보관함</a>
-        </div>
-        <div class="right">
-            <a href="mypage.html">마이페이지</a>
-            <button onclick="logout()" class="logout-btn">로그아웃</button>
-        </div>
-    </div>
+    <div id="header"></div>
 
     <div class="container">
         <h1>오늘의 퀴즈 결과 <span style="color: #3b82f6;">2/3</span></h1>
@@ -47,6 +37,7 @@
             <p><strong>밥과정치 - 맛있겠다</strong></p>
         </div>
     </div>
+    <div id="footer"></div>
     <script src="assets/js/auth.js"></script>
 </body>
 </html>
