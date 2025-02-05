@@ -3,11 +3,26 @@ const noteId = urlParams.get("note_id");
 const userId = localStorage.getItem("user_id");
 const SERVER_BASE_URL = 'http://127.0.0.1:8000';
 
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // 피드백 파싱 및 렌더링 함수
 function renderStructuredFeedback(feedbackXml) {
     // XML 파서 생성
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(feedbackXml, "text/xml");
+    const escapeXml = feedbackXml.replace(/&/g, "&amp;")
+        // .replace(/</g, "&lt;")
+        // .replace(/>/g, "&gt;")
+        // .replace(/"/g, "&quot;")
+        // .replace(/'/g, "&#039;");
+    const xmlDoc = parser.parseFromString(escapeXml, "text/xml");
 
     // 결과를 저장할 HTML 문자열
     let feedbackHtml = '';
@@ -18,7 +33,7 @@ function renderStructuredFeedback(feedbackXml) {
         feedbackHtml = `
             <div class="feedback-success">
                 <div class="success-icon">✓</div>
-                <p class="success-message">${successCase.textContent.trim()}</p>
+                 <p class="success-message">${successCase.querySelector('correct').textContent}</p>
             </div>
         `;
     } else {
@@ -31,16 +46,13 @@ function renderStructuredFeedback(feedbackXml) {
                         <div class="error-number">${item.querySelector('number').textContent}</div>
                         <div class="error-content">
                             <div class="wrong-text">
-                                <span class="label">잘못된 부분:</span>
-                                <span class="text">${item.querySelector('wrong').textContent}</span>
+                                <p class="text"><span class="label">잘못된 부분:</span> ${item.querySelector('wrong').textContent}</p>
                             </div>
                             <div class="correct-text">
-                                <span class="label">수정 사항:</span>
-                                <span class="text">${item.querySelector('correct').textContent}</span>
+                                <p class="text"><span class="label">수정 사항:</span> ${item.querySelector('correct').textContent}</p>
                             </div>
                             <div class="explanation-text">
-                                <span class="label">설명:</span>
-                                <span class="text">${item.querySelector('explanation').textContent}</span>
+                                <p class="text">💡 ${item.querySelector('explanation').textContent}</p>
                             </div>
                         </div>
                     </div>
@@ -56,32 +68,18 @@ function renderStructuredFeedback(feedbackXml) {
 // noteData.feedback이 XML 형식인 경우에만 구조화된 렌더링 적용
 function updateFeedbackDisplay(feedbackText) {
     const feedbackContainer = document.querySelector('.note-box.feedback');
-
+    feedbackText
     try {
-        // XML 형식인지 확인
-        if (feedbackText.startsWith('<feedback-case')) {
-            const structuredFeedback = renderStructuredFeedback(feedbackText);
-            feedbackContainer.innerHTML = `
-                <h3>피드백</h3>
-                ${structuredFeedback}
-            `;
-        } else {
-            // 일반 텍스트인 경우 기존 방식대로 표시
-            feedbackContainer.innerHTML = `
-                <pre>
-                    <h3>피드백</h3>
-                    <p>${feedbackText || '피드백이 없습니다'}</p>
-                </pre>
-            `;
-        }
-    } catch (error) {
-        console.error('피드백 렌더링 오류:', error);
+        const renderedFeedback = feedbackText.startsWith('<feedback-case')
+                ? renderStructuredFeedback(feedbackText)
+                : escapeHtml(feedbackText);
         feedbackContainer.innerHTML = `
-            <pre>
-                <h3>피드백</h3>
-                <p>피드백을 표시하는 중 오류가 발생했습니다.</p>
-            </pre>
-        `;
+            <h3>피드백</h3>
+            ${renderedFeedback}`
+    } catch (error) {
+        feedbackContainer.innerHTML = `
+            <h3>피드백</h3>
+            ${escapeHtml(feedbackText)}`;
     }
 }
 
