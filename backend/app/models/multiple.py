@@ -8,7 +8,7 @@ class MultipleChoice(TimeStampedBase):
     quiz_id = Column(String(10), primary_key=True, comment="유니크한 객관식 퀴즈 아이디")
     user_id = Column(String(10), ForeignKey("tb_user.user_id"), nullable=False, comment="대상 유저 아이디")
     note_id = Column(String(10), ForeignKey("tb_note.note_id"), nullable=False, comment="대상 노트 아이디")
-    rag_id = Column(String(100), nullable=False, comment="관련 RAG 아이디")
+    rag_id = Column(String(300), nullable=False, comment="관련 RAG 아이디")
     quiz_contents = Column(String(200), nullable=False, comment="퀴즈 문제 본문")
     option1 = Column(String(200), nullable=False, comment="선택지 1")
     option2 = Column(String(200), nullable=False, comment="선택지 2")
