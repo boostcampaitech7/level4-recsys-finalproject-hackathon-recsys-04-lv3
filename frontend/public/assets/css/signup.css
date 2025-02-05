@@ -53,3 +53,11 @@ p a {
   text-decoration: none;
   font-weight: bold;
 }
+
+.auth-header h1 img {
+  max-width: 100%; 
+  height: auto;
+  display: block;
+  margin: 0 auto; 
+  object-fit: contain; /* 이미지 비율 유지 */
+}

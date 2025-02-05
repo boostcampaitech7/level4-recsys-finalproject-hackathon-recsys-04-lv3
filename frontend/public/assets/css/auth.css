@@ -33,7 +33,7 @@ body {
 
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .auth-header h1 {
@@ -268,4 +268,12 @@ body {
   .auth-header h1 {
       font-size: 1.75rem;
   }
+}
+
+.auth-header h1 img {
+  max-width: 100%; 
+  height: auto;
+  display: block;
+  margin: 0 auto; 
+  object-fit: contain; /* 이미지 비율 유지 */
 }
