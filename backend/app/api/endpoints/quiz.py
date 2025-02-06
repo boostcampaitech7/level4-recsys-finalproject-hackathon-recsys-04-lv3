@@ -327,3 +327,28 @@ async def reset_quizzes(
         print(f"Error resetting quizzes: {str(e)}")
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/quiz/statistics")
+def get_quiz_statistics(user_id: str, db: Session = Depends(deps.get_db)):
+    try:
+        # 미제출 개수
+        unsubmitted_count = db.query(OX).filter(OX.user_id == user_id, OX.used_yn == "N").count() + \
+                            db.query(MultipleChoice).filter(MultipleChoice.user_id == user_id, MultipleChoice.used_yn == "N").count()
+        
+        # 정답 개수
+        correct_count = db.query(OX).filter(OX.user_id == user_id, OX.used_yn == "Y", OX.correct_yn == "Y").count() + \
+                        db.query(MultipleChoice).filter(MultipleChoice.user_id == user_id, MultipleChoice.used_yn == "Y", MultipleChoice.correct_yn == "Y").count()
+        
+        # 오답 개수
+        incorrect_count = db.query(OX).filter(OX.user_id == user_id, OX.used_yn == "Y", OX.correct_yn == "N").count() + \
+                          db.query(MultipleChoice).filter(MultipleChoice.user_id == user_id, MultipleChoice.used_yn == "Y", MultipleChoice.correct_yn == "N").count()
+        
+        return [
+            {"category": "미제출", "count": unsubmitted_count},
+            {"category": "정답", "count": correct_count},
+            {"category": "오답", "count": incorrect_count}
+        ]
+    
+    except Exception as e:
+        print(f"Error in get_quiz_statistics: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))

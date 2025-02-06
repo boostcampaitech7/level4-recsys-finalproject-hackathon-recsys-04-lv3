@@ -164,6 +164,17 @@
   animation: spin 1s linear infinite;
 }
 
+.pie-chart-container {
+  position: relative;
+  width: 100%;  /* 부모 요소에 맞춰서 크기 자동 조정 */
+  height: 300px;  /* 차트의 높이를 고정 */
+}
+
+#notePieChart {
+  width: 100% !important;  /* 가로 크기를 100%로 설정 */
+  height: 100% !important;  /* 세로 크기를 100%로 설정 */
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

@@ -17,6 +17,7 @@ from app.services.rag_service import analysis_chunk
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 
 router = APIRouter()
 
@@ -497,8 +498,6 @@ def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
         if note.user_id != user_id:
             raise HTTPException(status_code=403, detail="Not authorized to access this note")
 
-        import os
-
         current_dir = os.path.dirname(__file__)
         print(current_dir.split("app")[0])
 
@@ -513,9 +512,14 @@ def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
 
 @router.get("/count/{user_id}")
 def get_notes_count(user_id: str, db: Session = Depends(deps.get_db)):
-    count = db.query(Note).filter(Note.user_id == user_id, Note.del_yn == "N").count()
-    return {"count": count}
-
+    result = (
+        db.query(Note.subjects_id, func.count().label("count"))
+        .filter(Note.user_id == user_id, Note.del_yn == "N")
+        .group_by(Note.subjects_id)
+        .all()
+    )
+    
+    return {"counts": [{"subjects_id": row.subjects_id, "count": row.count} for row in result]}
 
 @router.get("/subjects")
 def get_subjects(user_id: str, db: Session = Depends(deps.get_db)):

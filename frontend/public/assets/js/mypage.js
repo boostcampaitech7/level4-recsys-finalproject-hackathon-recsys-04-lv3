@@ -65,9 +65,8 @@ function renderUserProfile(data) {
 
 function renderStats(noteCount) {
     const stats = [
-        { title: '작성한 노트', value: noteCount.count || 0, unit: '개' },
-        { title: '완료한 퀴즈', value: noteCount.quiz_count || 0, unit: '개' },
-        { title: '학습 시간', value: noteCount.study_time || 0, unit: '시간' }
+        { title: "완료한 퀴즈", value: noteCount.quiz_count || 0, unit: "개" },
+        { title: "학습 시간", value: noteCount.study_time || 0, unit: "시간" }
     ];
 
     const statsHtml = stats.map(stat => `
@@ -78,7 +77,13 @@ function renderStats(noteCount) {
     `).join('');
 
     const statsContainer = document.getElementById('learningStats');
-    statsContainer.innerHTML = statsHtml;
+    statsContainer.innerHTML = `
+        <div class="stat-card pie-chart-container">
+            <h3>작성한 노트</h3>
+            <canvas id="notePieChart"></canvas>
+        </div>
+        ${statsHtml}
+    `;
 
     // Add animation
     const cards = statsContainer.querySelectorAll('.stat-card');
@@ -88,7 +93,52 @@ function renderStats(noteCount) {
             card.style.transform = 'translateY(0)';
         }, index * 200);
     });
+
+    // 📌 파이 차트 데이터 준비
+    const MAX_ITEMS = 5;
+    const COLORS = ["#A2CFFF", "#A8E6CF", "#FFF3B0", "#FFB3A7", "#D4A6FF"];
+
+    const pieChartData = (noteCount.counts || [])
+        .sort((a, b) => b.count - a.count)
+        .slice(0, MAX_ITEMS)
+        .map((item, index) => ({
+            label: item.subjects_id,
+            value: item.count,
+            color: COLORS[index % COLORS.length]
+        }));
+
+    const ctx = document.getElementById("notePieChart").getContext("2d");
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: pieChartData.map(item => item.label),
+            datasets: [{
+                data: pieChartData.map(item => item.value),
+                backgroundColor: pieChartData.map(item => item.color)
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
 }
+
 
 function renderRecentActivities(activities) {
     if (!activities || !activities.length) {
