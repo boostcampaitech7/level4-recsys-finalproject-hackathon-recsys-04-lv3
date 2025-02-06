@@ -236,29 +236,31 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function updateUploadBox(selection) {
-    state.currentType = selection;
-    const uploadBox = document.getElementById('upload-box');
-    const buttons = document.querySelectorAll('.button-select');
+      state.currentType = selection;
+      const uploadBox = document.getElementById('upload-box');
+      const buttons = document.querySelectorAll('.button-select');
 
-    buttons.forEach(btn => btn.classList.remove('active'));
-    document.getElementById(selection).classList.add('active');
+      buttons.forEach(btn => btn.classList.remove('active'));
+      document.getElementById(selection).classList.add('active');
 
-    if (selection === '업로드') {
-      uploadBox.innerHTML = `
-        <p>파일을 업로드하세요</p>
-        <p class="upload-desc">이미지 또는 PDF 파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
-        <input type="file" class="input-box" accept="image/*,.pdf" />
-      `;
+      if (selection === '업로드') {
+          uploadBox.innerHTML = `
+              <p class="upload-desc">이미지 또는 PDF 파일을 드래그하여 놓거나 클릭하여 선택하세요</p>
+              <div class="file-input-container">
+                  <input type="file" class="input-box" accept="image/*,.pdf" id="file-input" />
+                  <label for="file-input" class="file-input-label">파일 선택</label>
+              </div>
+          `;
 
-      const fileInput = uploadBox.querySelector('input[type="file"]');
-      if (fileInput) {
-        fileInput.addEventListener('change', handleFileSelect);
+          const fileInput = uploadBox.querySelector('input[type="file"]');
+          if (fileInput) {
+              fileInput.addEventListener('change', handleFileSelect);
+          }
+      } else if (selection === '텍스트') {
+          uploadBox.innerHTML = `
+              <textarea class="input-box custom-textarea" placeholder="텍스트를 입력하세요."></textarea>
+          `;
       }
-    } else if (selection === '텍스트') {
-      uploadBox.innerHTML = `
-        <textarea class="input-box" placeholder="텍스트를 입력하세요."></textarea>
-      `;
-    }
   }
 
   async function analyzeNote() {
