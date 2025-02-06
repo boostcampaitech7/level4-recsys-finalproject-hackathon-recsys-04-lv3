@@ -1,12 +1,12 @@
 .container {
-    max-width: 1200px;
+    max-width: 1024px;
     margin: 0 auto;
     padding: 2rem 1rem;
 }
 
 .container h1 {
     font-size: 2rem;
-    color: #364fc7;
+    color: #228be6;
     margin-bottom: 0.5rem;
     text-align: center;
 }
@@ -23,7 +23,7 @@
     margin-bottom: 1rem;
     padding: 0.75rem;
     border: 1px solid #dee2e6;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 1rem;
     transition: border-color 0.2s;
 }
