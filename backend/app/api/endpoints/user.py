@@ -1,4 +1,6 @@
 # app/api/endpoints/user.py
+from typing import Optional
+
 from app.api import deps
 from app.models.analysis import Analysis
 from app.models.note import Note
@@ -10,14 +12,17 @@ router = APIRouter()
 
 
 @router.get("/{user_id}/feedbacks")
-def get_user_feedbacks(user_id: str, db: Session = Depends(deps.get_db)):
-    feedbacks = (
-        db.query(Analysis, Note)
-        .join(Note, Analysis.note_id == Note.note_id)
-        .filter(Note.user_id == user_id)
-        .order_by(Analysis.created_at.desc())
-        .all()
-    )
+def get_user_feedbacks(
+    user_id: str,
+    sort: Optional[str] = "newest",  # notes와 동일하게 Optional[str] 사용
+    db: Session = Depends(deps.get_db),
+):
+    query = db.query(Analysis, Note).join(Note, Analysis.note_id == Note.note_id).filter(Note.user_id == user_id)
+
+    # notes와 같은 방식으로 정렬 처리
+    query = query.order_by(Analysis.created_at.desc() if sort == "newest" else Analysis.created_at.asc())
+
+    feedbacks = query.all()
 
     return {
         "feedbacks": [

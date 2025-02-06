@@ -125,17 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoadingState();
 
             const subject = subjectFilter.value;
-            // subject로 파라미터 이름 변경
             const url = `http://localhost:8000/api/v1/user/${userId}/feedbacks?fields=note_title,feedback,created_at,subject,note_subject&sort=${isNewest ? 'newest' : 'oldest'}${subject ? `&subject=${encodeURIComponent(subject)}` : ''}`;
 
-            console.log('Selected subject:', subject);
-            console.log('Requesting URL:', url);
+            console.log('정렬 상태:', isNewest ? 'newest' : 'oldest'); // 정렬 상태 확인
+            console.log('요청 URL:', url);
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to load feedbacks');
-
             const data = await response.json();
-            console.log('API Response:', data);
+
+            console.log('서버 응답 데이터:', data); // 응답 데이터 확인
 
             if (!data.feedbacks || data.feedbacks.length === 0) {
                 const feedbackList = document.querySelector('.feedback-list');
