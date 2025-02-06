@@ -166,13 +166,23 @@
 
 .pie-chart-container {
   position: relative;
-  width: 100%;  /* 부모 요소에 맞춰서 크기 자동 조정 */
-  height: 300px;  /* 차트의 높이를 고정 */
+  width: 100%;
+  height: 300px;
 }
 
 #notePieChart {
-  width: 100% !important;  /* 가로 크기를 100%로 설정 */
-  height: 100% !important;  /* 세로 크기를 100%로 설정 */
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#oxPieChart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#multiplePieChart {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 @keyframes spin {

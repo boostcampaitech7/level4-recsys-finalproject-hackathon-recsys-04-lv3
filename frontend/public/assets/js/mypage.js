@@ -8,18 +8,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     showLoadingState();
 
     try {
-        const [userResponse, noteCountResponse, recentActivitiesResponse] = await Promise.all([
+        const [userResponse, noteCountResponse, recentActivitiesResponse, oxCountResponse, multipleCountResponse] = await Promise.all([
             fetch(`http://localhost:8000/api/v1/auth/user/${userId}`),
             fetch(`http://localhost:8000/api/v1/note/count/${userId}`),
-            fetch(`http://localhost:8000/api/v1/activities/${userId}`)
+            fetch(`http://localhost:8000/api/v1/activities/${userId}`),
+            fetch(`http://localhost:8000/api/v1/quiz/ox-statistics/${userId}`),
+            fetch(`http://localhost:8000/api/v1/quiz/multiple-statistics/${userId}`)
         ]);
 
         const userData = await userResponse.json();
         const noteCount = await noteCountResponse.json();
         const recentActivities = await recentActivitiesResponse.json();
+        const oxCount = await oxCountResponse.json();
+        const multipleCount = await multipleCountResponse.json();
 
         renderUserProfile(userData);
-        renderStats(noteCount);
+        renderStats(noteCount, oxCount, multipleCount);
         renderRecentActivities(recentActivities);
 
         hideLoadingState();
@@ -63,10 +67,8 @@ function renderUserProfile(data) {
     });
 }
 
-function renderStats(noteCount) {
+function renderStats(noteCount, oxCount, multipleCount) {
     const stats = [
-        { title: "완료한 퀴즈", value: noteCount.quiz_count || 0, unit: "개" },
-        { title: "학습 시간", value: noteCount.study_time || 0, unit: "시간" }
     ];
 
     const statsHtml = stats.map(stat => `
@@ -81,6 +83,16 @@ function renderStats(noteCount) {
         <div class="stat-card pie-chart-container">
             <h3>작성한 노트</h3>
             <canvas id="notePieChart"></canvas>
+        </div>
+
+        <div class="stat-card pie-chart-container">
+            <h3>OX 퀴즈</h3>
+            <canvas id="oxPieChart"></canvas>
+        </div>
+
+        <div class="stat-card pie-chart-container">
+            <h3>4지선다 퀴즈</h3>
+            <canvas id="multiplePieChart"></canvas>
         </div>
         ${statsHtml}
     `;
@@ -118,21 +130,77 @@ function renderStats(noteCount) {
             }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
             plugins: {
-                tooltip: {
-                    enabled: true,
-                    callbacks: {
-                        label: function(tooltipItem) {
-                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
                         }
                     }
                 }
-            },
+            }
+        }
+    });
+
+    const ox = document.getElementById('oxPieChart').getContext('2d');
+    new Chart(ox, {
+        type: 'doughnut',
+        data: {
+            labels: oxCount.map(stat => stat.category),
+            datasets: [{
+                data: oxCount.map(stat => stat.count),
+                backgroundColor: [ '#A2CFFF', '#FF6384', '#B8B8B8']
+            }]
+        },
+        options: {
             plugins: {
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const mul = document.getElementById('multiplePieChart').getContext('2d');
+    new Chart(mul, {
+        type: 'doughnut',
+        data: {
+            labels: multipleCount.map(stat => stat.category),
+            datasets: [{
+                data: multipleCount.map(stat => stat.count),
+                backgroundColor: [ '#A2CFFF', '#FF6384', '#B8B8B8']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
+                        }
+                    }
                 }
             }
         }
