@@ -8,19 +8,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     showLoadingState();
 
     try {
-        const [userResponse, noteCountResponse, recentActivitiesResponse] = await Promise.all([
+        const [userResponse, noteCountResponse, oxCountResponse, multipleCountResponse, activatelogResponse] = await Promise.all([
             fetch(`http://localhost:8000/api/v1/auth/user/${userId}`),
             fetch(`http://localhost:8000/api/v1/note/count/${userId}`),
-            fetch(`http://localhost:8000/api/v1/activities/${userId}`)
+            fetch(`http://localhost:8000/api/v1/quiz/ox-statistics/${userId}`),
+            fetch(`http://localhost:8000/api/v1/quiz/multiple-statistics/${userId}`),
+            fetch(`http://localhost:8000/api/v1/note/activate-log/${userId}`)
         ]);
 
         const userData = await userResponse.json();
         const noteCount = await noteCountResponse.json();
-        const recentActivities = await recentActivitiesResponse.json();
+        const oxCount = await oxCountResponse.json();
+        const multipleCount = await multipleCountResponse.json();
+        const activate = await activatelogResponse.json();
 
         renderUserProfile(userData);
-        renderStats(noteCount);
-        renderRecentActivities(recentActivities);
+        renderStats(noteCount, oxCount, multipleCount);
+        renderContributionGraph(activate);
 
         hideLoadingState();
     } catch (error) {
@@ -63,11 +67,8 @@ function renderUserProfile(data) {
     });
 }
 
-function renderStats(noteCount) {
+function renderStats(noteCount, oxCount, multipleCount) {
     const stats = [
-        { title: '작성한 노트', value: noteCount.count || 0, unit: '개' },
-        { title: '완료한 퀴즈', value: noteCount.quiz_count || 0, unit: '개' },
-        { title: '학습 시간', value: noteCount.study_time || 0, unit: '시간' }
     ];
 
     const statsHtml = stats.map(stat => `
@@ -78,7 +79,23 @@ function renderStats(noteCount) {
     `).join('');
 
     const statsContainer = document.getElementById('learningStats');
-    statsContainer.innerHTML = statsHtml;
+    statsContainer.innerHTML = `
+        <div class="stat-card pie-chart-container">
+            <h3>작성한 노트</h3>
+            <canvas id="notePieChart"></canvas>
+        </div>
+
+        <div class="stat-card pie-chart-container">
+            <h3>OX 퀴즈</h3>
+            <canvas id="oxPieChart"></canvas>
+        </div>
+
+        <div class="stat-card pie-chart-container">
+            <h3>4지선다 퀴즈</h3>
+            <canvas id="multiplePieChart"></canvas>
+        </div>
+        ${statsHtml}
+    `;
 
     // Add animation
     const cards = statsContainer.querySelectorAll('.stat-card');
@@ -88,25 +105,167 @@ function renderStats(noteCount) {
             card.style.transform = 'translateY(0)';
         }, index * 200);
     });
+
+    // 📌 파이 차트 데이터 준비
+    const MAX_ITEMS = 5;
+    const COLORS = ["#A2CFFF", "#A8E6CF", "#FFF3B0", "#FFB3A7", "#D4A6FF"];
+
+    const pieChartData = (noteCount.counts || [])
+        .sort((a, b) => b.count - a.count)
+        .slice(0, MAX_ITEMS)
+        .map((item, index) => ({
+            label: item.subjects_id,
+            value: item.count,
+            color: COLORS[index % COLORS.length]
+        }));
+
+    const ctx = document.getElementById("notePieChart").getContext("2d");
+    new Chart(ctx, {
+        type: "doughnut",
+        data: {
+            labels: pieChartData.map(item => item.label),
+            datasets: [{
+                data: pieChartData.map(item => item.value),
+                backgroundColor: pieChartData.map(item => item.color)
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const ox = document.getElementById('oxPieChart').getContext('2d');
+    new Chart(ox, {
+        type: 'doughnut',
+        data: {
+            labels: oxCount.map(stat => stat.category),
+            datasets: [{
+                data: oxCount.map(stat => stat.count),
+                backgroundColor: [ '#A2CFFF', '#FFB3A7', '#B8B8B8']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const mul = document.getElementById('multiplePieChart').getContext('2d');
+    new Chart(mul, {
+        type: 'doughnut',
+        data: {
+            labels: multipleCount.map(stat => stat.category),
+            datasets: [{
+                data: multipleCount.map(stat => stat.count),
+                backgroundColor: [ '#A2CFFF', '#FFB3A7', '#B8B8B8']
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 10
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
-function renderRecentActivities(activities) {
-    if (!activities || !activities.length) {
-        document.getElementById('recentActivities').innerHTML = '<p class="no-activities">최근 활동이 없습니다.</p>';
-        return;
+function renderContributionGraph(activate) {
+    const grid = document.getElementById('contributionGrid');
+    const monthLabels = document.getElementById('monthLabels');
+    const daysColumn = document.getElementById('daysColumn');
+
+    grid.innerHTML = '';
+    monthLabels.innerHTML = '';
+    daysColumn.innerHTML = '';
+
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const today = new Date();
+    const contributions = activate;
+
+    const startDayOfWeek = today.getDay();
+
+    days.forEach(day => {
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'day-label';
+        dayLabel.textContent = day;
+        daysColumn.appendChild(dayLabel);
+    });
+
+    let totalWeeks = Math.ceil((364 + startDayOfWeek) / 7);
+
+    for (let week = 0; week < totalWeeks; week++) {
+        const column = document.createElement('div');
+        column.className = 'contribution-column';
+
+        for (let day = 0; day < 7; day++) {
+            const index = week * 7 + day - startDayOfWeek;
+            const date = new Date();
+            date.setDate(today.getDate() - (364 - index));
+            const level = index >= -startDayOfWeek ? contributions[index] || 0 : 0;
+
+            const cell = document.createElement('div');
+            cell.className = 'contribution-cell';
+            cell.dataset.level = level;
+            cell.dataset.date = date.toISOString().split('T')[0];
+            cell.dataset.count = level;
+
+            cell.addEventListener('mouseover', showTooltip);
+            cell.addEventListener('mouseout', hideTooltip);
+
+            column.appendChild(cell);
+        }
+        grid.appendChild(column);
     }
+}
 
-    const activitiesHtml = activities.map(activity => `
-        <div class="activity-item">
-            <div class="activity-icon">${getActivityIcon(activity.type)}</div>
-            <div class="activity-content">
-                <p class="activity-text">${activity.description}</p>
-                <p class="activity-date">${formatDate(activity.date)}</p>
-            </div>
-        </div>
-    `).join('');
+function showTooltip(event) {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.textContent = `${event.target.dataset.date}: ${event.target.dataset.count}개`;
+    tooltip.style.left = `${event.pageX + 10}px`;
+    tooltip.style.top = `${event.pageY + 10}px`;
+    tooltip.style.display = 'block';
+}
 
-    document.getElementById('recentActivities').innerHTML = activitiesHtml;
+function hideTooltip() {
+    document.getElementById('tooltip').style.display = 'none';
 }
 
 function getActivityIcon(type) {
