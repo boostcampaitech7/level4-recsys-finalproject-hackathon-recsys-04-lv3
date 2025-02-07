@@ -1,15 +1,21 @@
 /* Container & Main Content */
 .container {
-  max-width: 1200px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
 .section-title {
   font-size: 2rem;
-  color: #364fc7;
-  margin-bottom: 1.5rem;
+  color: #228be6;
+  /* margin-bottom: 1.5rem; */
   text-align: center;
+}
+
+#page-explanation{
+  text-align: center;
+  color: #868e96;
+  margin-bottom: 1rem;
 }
 
 /* Profile Section */
@@ -51,7 +57,7 @@
 }
 
 .stats-section h2 {
-  color: #364fc7;
+  color: #228be6;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   text-align: center;
@@ -101,7 +107,7 @@
 }
 
 .recent-activity h2 {
-  color: #364fc7;
+  color: #228be6;
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   text-align: center;
