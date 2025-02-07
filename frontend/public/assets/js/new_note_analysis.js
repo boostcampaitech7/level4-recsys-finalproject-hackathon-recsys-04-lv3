@@ -123,6 +123,7 @@ async function fetchNoteData() {
                 pdfViewer.style.height = '100%';
                 pdfViewer.style.border = 'none';
                 imageContainer.appendChild(pdfViewer);
+                imageContainer.classList.add('active');
             } else {
                 const img = document.createElement('img');
                 img.src = fileUrl;
