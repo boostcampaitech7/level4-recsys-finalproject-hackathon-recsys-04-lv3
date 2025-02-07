@@ -207,26 +207,6 @@ function renderStats(noteCount, oxCount, multipleCount) {
     });
 }
 
-
-// function renderRecentActivities(activities) {
-//     if (!activities || !activities.length) {
-//         document.getElementById('recentActivities').innerHTML = '<p class="no-activities">최근 활동이 없습니다.</p>';
-//         return;
-//     }
-
-//     const activitiesHtml = activities.map(activity => `
-//         <div class="activity-item">
-//             <div class="activity-icon">${getActivityIcon(activity.type)}</div>
-//             <div class="activity-content">
-//                 <p class="activity-text">${activity.description}</p>
-//                 <p class="activity-date">${formatDate(activity.date)}</p>
-//             </div>
-//         </div>
-//     `).join('');
-
-//     document.getElementById('recentActivities').innerHTML = activitiesHtml;
-// }
-
 function renderContributionGraph(activate) {
     const grid = document.getElementById('contributionGrid');
     const monthLabels = document.getElementById('monthLabels');
@@ -239,7 +219,6 @@ function renderContributionGraph(activate) {
     const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const today = new Date();
     const contributions = activate;
-    console.log(contributions)
 
     const startDayOfWeek = today.getDay();
 
@@ -288,8 +267,6 @@ function showTooltip(event) {
 function hideTooltip() {
     document.getElementById('tooltip').style.display = 'none';
 }
-
-renderContributionGraph();
 
 function getActivityIcon(type) {
     const icons = {
