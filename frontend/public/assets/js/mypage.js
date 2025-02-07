@@ -228,7 +228,6 @@ function renderStats(noteCount, oxCount, multipleCount) {
 // }
 
 function renderContributionGraph(activate) {
-    console.log(activate)
     const grid = document.getElementById('contributionGrid');
     const monthLabels = document.getElementById('monthLabels');
     const daysColumn = document.getElementById('daysColumn');
