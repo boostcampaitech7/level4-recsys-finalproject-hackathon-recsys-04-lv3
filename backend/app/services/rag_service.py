@@ -233,7 +233,7 @@ def analysis_chunk(input_data):
             <correct>{{수정 사항}}</correct>
             <explanation>{{잘못된 부분에 대한 설명}}</explanation>
             </item>
-            <feedback-case type="error">
+            </feedback-case>
 
 
             <정보>
