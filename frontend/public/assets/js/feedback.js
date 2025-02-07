@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
         subjectFilter.innerHTML = `
             <option value="">전체 과목</option>
             ${subjects.map(subject =>
-                `<option value="${subject}">${escapeHtml(subject)}</option>`
-            ).join('')}
+            `<option value="${subject}">${escapeHtml(subject)}</option>`
+        ).join('')}
         `;
     }
 
@@ -96,48 +96,53 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderStructuredFeedback(feedbackXml) {
+        // XML 파서 생성
         const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(feedbackXml, "text/xml");
+        const escapeXml = feedbackXml.replace(/&/g, "&amp;")
+        // .replace(/</g, "&lt;")
+        // .replace(/>/g, "&gt;")
+        // .replace(/"/g, "&quot;")
+        // .replace(/'/g, "&#039;");
+        const xmlDoc = parser.parseFromString(escapeXml, "text/xml");
 
-        if (xmlDoc.querySelector('parsererror')) {
-            return `<div class="feedback-content">${escapeHtml(feedbackXml)}</div>`;
-        }
+        // 결과를 저장할 HTML 문자열
+        let feedbackHtml = '';
 
+        // 성공 케이스 확인
         const successCase = xmlDoc.querySelector('feedback-case[type="success"]');
-        if (successCase && successCase.querySelector('correct')) {
-            return `
-                <div class="feedback-success">
-                    <div class="success-icon">✓</div>
-                    <p class="success-message">${escapeHtml(successCase.querySelector('correct').textContent)}</p>
-                </div>
-            `;
-        }
-
-        const errorItems = xmlDoc.querySelectorAll('feedback-case[type="error"] item');
-        if (errorItems.length > 0) {
-            return `
-                <div class="feedback-errors">
-                    ${Array.from(errorItems).map(item => `
-                        <div class="error-item">
-                            <div class="error-number">${escapeHtml(item.querySelector('number')?.textContent || '1')}</div>
-                            <div class="error-content">
-                                <div class="wrong-text">
-                                    <p class="text"><span class="label">잘못된 부분:</span> ${escapeHtml(item.querySelector('wrong')?.textContent || '')}</p>
-                                </div>
-                                <div class="correct-text">
-                                    <p class="text"><span class="label">수정 사항:</span> ${escapeHtml(item.querySelector('correct')?.textContent || '')}</p>
-                                </div>
-                                <div class="explanation-text">
-                                    <p class="text">💡 ${escapeHtml(item.querySelector('explanation')?.textContent || '')}</p>
-                                </div>
+        if (successCase) {
+            feedbackHtml = `
+            <div class="feedback-success">
+                <div class="success-icon">✓</div>
+                 <p class="success-message">${successCase.querySelector('correct').textContent}</p>
+            </div>
+        `;
+        } else {
+            // 에러 케이스 처리
+            const errorCases = xmlDoc.querySelectorAll('feedback-case[type="error"] item');
+            feedbackHtml = `
+            <div class="feedback-errors">
+                ${Array.from(errorCases).map(item => `
+                    <div class="error-item">
+                        <div class="error-number">${item.querySelector('number').textContent}</div>
+                        <div class="error-content">
+                            <div class="wrong-text">
+                                <p class="text"><span class="label">잘못된 부분:</span> ${item.querySelector('wrong').textContent}</p>
+                            </div>
+                            <div class="correct-text">
+                                <p class="text"><span class="label">수정 사항:</span> ${item.querySelector('correct').textContent}</p>
+                            </div>
+                            <div class="explanation-text">
+                                <p class="text">💡 ${item.querySelector('explanation').textContent}</p>
                             </div>
                         </div>
-                    `).join('')}
-                </div>
-            `;
+                    </div>
+                `).join('')}
+            </div>
+        `;
         }
 
-        return `<div class="feedback-content">${escapeHtml(feedbackXml)}</div>`;
+        return feedbackHtml;
     }
 
     function renderFeedbacks(feedbacks) {
