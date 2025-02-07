@@ -6,6 +6,7 @@ import time
 import traceback
 import uuid
 from typing import Optional
+from datetime import date, timedelta
 
 from app.api import deps
 from app.models.analysis import Analysis
@@ -18,6 +19,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
+from sqlalchemy import text
 
 router = APIRouter()
 
@@ -525,3 +527,31 @@ def get_notes_count(user_id: str, db: Session = Depends(deps.get_db)):
 def get_subjects(user_id: str, db: Session = Depends(deps.get_db)):
     subjects = db.query(Note.subjects_id).distinct().filter(Note.user_id == user_id, Note.del_yn == "N").all()
     return {"subjects": [subject[0] for subject in subjects if subject[0]]}
+
+
+@router.get("/activate-log/{user_id}")
+def get_activate_log(user_id: str, db: Session = Depends(deps.get_db)):
+    today = date.today()
+    start_date = today - timedelta(days=363)
+
+    query = text("""
+    WITH RECURSIVE date_series AS (
+        SELECT :start_date AS date
+        UNION ALL
+        SELECT date + INTERVAL 1 DAY
+        FROM date_series
+        WHERE date < :today
+    )
+    SELECT COALESCE(COUNT(n.created_at), 0) AS count
+    FROM date_series ds
+    LEFT JOIN tb_note n 
+        ON DATE(n.created_at) = ds.date 
+        AND n.user_id = :user_id
+    GROUP BY ds.date
+    ORDER BY ds.date;
+    """)
+    
+    result = db.execute(query, {"start_date": start_date, "today": today, "user_id": user_id})
+    counts = [row[0] for row in result.fetchall()]
+
+    return counts

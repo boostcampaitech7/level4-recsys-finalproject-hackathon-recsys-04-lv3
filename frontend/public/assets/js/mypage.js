@@ -8,23 +8,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     showLoadingState();
 
     try {
-        const [userResponse, noteCountResponse, recentActivitiesResponse, oxCountResponse, multipleCountResponse] = await Promise.all([
+        const [userResponse, noteCountResponse, oxCountResponse, multipleCountResponse, activatelogResponse] = await Promise.all([
             fetch(`http://localhost:8000/api/v1/auth/user/${userId}`),
             fetch(`http://localhost:8000/api/v1/note/count/${userId}`),
-            fetch(`http://localhost:8000/api/v1/activities/${userId}`),
             fetch(`http://localhost:8000/api/v1/quiz/ox-statistics/${userId}`),
-            fetch(`http://localhost:8000/api/v1/quiz/multiple-statistics/${userId}`)
+            fetch(`http://localhost:8000/api/v1/quiz/multiple-statistics/${userId}`),
+            fetch(`http://localhost:8000/api/v1/note/activate-log/${userId}`)
         ]);
 
         const userData = await userResponse.json();
         const noteCount = await noteCountResponse.json();
-        const recentActivities = await recentActivitiesResponse.json();
         const oxCount = await oxCountResponse.json();
         const multipleCount = await multipleCountResponse.json();
+        const activate = await activatelogResponse.json();
 
         renderUserProfile(userData);
         renderStats(noteCount, oxCount, multipleCount);
-        renderRecentActivities(recentActivities);
+        renderContributionGraph(activate);
 
         hideLoadingState();
     } catch (error) {
@@ -155,7 +155,7 @@ function renderStats(noteCount, oxCount, multipleCount) {
             labels: oxCount.map(stat => stat.category),
             datasets: [{
                 data: oxCount.map(stat => stat.count),
-                backgroundColor: [ '#A2CFFF', '#FF6384', '#B8B8B8']
+                backgroundColor: [ '#A2CFFF', '#FFB3A7', '#B8B8B8']
             }]
         },
         options: {
@@ -184,7 +184,7 @@ function renderStats(noteCount, oxCount, multipleCount) {
             labels: multipleCount.map(stat => stat.category),
             datasets: [{
                 data: multipleCount.map(stat => stat.count),
-                backgroundColor: [ '#A2CFFF', '#FF6384', '#B8B8B8']
+                backgroundColor: [ '#A2CFFF', '#FFB3A7', '#B8B8B8']
             }]
         },
         options: {
@@ -208,24 +208,89 @@ function renderStats(noteCount, oxCount, multipleCount) {
 }
 
 
-function renderRecentActivities(activities) {
-    if (!activities || !activities.length) {
-        document.getElementById('recentActivities').innerHTML = '<p class="no-activities">최근 활동이 없습니다.</p>';
-        return;
+// function renderRecentActivities(activities) {
+//     if (!activities || !activities.length) {
+//         document.getElementById('recentActivities').innerHTML = '<p class="no-activities">최근 활동이 없습니다.</p>';
+//         return;
+//     }
+
+//     const activitiesHtml = activities.map(activity => `
+//         <div class="activity-item">
+//             <div class="activity-icon">${getActivityIcon(activity.type)}</div>
+//             <div class="activity-content">
+//                 <p class="activity-text">${activity.description}</p>
+//                 <p class="activity-date">${formatDate(activity.date)}</p>
+//             </div>
+//         </div>
+//     `).join('');
+
+//     document.getElementById('recentActivities').innerHTML = activitiesHtml;
+// }
+
+function renderContributionGraph(activate) {
+    console.log(activate)
+    const grid = document.getElementById('contributionGrid');
+    const monthLabels = document.getElementById('monthLabels');
+    const daysColumn = document.getElementById('daysColumn');
+
+    grid.innerHTML = '';
+    monthLabels.innerHTML = '';
+    daysColumn.innerHTML = '';
+
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const today = new Date();
+    const contributions = activate;
+    console.log(contributions)
+
+    const startDayOfWeek = today.getDay();
+
+    days.forEach(day => {
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'day-label';
+        dayLabel.textContent = day;
+        daysColumn.appendChild(dayLabel);
+    });
+
+    let totalWeeks = Math.ceil((364 + startDayOfWeek) / 7);
+
+    for (let week = 0; week < totalWeeks; week++) {
+        const column = document.createElement('div');
+        column.className = 'contribution-column';
+
+        for (let day = 0; day < 7; day++) {
+            const index = week * 7 + day - startDayOfWeek;
+            const date = new Date();
+            date.setDate(today.getDate() - (364 - index));
+            const level = index >= -startDayOfWeek ? contributions[index] || 0 : 0;
+
+            const cell = document.createElement('div');
+            cell.className = 'contribution-cell';
+            cell.dataset.level = level;
+            cell.dataset.date = date.toISOString().split('T')[0];
+            cell.dataset.count = level;
+
+            cell.addEventListener('mouseover', showTooltip);
+            cell.addEventListener('mouseout', hideTooltip);
+
+            column.appendChild(cell);
+        }
+        grid.appendChild(column);
     }
-
-    const activitiesHtml = activities.map(activity => `
-        <div class="activity-item">
-            <div class="activity-icon">${getActivityIcon(activity.type)}</div>
-            <div class="activity-content">
-                <p class="activity-text">${activity.description}</p>
-                <p class="activity-date">${formatDate(activity.date)}</p>
-            </div>
-        </div>
-    `).join('');
-
-    document.getElementById('recentActivities').innerHTML = activitiesHtml;
 }
+
+function showTooltip(event) {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.textContent = `${event.target.dataset.date}: ${event.target.dataset.count}개`;
+    tooltip.style.left = `${event.pageX + 10}px`;
+    tooltip.style.top = `${event.pageY + 10}px`;
+    tooltip.style.display = 'block';
+}
+
+function hideTooltip() {
+    document.getElementById('tooltip').style.display = 'none';
+}
+
+renderContributionGraph();
 
 function getActivityIcon(type) {
     const icons = {
