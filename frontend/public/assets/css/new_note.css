@@ -42,7 +42,7 @@ select.input-box {
 }
 
 textarea.input-box {
-  min-height: 200px;
+  height: 100%;
   resize: vertical;
 }
 
@@ -83,7 +83,6 @@ textarea.input-box {
   text-align: center;
   margin-bottom: 1rem;
   transition: none;
-  min-height: 400px; /* 고정 높이 제거 */
   display: flex;
   flex-direction: column;
   /* gap: 15px; 요소 간 간격 통일 */
