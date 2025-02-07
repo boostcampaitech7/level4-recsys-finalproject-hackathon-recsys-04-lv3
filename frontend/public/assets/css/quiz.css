@@ -1,21 +1,27 @@
 /* 전체 콘테이너 스타일 */
 .container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 2rem;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
 /* 타이틀 스타일 */
 h1 {
   color: #3b82f6;
   font-size: 32px;
+  /* margin-bottom: 1rem; */
+}
+
+#page-explanation{
+  text-align: center;
+  color: #868e96;
   margin-bottom: 1rem;
 }
 
 h2 {
   text-align: center;
   color: #333;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 p {
@@ -63,7 +69,7 @@ p {
 }
 
 .button-primary:hover {
-  background-color: #2563eb;
+  background-color: #006fc6;
 }
 
 .button-secondary {
@@ -93,7 +99,7 @@ p {
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #006fc6;
 }
 
 .btn-secondary {
@@ -486,5 +492,5 @@ p {
 }
 
 .reset-buttons-container .btn-primary:hover {
-  background-color: #0b5ed7;
+  background-color: #006fc6;
 }

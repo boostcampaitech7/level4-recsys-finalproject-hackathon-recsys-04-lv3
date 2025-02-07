@@ -1,6 +1,6 @@
 /* Container & Note Header Styles */
 .container {
-  max-width: 1200px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 1rem;
   display: flex;
@@ -97,7 +97,7 @@ Updated Note Styles with Dynamic Heights
   width: 100%;
   padding: 1rem;
   background-color: #f8f9fa;
-  border-radius: 4px;
+  border-radius: 8px;
   font-family: monospace;
   white-space: pre-wrap;
 }
@@ -178,7 +178,7 @@ Updated Note Styles with Dynamic Heights
   flex: 1;
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
@@ -248,7 +248,7 @@ Updated Note Styles with Dynamic Heights
 .explanation {
   margin-top: 15px;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: 8px;
   color: #1a1a1a;
   font-weight: 500;
 }
@@ -269,7 +269,7 @@ Updated Note Styles with Dynamic Heights
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   margin-top: 15px;
@@ -285,7 +285,7 @@ Updated Note Styles with Dynamic Heights
   color: white;
   padding: 8px 16px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
   margin-top: 10px;
@@ -298,7 +298,7 @@ Updated Note Styles with Dynamic Heights
 .next-quiz-btn {
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
@@ -404,6 +404,12 @@ Updated Note Styles with Dynamic Heights
 
 /* feedback */
 /* 피드백 스타일 */
+.feedback-success,
+.feedback-errors {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    line-height: 1.6;
+}
+
 .feedback-success {
     background-color: #f0fff4;
     border: 1px solid #68d391;
@@ -434,31 +440,34 @@ Updated Note Styles with Dynamic Heights
 }
 
 .error-item {
-    background-color: #fff5f5;
-    border: 1px solid #fc8181;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
     border-radius: 8px;
     padding: 15px;
-    display: flex;
-    gap: 15px;
+    position: relative;
 }
 
 .error-number {
     background-color: #fc8181;
+    border: 1.5px solid #dee2e6;
     color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    font-size: 12px;
+    position: absolute;
+    top: -12px;
+    left: 12px;
 }
 
 .error-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 7px;
 }
 
 .wrong-text,
@@ -467,6 +476,21 @@ Updated Note Styles with Dynamic Heights
     display: flex;
     flex-direction: column;
     gap: 5px;
+}
+
+.explanation-text {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+}
+
+.explanation-text .text {
+    color: #000000;
+    font-size: 16px;
+    line-height: 1.8;
 }
 
 .label {

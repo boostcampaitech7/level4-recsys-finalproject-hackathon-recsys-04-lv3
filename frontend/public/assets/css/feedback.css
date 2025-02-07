@@ -1,48 +1,60 @@
 /* 컨테이너 스타일링 */
 .container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 2rem;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
 .section-title {
   font-size: 2rem;
-  color: #1e293b;
-  margin-bottom: 2rem;
-  font-weight: 700;
+  color: #228be6;
+  text-align: center;
+}
+
+#page-explanation{
+  text-align: center;
+  color: #868e96;
+  margin-bottom: 1rem;
 }
 
 /* 필터 영역 스타일링 */
 .filters {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2rem;
-  align-items: center;
+  margin-bottom: 1rem;
+  /* align-items: center; */
+  justify-content: center;
 }
 
 #subjectFilter {
   padding: 0.5rem 1rem;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   background-color: white;
-  min-width: 150px;
+  /* min-width: 150px; */
   font-size: 0.9rem;
-  color: #495057;
+  color: #333;
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+#subjectFilter:hover {
+  border-color: #228be6;
 }
 
 #subjectFilter:focus {
+  outline: none;
   border-color: #228be6;
-  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.1);
+  box-shadow: 0 0 3px rgba(34, 139, 230, 0.5);
 }
 
 #sortToggle {
   padding: 0.5rem 1rem;
   background-color: white;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  color: #495057;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  color: #333;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s;
@@ -52,7 +64,7 @@
 }
 
 #sortToggle:hover {
-  background-color: #f8f9fa;
+  border-color: #228be6;
 }
 
 /* 피드백 리스트 스타일링 */
@@ -147,6 +159,12 @@
 
 /* feedback */
 /* 피드백 스타일 */
+.feedback-success,
+.feedback-errors {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    line-height: 1.6;
+}
+
 .feedback-success {
   background-color: #f0fff4;
   border: 1px solid #68d391;
@@ -177,8 +195,8 @@
 }
 
 .error-item {
-  background-color: #fff5f5;
-  border: 1px solid #fc8181;
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 15px;
   display: flex;
@@ -195,13 +213,18 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
+
+  /* 추가 스타일 */
+  text-align: center;
+  line-height: 30px; /* height와 동일하게 설정 */
+  font-size: 14px; /* 글씨 크기 조정 */
 }
 
 .error-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
 }
 
 .wrong-text,
@@ -210,6 +233,22 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+.explanation-text {
+  background-color: #f8fafc; /* 부드러운 파란색 배경 */
+  padding: 12px 16px; /* 위아래 여백 증가 */
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+}
+
+
+.explanation-text .text {
+  color: #000000;
+  font-size: 16px; /* 글씨 크기 증가 */
+  line-height: 1.8; /* 줄 간격 증가 */
 }
 
 .label {

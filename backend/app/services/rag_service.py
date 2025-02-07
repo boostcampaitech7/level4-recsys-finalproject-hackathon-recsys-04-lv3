@@ -223,7 +223,7 @@ def analysis_chunk(input_data):
             6. 출력은, 피드백 or 칭찬 중 하나만 선택해.
 
             <feedback-case type="success">
-            {{칭찬 한문장}}
+            <correct>{{칭찬 한문장}}</correct>
             </feedback-case>
 
             <feedback-case type="error">

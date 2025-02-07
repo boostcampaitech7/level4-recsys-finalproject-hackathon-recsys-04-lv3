@@ -1,6 +1,7 @@
 .container {
-  margin: 50px auto;
-  width: 50%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
 .question-box {

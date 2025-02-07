@@ -2,7 +2,12 @@
 function renderStructuredFeedback(feedbackXml) {
     // XML 파서 생성
     const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(feedbackXml, "text/xml");
+    const escapeXml = feedbackXml.replace(/&/g, "&amp;")
+        // .replace(/</g, "&lt;")
+        // .replace(/>/g, "&gt;")
+        // .replace(/"/g, "&quot;")
+        // .replace(/'/g, "&#039;");
+    const xmlDoc = parser.parseFromString(escapeXml, "text/xml");
 
     // 결과를 저장할 HTML 문자열
     let feedbackHtml = '';
@@ -13,7 +18,7 @@ function renderStructuredFeedback(feedbackXml) {
         feedbackHtml = `
             <div class="feedback-success">
                 <div class="success-icon">✓</div>
-                <p class="success-message">${successCase.textContent.trim()}</p>
+                <p class="success-message">${successCase.querySelector('correct').textContent}</p>
             </div>
         `;
     } else {
@@ -26,16 +31,13 @@ function renderStructuredFeedback(feedbackXml) {
                         <div class="error-number">${item.querySelector('number').textContent}</div>
                         <div class="error-content">
                             <div class="wrong-text">
-                                <span class="label">잘못된 부분:</span>
-                                <span class="text">${item.querySelector('wrong').textContent}</span>
+                                <p class="text"><span class="label">잘못된 부분:</span> ${item.querySelector('wrong').textContent}</p>
                             </div>
                             <div class="correct-text">
-                                <span class="label">수정 사항:</span>
-                                <span class="text">${item.querySelector('correct').textContent}</span>
+                                <p class="text"><span class="label">수정 사항:</span> ${item.querySelector('correct').textContent}</p>
                             </div>
                             <div class="explanation-text">
-                                <span class="label">설명:</span>
-                                <span class="text">${item.querySelector('explanation').textContent}</span>
+                                <p class="text">💡 ${item.querySelector('explanation').textContent}</p>
                             </div>
                         </div>
                     </div>
@@ -110,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
         subjectFilter.innerHTML = `
             <option value="">전체 과목</option>
             ${subjects.map(subject =>
-                `<option value="${subject}">${subject}</option>`
-            ).join('')}
+            `<option value="${subject}">${subject}</option>`
+        ).join('')}
         `;
     }
 
@@ -123,17 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoadingState();
 
             const subject = subjectFilter.value;
-            // subject로 파라미터 이름 변경
             const url = `http://localhost:8000/api/v1/user/${userId}/feedbacks?fields=note_title,feedback,created_at,subject,note_subject&sort=${isNewest ? 'newest' : 'oldest'}${subject ? `&subject=${encodeURIComponent(subject)}` : ''}`;
 
-            console.log('Selected subject:', subject);
-            console.log('Requesting URL:', url);
+            console.log('정렬 상태:', isNewest ? 'newest' : 'oldest'); // 정렬 상태 확인
+            console.log('요청 URL:', url);
 
             const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to load feedbacks');
-
             const data = await response.json();
-            console.log('API Response:', data);
+
+            console.log('서버 응답 데이터:', data); // 응답 데이터 확인
 
             if (!data.feedbacks || data.feedbacks.length === 0) {
                 const feedbackList = document.querySelector('.feedback-list');
@@ -190,11 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     (feedback.subjects_id === "과목 없음" ? "전체" : feedback.subjects_id) ||
                     '전체'
                 );
-                const renderedFeedback = content.startsWith('<feedback-case')
-                    ? renderStructuredFeedback(content)
-                    : escapeHtml(content);
+                try {
+                    const renderedFeedback = content.startsWith('<feedback-case')
+                        ? renderStructuredFeedback(content)
+                        : escapeHtml(content);
 
-                return `
+                    return `
                     <li class="feedback-item">
                         <div class="feedback-header">
                             <div class="feedback-info">
@@ -205,9 +206,29 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <span class="feedback-date">${date}</span>
                             </div>
                         </div>
-                        <pre class="feedback-content">${renderedFeedback}</pre>
+                        ${renderedFeedback}
                     </li>
                 `;
+                }
+                catch (error) {
+                    return `
+                    <li class="feedback-item">
+                        <div class="feedback-header">
+                            <div class="feedback-info">
+                                <div class="feedback-title-row">
+                                    <strong class="note-title">${title}</strong>
+                                    <span class="feedback-subject">${subject}</span>
+                                </div>
+                                <span class="feedback-date">${date}</span>
+                            </div>
+                        </div>
+                        <pre class="feedback-content">${escapeHtml(content)}</pre>
+                    </li>
+                `;
+                }
+
+
+
             })
             .join('');
     }

@@ -1,21 +1,16 @@
 .container {
-  max-width: 1200px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 2rem 1rem;
 }
 
 .container h1 {
-  font-size: 2rem;
-  color: #364fc7;
-  margin-bottom: 0.5rem;
+  /* font-size: 2rem; */
+  color: #228be6;
+  /* margin-bottom: 0.5rem; */
   text-align: center;
 }
 
-.container p {
-  color: #868e96;
-  text-align: center;
-  margin-bottom: 2rem;
-}
 
 .input-box {
   display: block;
@@ -23,11 +18,13 @@
   margin-bottom: 1rem;
   padding: 0.75rem;
   border: 1px solid #dee2e6;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s;
   background-color: white;
 }
+
+
 
 select.input-box {
   cursor: pointer;
@@ -41,6 +38,7 @@ select.input-box {
 .input-box:focus {
   outline: none;
   border-color: #228be6;
+  box-shadow: 0 0 3px rgba(34, 139, 230, 0.5);
 }
 
 textarea.input-box {
@@ -58,15 +56,17 @@ textarea.input-box {
   flex: 1;
   padding: 0.75rem;
   border: 1px solid #dee2e6;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: white;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .button-select:hover {
-  background-color: #f8f9fa;
+  background-color: #006fc6;
+  border-color: #006fc6;
+  color: white;
 }
 
 .button-select.active {
@@ -82,12 +82,14 @@ textarea.input-box {
   padding: 20px;
   text-align: center;
   margin-bottom: 1rem;
-  transition: all 0.2s;
-  min-height: 500px; /* 고정 높이 제거 */
+  transition: none;
+  min-height: 400px; /* 고정 높이 제거 */
   display: flex;
   flex-direction: column;
-  gap: 15px; /* 요소 간 간격 통일 */
+  /* gap: 15px; 요소 간 간격 통일 */
   position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
 }
 
 .preview-container {
@@ -100,20 +102,12 @@ textarea.input-box {
   position: relative;
 }
 
-.upload-box:hover {
-  border-color: #228be6;
-}
-
-.upload-box p {
-  margin-bottom: 1rem;
-  color: #868e96;
-}
 
 .upload-preview {
   max-width: 100%;
   max-height: 70vh; /* 뷰포트 높이 기준 조절 */
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 그림자 추가 */
 }
 
@@ -140,7 +134,7 @@ canvas.upload-preview {
   background-color: #228be6;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
@@ -148,7 +142,9 @@ canvas.upload-preview {
 }
 
 .analyze-button:hover {
-  background-color: #1c7ed6;
+  background-color: #006fc6;
+  border-color: #006fc6;
+  color: white;
 }
 
 .loading-overlay {
@@ -201,11 +197,11 @@ canvas.upload-preview {
   position: absolute;
   bottom: 20px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); /* 가운데 정렬 */
   background: rgba(0,0,0,0.7);
   color: white;
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 8px;
   font-size: 0.9em;
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
@@ -220,16 +216,12 @@ input[type="file"] {
 
 input[type="file"]::file-selector-button {
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 8px;
   background-color: #e9ecef;
   border: 1px solid #dee2e6;
   color: #495057;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-input[type="file"]::file-selector-button:hover {
-  background-color: #dee2e6;
+  transition: all 0.2s ease-in-out;
 }
 
 .drag-over {
@@ -274,4 +266,54 @@ input[type="file"]::file-selector-button:hover {
 /* 로고에 마우스 올렸을 때 배경색 변경 방지 */
 .header .logo:hover {
   background-color: transparent !important;
+}
+
+.file-input-container {
+  text-align: center;
+}
+
+.file-input-label {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #e9ecef;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.file-input-label:hover {
+  background-color: #006fc6;
+  color: white;
+}
+
+#file-input {
+  display: none;
+}
+
+.custom-textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  font-family: 'Nanum Gothic', sans-serif; /* 원하는 폰트로 변경 가능 */
+  resize: none;
+  border: none;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* textarea가 upload-box를 꽉 채우도록 설정 */
+.upload-box textarea {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: none;
+  resize: none;
+}
+
+#page-explanation{
+  text-align: center;
+  color: #868e96;
+  margin-bottom: 1rem;
 }
