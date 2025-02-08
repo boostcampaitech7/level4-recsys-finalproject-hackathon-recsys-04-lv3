@@ -472,7 +472,8 @@ Updated Note Styles with Dynamic Heights
 
 .wrong-text,
 .correct-text,
-.explanation-text {
+.explanation-text,
+.reference-text {
     display: flex;
     flex-direction: column;
     gap: 5px;

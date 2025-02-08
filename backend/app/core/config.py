@@ -38,9 +38,6 @@ class Settings(BaseSettings):
     LANGCHAIN_ENDPOINT: str = os.getenv("LANGCHAIN_ENDPOINT", "https://api.smith.langchain.com")
     LANGSMITH_PROJECT_NAME: str = os.getenv("LANGSMITH_PROJECT_NAME", "dev-02")
 
-    # OpenAI settings
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
-
     @property
     def SQLALCHEMY_DATABASE_URL(self) -> str:
         credentials = f"{self.DATABASE_USER_NAME}:{self.DATABASE_PASSWORD}"
@@ -50,9 +47,5 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-
-# Print environment variables for debugging (remove in production)
-print("LANGCHAIN_API_KEY:", os.getenv("LANGCHAIN_API_KEY"))
-print("OPENAI_API_KEY:", os.getenv("OPENAI_API_KEY"))
 
 settings = Settings()
