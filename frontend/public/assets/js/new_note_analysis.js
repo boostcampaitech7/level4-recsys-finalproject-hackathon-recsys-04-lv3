@@ -54,6 +54,10 @@ function renderStructuredFeedback(feedbackXml) {
                             <div class="explanation-text">
                                 <p class="text">💡 ${item.querySelector('explanation').textContent}</p>
                             </div>
+                            <div class="reference-text">
+                                <p class="text"><span class="label">출처:</span> ${item.querySelector('reference').textContent}</p>
+                            </div>
+
                         </div>
                     </div>
                 `).join('')}

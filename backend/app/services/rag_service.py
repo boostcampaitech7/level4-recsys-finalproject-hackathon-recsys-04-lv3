@@ -220,7 +220,8 @@ def analysis_chunk(input_data):
             2. 개념적, 논리적으로 잘못된 문장에 대해서만 피드백을 해줘.
             3. 피드백 숫자는 1부터 차례대로 넣어줘.
             4. 피드백이 없으면 칭찬 한문장 작성해줘.
-            5. 출력은, 피드백 or 칭찬 중 하나만 선택해.
+            5. 참고한 정보의 문서명과 페이지들을 작성해줘.
+            6. 출력은, 피드백 or 칭찬 중 하나만 선택해.
 
             <feedback-case type="success">
             <correct>{{칭찬 한문장}}</correct>
@@ -232,6 +233,7 @@ def analysis_chunk(input_data):
             <wrong>{{잘못된 부분}}</wrong>
             <correct>{{수정 사항}}</correct>
             <explanation>{{잘못된 부분에 대한 설명}}</explanation>
+            <reference>{{출처}}</reference>
             </item>
             </feedback-case>
 
