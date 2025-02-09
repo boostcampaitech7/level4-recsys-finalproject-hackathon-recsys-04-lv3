@@ -1,8 +1,8 @@
 import io
 import re
 import time
-import fitz
 import requests
+import fitz
 from openai import OpenAI
 from PIL import Image
 from PIL import ImageOps
@@ -184,7 +184,8 @@ class TEXT_CONTROL():
     def __init__(self, api_key):
         self.chat_client = OpenAI(api_key=api_key, base_url="https://api.upstage.ai/v1/solar")
 
-    def chat_with_solar(self, chat_client, text):
+    def chat_with_solar(self, text):
+        start_time = time.perf_counter()
         """
         OCR을 통해 얻은 노트 필기 결과를 Solar AI 모델을 사용하여 정제된 텍스트로 변환하는 함수.
 
@@ -205,11 +206,12 @@ class TEXT_CONTROL():
         {text}
         """
         messages = [{"role": "user", "content": content}]
-        response = chat_client.chat.completions.create(
+        response = self.chat_client.chat.completions.create(
             model="solar-pro",
             messages=messages
         )
-        return response.choices[0].message.content
+        end_time = time.perf_counter()
+        return response.choices[0].message.content, (end_time - start_time) * 1000
     
     def str_to_txt(self, filename, text):
         """
@@ -283,64 +285,67 @@ class OCR_TEST():
         self.filename = filename
         self.target_list = self.text_control.read_txt_file(target)
         
-    def img_accuracy(self):
-        score = [0, 0, 0, 0]
+    def img_test(self):
+        score = [0, 0, 0, 0, 0]
+        time_sum = [0, 0, 0, 0, 0]
 
         for _ in range(0, self.loop):
-            test = ["", "", "", ""]
+            test = ["", "", "", "", ""]
 
-            test[0] = self.ocr_prepro.img_base(self.filename)[0]
-            test[1] = self.ocr_prepro.img_gray(self.filename)[0]
-            test[2] = self.ocr_prepro.img_quality(self.filename)[0]
-            test[3] = self.ocr_prepro.img_gray_quality(self.filename)[0]
-            
-            score[0] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[0])[0]
-            score[1] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[1])[0]
-            score[2] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[2])[0]
-            score[3] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[3])[0]
+            ocr_methods = [
+                self.ocr_prepro.img_base,
+                self.ocr_prepro.img_gray,
+                self.ocr_prepro.img_quality,
+                self.ocr_prepro.img_gray_quality
+            ]
 
-        print(f"img accuracy test(%): \n\t base: {score[0]/self.loop} \n\t gray: {score[1]/self.loop} \n\t quality: {score[2]/self.loop} \n\t gray+quality: {score[3]/self.loop}")
-    
-    def img_time(self):
-        test = [0, 0, 0, 0]
+            for i, method in enumerate(ocr_methods):
+                result, time_taken = method(self.filename)
+                test[i] = result
+                time_sum[i] += time_taken
 
-        for _ in range(0, self.loop):
-            test[0] += self.ocr_prepro.img_base(self.filename)[1]
-            test[1] += self.ocr_prepro.img_gray(self.filename)[1]
-            test[2] += self.ocr_prepro.img_quality(self.filename)[1]
-            test[3] += self.ocr_prepro.img_gray_quality(self.filename)[1]
+            base_result, base_time = self.ocr_prepro.img_base(self.filename)
+            chat_result, chat_time = self.text_control.chat_with_solar(base_result)
 
-        print(f"img time test(ms): \n\t base: {test[0]/self.loop} \n\t gray: {test[1]/self.loop} \n\t quality: {test[2]/self.loop} \n\t gray+quality: {test[3]/self.loop}")
-    
-    def pdf_accuracy(self):
-        score = [0, 0, 0, 0]
+            test[4] = chat_result
+            time_sum[4] += base_time + chat_time
 
-        for _ in range(0, self.loop):
-            test = ["", "", "", ""]
+            for i in range(5):
+                score[i] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[i])[0]
 
-            test[0] = self.ocr_prepro.pdf_base(self.filename)[0]
-            test[1] = self.ocr_prepro.pdf_gray(self.filename)[0]
-            test[2] = self.ocr_prepro.pdf_quality(self.filename)[0]
-            test[3] = self.ocr_prepro.pdf_gray_quality(self.filename)[0]
-            
-            score[0] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[0])[0]
-            score[1] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[1])[0]
-            score[2] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[2])[0]
-            score[3] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[3])[0]
-
-        print(f"pdf accuracy test(%): \n\t base: {score[0]/self.loop} \n\t gray: {score[1]/self.loop} \n\t quality: {score[2]/self.loop} \n\t gray+quality: {score[3]/self.loop}")
-
-    def pdf_time(self):
-        test = [0, 0, 0, 0]
+        print(f"img accuracy test(%): \n\t base: {score[0]/self.loop} \n\t gray: {score[1]/self.loop} \n\t quality: {score[2]/self.loop} \n\t gray+quality: {score[3]/self.loop} \n\t base+LLM: {score[4]/self.loop}")
+        print(f"img time test(ms): \n\t base: {time_sum[0]/self.loop} \n\t gray: {time_sum[1]/self.loop} \n\t quality: {time_sum[2]/self.loop} \n\t gray+quality: {time_sum[3]/self.loop} \n\t base+LLM: {time_sum[4]/self.loop}")
+        
+    def pdf_test(self):
+        score = [0, 0, 0, 0, 0]
+        time_sum = [0, 0, 0, 0, 0]
 
         for _ in range(0, self.loop):
-            test[0] += self.ocr_prepro.pdf_base(self.filename)[1]
-            test[1] += self.ocr_prepro.pdf_gray(self.filename)[1]
-            test[2] += self.ocr_prepro.pdf_quality(self.filename)[1]
-            test[3] += self.ocr_prepro.pdf_gray_quality(self.filename)[1]
+            test = ["", "", "", "", ""]
 
-        print(f"pdf time test(ms): \n\t base: {test[0]/self.loop} \n\t gray: {test[1]/self.loop} \n\t quality: {test[2]/self.loop} \n\t gray+quality: {test[3]/self.loop}")
+            pdf_methods = [
+                self.ocr_prepro.pdf_base,
+                self.ocr_prepro.pdf_gray,
+                self.ocr_prepro.pdf_quality,
+                self.ocr_prepro.pdf_gray_quality
+            ]
 
+            for i, method in enumerate(pdf_methods):
+                result, time_taken = method(self.filename)
+                test[i] = result
+                time_sum[i] += time_taken
+
+            base_result, base_time = self.ocr_prepro.pdf_base(self.filename)
+            chat_result, chat_time = self.text_control.chat_with_solar(base_result)
+
+            test[4] = chat_result
+            time_sum[4] += base_time + chat_time
+
+            for i in range(5):
+                score[i] += self.text_control.calculate_accuracy_and_remaining(self.target_list, test[i])[0]
+
+        print(f"pdf accuracy test(%): \n\t base: {score[0]/self.loop} \n\t gray: {score[1]/self.loop} \n\t quality: {score[2]/self.loop} \n\t gray+quality: {score[3]/self.loop} \n\t base+LLM: {score[4]/self.loop}")
+        print(f"pdf time test(ms): \n\t base: {time_sum[0]/self.loop} \n\t gray: {time_sum[1]/self.loop} \n\t quality: {time_sum[2]/self.loop} \n\t gray+quality: {time_sum[3]/self.loop} \n\t base+LLM: {time_sum[4]/self.loop}")
 
 if __name__ == "__main__":
     api_key = ""
@@ -350,8 +355,6 @@ if __name__ == "__main__":
 
     test = OCR_TEST(api_key, loop, filename, target)
     if filename[-4:len(filename)] == ".pdf":
-        test.pdf_accuracy()
-        test.pdf_time()
+        test.pdf_test()
     else:
-        test.img_accuracy()
-        test.img_time()
+        test.img_test()
