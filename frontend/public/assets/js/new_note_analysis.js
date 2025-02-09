@@ -68,7 +68,7 @@ function renderStructuredFeedback(feedbackXml) {
 // noteData.feedback이 XML 형식인 경우에만 구조화된 렌더링 적용
 function updateFeedbackDisplay(feedbackText) {
     const feedbackContainer = document.querySelector('.note-box.feedback');
-    feedbackText
+
     try {
         const renderedFeedback = feedbackText.startsWith('<feedback-case')
                 ? renderStructuredFeedback(feedbackText)
