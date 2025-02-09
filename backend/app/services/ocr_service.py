@@ -33,7 +33,7 @@ async def perform_ocr(file: UploadFile) -> str:
             grayscale_img = img.convert("L")
             
             buffer = io.BytesIO()
-            grayscale_img.save(buffer, format="JPEG")
+            grayscale_img.save(buffer, format="JPEG", quality=50)
             buffer.seek(0)
 
             files = {"document": buffer.getvalue()}
