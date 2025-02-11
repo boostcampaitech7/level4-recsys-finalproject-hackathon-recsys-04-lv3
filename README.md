@@ -4,7 +4,7 @@
     <source srcset="./docs/imgs/IMGenie_logo_white.png" media="(prefers-color-scheme: dark)">
     <img width="300" src="./frontend/public/assets/images/logo.png">
   </picture>
-  
+
   <h2>AI로 더 효과적인 백지 공부, Solar Teacher</h2></hr>
   백지 공부법의 효과를 극대화하고, 자동 퀴즈 생성을 지원하는 AI 기반 학습 도구입니다.
   <h3><a href="https://solar-teacher.vercel.app"> 📘 직접 사용해보기 🖋️</a></h3>
@@ -106,25 +106,43 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 ### USER FLOW
 <img src="./userflow.png">
 
-
 ## 🛠️ 설치 및 활용
+
+
+
+### 0️⃣ Anaconda 가상환경 설치
+
+- 가상환경 만들기
+
+```shell
+conda create --name solar-teacher python=3.11
+```
+
+- 가상환경 활성화
+
+```shell
+conda activate solar-teacher
+```
+
+- 라이브러리 설치
+
+```shell
+pip install -r requirements.txt
+```
+
 ### 1️⃣ root에 .env 파일 생성
+
+- .env_sample 파일명을 .env로 변경
+- API_KEY 변경하기
+
 ```bash
-OPENAI_API_KEY=
-LANGCHAIN_API_KEY=
-UPSTAGE_API_KEY=
-PINECONE_API_KEY=
-PINECONE_INDEX_NAME=
-DATABASE_USER_NAME=guest
-DATABASE_PASSWORD=1234
-DATABASE_HOST=10.28.224.56
-DATABASE_PORT=30470
-DATABASE_NAME=dev
+# LANGCHAIN_API_KEY=lsv2_
+# UPSTAGE_API_KEY=up_
+# PINECONE_API_KEY = pcsk_
 ```
 ### 2️⃣ 백엔드 실행
 ```bash
 cd backend
-pip install -r requirements.txt
 python main.py
 ```
 ### 3️⃣ 프론트엔드 실행
