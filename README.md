@@ -30,7 +30,8 @@ TEST PW : 1234
 - 
 
 ## 시연 영상
-
+- 시연 영상: https://youtu.be/AQfevYXir6k
+- 광고 영상: https://youtu.be/nvqfXGnnRyg
 
 ## 흐름도
 ### DATA FLOW
