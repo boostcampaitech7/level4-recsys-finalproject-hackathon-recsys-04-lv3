@@ -39,28 +39,32 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 
 
 
-## 🏗️ 주요 기능  
+## 🏗️ 기능 소개
+
+### 로그인 회원가입
 
 ### ✍️ 노트 업로드  
-사진, PDF 업로드 및 화이트보드 필기 지원
+- 사진, PDF 업로드 및 화이트보드 필기 지원
 
 <img src="upload.gif" width="70%">
 
-### 🔍 AI 피드백  
-필기 내용을 분석하여 개념 오류 수정
+### 🔍 AI 피드백  & OX 퀴즈
+- 필기 내용을 분석하여 피드백 제공
+  - 제공 내용: 잘못된 부분, 수정사항, 해설, 출처
+- OX 퀴즈 문제 자동 생성
 
-<img src="./docs/screenshots/ai_feedback.gif" width="70%">
+<img src="feedback.gif" width="70%">
 
 
-### 🎯 퀴즈 생성
-OX 및 객관식 문제 자동 생성
+### 🎯 사지선다 퀴즈
+과목별 객관식 문제 자동 생성
 
-<img src="./docs/screenshots/quiz.gif" width="70%">
+<img src="multi_quiz.gif" width="70%">
 
 ### 📊 학습 데이터 관리
 피드백 모아보기 및 학습 통계 제공
 
-<img src="./docs/screenshots/mypage.gif" width="70%">
+<img src="mypage.gif" width="70%">
 
 ## 🎬 시연 영상  
 
@@ -69,7 +73,7 @@ OX 및 객관식 문제 자동 생성
     <img src="https://img.shields.io/badge/▶%20시연%20영상-red?style=for-the-badge&logo=youtube&logoColor=white" alt="시연 영상">
   </a>
   <a href="https://youtu.be/nvqfXGnnRyg">
-    <img src="https://img.shields.io/badge/📺%20광고%20영상-blue?style=for-the-badge&logo=youtube&logoColor=white" alt="광고 영상">
+    <img src="https://img.shields.io/badge/▶%20광고%20영상-blue?style=for-the-badge&logo=youtube&logoColor=white" alt="광고 영상">
   </a>
 </p>
 
