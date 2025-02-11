@@ -180,7 +180,7 @@ def analysis_chunk(input_data):
         # 임베딩 및 검색기(Retriever) 설정
         embeddings_query = UpstageEmbeddings(model="embedding-query")
         vectorstore = PineconeVectorStore(index=index, embedding=embeddings_query)
-        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 2})
+        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 1})
 
         # 입력 데이터 청크 나누기
         embeddings_passage = UpstageEmbeddings(model="embedding-passage")
