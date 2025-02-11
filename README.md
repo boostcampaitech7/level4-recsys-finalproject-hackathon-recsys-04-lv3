@@ -44,7 +44,7 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 ### ✍️ 노트 업로드  
 사진, PDF 업로드 및 화이트보드 필기 지원
 
-<img src="./docs/screenshots/note_upload.gif" width="70%">
+<img src="upload.gif" width="70%">
 
 ### 🔍 AI 피드백  
 필기 내용을 분석하여 개념 오류 수정
@@ -95,6 +95,8 @@ cd frontend
 npm install
 npm start
 ```
+
+## 레파지토리 구조
 
 
 ## 👥 팀원 구성  
