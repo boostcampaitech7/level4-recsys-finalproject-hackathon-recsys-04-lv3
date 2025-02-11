@@ -25,6 +25,16 @@ TEST ID : solar@test.com
 TEST PW : 1234
 ```
 
+## 📑 목차
+1. [프로젝트 소개](#-프로젝트-소개)
+2. [기능 소개](#-기능-소개)
+3. [시연 영상](#🎬-시연-영상)
+4. [흐름도](#흐름도)
+5. [설치 및 활용](#🛠️-설치-및-활용)
+6. [팀원 구성](#👥-팀원-구성)
+7. [Further Reading](#Further-Reading)
+
+
 
 ## 🚀 프로젝트 소개
 SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI 기반 피드백 및 맞춤형 퀴즈 제공 서비스**입니다.
@@ -41,30 +51,43 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 
 ## 🏗️ 기능 소개
 
-### 로그인 회원가입
+### 🔑 로그인 회원가입
+- 로그인/회원가입 기능 구현
+
+<img src="signup_login.gif" width="70%" alt="로그인 및 회원가입 화면">
 
 ### ✍️ 노트 업로드  
 - 사진, PDF 업로드 및 화이트보드 필기 지원
+  - 과목 미선택시 자동 분류 
 
-<img src="upload.gif" width="70%">
+<img src="upload.gif" width="70%" alt="PDF 업로드 화면">
 
 ### 🔍 AI 피드백  & OX 퀴즈
 - 필기 내용을 분석하여 피드백 제공
   - 제공 내용: 잘못된 부분, 수정사항, 해설, 출처
 - OX 퀴즈 문제 자동 생성
 
-<img src="feedback.gif" width="70%">
+<img src="feedback.gif" width="70%" alt="PDF 업로드 화면">
 
 
 ### 🎯 사지선다 퀴즈
-과목별 객관식 문제 자동 생성
+- 과목별 객관식 문제 자동 생성
+- 퀴즈 해설, 통계 제공
+- 풀었던 퀴즈(OX, 사지선다) 모아보기
+- 퀴즈 리셋 기능
 
-<img src="multi_quiz.gif" width="70%">
+<img src="multiple_quiz.gif" width="70%" alt="사지선다 퀴즈 화면">
+
+### 📂 피드백 보관함
+- 피드백 모아보기 기능 제공
+  - 과목별, 시간순 정렬 가능
+
+<img src="feedbacks.gif" width="70%" alt="피드백 보관함 화면">
 
 ### 📊 학습 데이터 관리
-피드백 모아보기 및 학습 통계 제공
+- 기본 정보 및 학습 통계 제공
 
-<img src="mypage.gif" width="70%">
+<img src="mypage.gif" width="70%" alt="마이페이지 화면">
 
 ## 🎬 시연 영상  
 
@@ -78,7 +101,7 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 </p>
 
 
-## 흐름도
+## 🌀 흐름도
 ### DATA FLOW
 <img src='./dataflow.png'>
 
@@ -113,21 +136,21 @@ npm install
 npm start
 ```
 
-## 레파지토리 구조
+## 🗂️ 레파지토리 구조
 
 
 ## 👥 팀원 구성  
 
 | 이름   | 역할        | GitHub                          | 마지막 한 마디               |
 |--------|------------|--------------------------------|------------------------------|
-| 강현구 | Backend / Feedback   | [@ardkyer](https://https://github.com/ardkyer) | 많이 배웠습니다!           |
-| 서동준 | RAG / Pinecone   | [@seoo2001](https://https://github.com/seoo2001) | 유익한 시간이었어요!       |
-| 양시영 | RAG / LangSmith | [@Lagom92](https://https://github.com/Lagom92) | 팀워크 최고!               |
-| 이도걸 | PM / OCR | [@doffice0827](https://https://github.com/doffice0827) | 좋은 경험이었습니다!        |
-| 이수미 | Quiz / DB   | [@SooMiiii](https://https://github.com/SooMiiii) | 재미있는 프로젝트였어요!   |
+| 강현구 | Backend / Feedback   | [@ardkyer](https://github.com/ardkyer) | 많이 배웠습니다!           |
+| 서동준 | RAG / Pinecone   | [@seoo2001](https://github.com/seoo2001) | 유익한 시간이었어요!       |
+| 양시영 | RAG / LangSmith | [@Lagom92](https://github.com/Lagom92) | 팀워크 최고!               |
+| 이도걸 | PM / OCR | [@doffice0827](https://github.com/doffice0827) | 좋은 경험이었습니다!        |
+| 이수미 | Quiz / DB   | [@SooMiiii](https://github.com/SooMiiii) | 재미있는 프로젝트였어요!   |
 
 
-## Further Reading
+## 🔍 Further Reading
 - 발표 영상 
 - 발표 자료
 - 랩업 리포트
