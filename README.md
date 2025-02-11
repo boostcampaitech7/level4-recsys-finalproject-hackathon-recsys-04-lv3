@@ -64,7 +64,7 @@ OX 및 객관식 문제 자동 생성
 
 ## 🎬 시연 영상  
 
-<p align="center">
+<p align="left">
   <a href="https://youtu.be/AQfevYXir6k">
     <img src="https://img.shields.io/badge/▶%20시연%20영상-red?style=for-the-badge&logo=youtube&logoColor=white" alt="시연 영상">
   </a>
@@ -101,11 +101,11 @@ npm start
 
 | 이름   | 역할        | GitHub                          | 마지막 한 마디               |
 |--------|------------|--------------------------------|------------------------------|
-| 이도걸 | PM / Backend | [GitHub 링크](https://github.com/username1) | "좋은 경험이었습니다!"        |
-| 강현구 | Backend    | [GitHub 링크](https://github.com/username2) | "많이 배웠습니다!"           |
-| 서동준 | RAG / DB   | [GitHub 링크](https://github.com/username3) | "유익한 시간이었어요!"       |
-| 양시영 | OCR / Quiz | [GitHub 링크](https://github.com/username4) | "팀워크 최고!"               |
-| 이수미 | Feedback   | [GitHub 링크](https://github.com/username5) | "재미있는 프로젝트였어요!"   |
+| 강현구 | Backend / Feedback   | [@ardkyer](https://https://github.com/ardkyer) | 많이 배웠습니다!           |
+| 서동준 | RAG / Pinecone   | [@seoo2001](https://https://github.com/seoo2001) | 유익한 시간이었어요!       |
+| 양시영 | RAG / LangSmith | [@Lagom92](https://https://github.com/Lagom92) | 팀워크 최고!               |
+| 이도걸 | PM / OCR | [@doffice0827](https://https://github.com/doffice0827) | 좋은 경험이었습니다!        |
+| 이수미 | Quiz / DB   | [@SooMiiii](https://https://github.com/SooMiiii) | 재미있는 프로젝트였어요!   |
 
 
 ## Further Reading
