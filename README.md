@@ -154,7 +154,7 @@ npm start
 
 ## 📡 Upstage API 사용 목록
 
-| API                        | 설명                                                     | 사용 위치                  | 코드에서 사용한 위치         |
+| API                        | 설명                                                     | 사용 위치                  | 사용 위치         |
 |-----------------------------|----------------------------------------------------------|----------------------------|----------------------------|
 | **Document OCR**           | 이미지 또는 PDF 파일에서 텍스트를 추출하는 기능 | 손글씨 노트 인식      |  [ocr_service.py](https://github.com/boostcampaitech7/level4-recsys-finalproject-hackathon-recsys-04-lv3/blob/main/backend/app/services/ocr_service.py)    |
 | **Embeddings**         | 텍스트 데이터를 벡터화하여 의미 기반 검색 및 분석에 활용  | input text 임베딩, RAG data 구축, 시멘틱 검색            | [rag_service.py](https://github.com/boostcampaitech7/level4-recsys-finalproject-hackathon-recsys-04-lv3/blob/main/backend/app/services/rag_service.py)       |
@@ -163,7 +163,7 @@ npm start
 
 ## 🗂️ 레파지토리 구조
 
-## MySQL DB 구조
+## 💾 MySQL DB 구조
 <img src="ERD.png" alt="ERD">
 
 ## 👥 팀원 구성  
