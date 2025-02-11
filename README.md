@@ -90,7 +90,7 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 ## 🎬 시연 영상  
 
 <p align="left">
-  <a href="https://youtu.be/AQfevYXir6k">
+  <a href="https://youtu.be/OdiDxrRkwWY">
     <img src="https://img.shields.io/badge/▶%20시연%20영상-red?style=for-the-badge&logo=youtube&logoColor=white" alt="시연 영상">
   </a>
   <a href="https://youtu.be/nvqfXGnnRyg">
@@ -154,30 +154,27 @@ npm start
 
 ## 📡 Upstage API 사용 목록
 
-| API                        | 설명                                                     | 사용 위치                  |
-|-----------------------------|----------------------------------------------------------|----------------------------|
-| **Document OCR**           | 이미지 또는 PDF 파일에서 텍스트를 추출하는 기능 | ✍️ 노트 업로드      |
-| **Embeddings**         | 텍스트 데이터를 벡터화하여 의미 기반 검색 및 분석에 활용  | 여기 수정 고고            |
-| **Chat**      | 설명 수정 ㄱㄱ      | 🎯 사지선다 퀴즈, 🔍 AI 피드백 & OX 퀴즈         |
+| API                        | 설명                                                     | 사용 위치                  | 코드에서 사용한 위치         |
+|-----------------------------|----------------------------------------------------------|----------------------------|----------------------------|
+| **Document OCR**           | 이미지 또는 PDF 파일에서 텍스트를 추출하는 기능 | 손글씨 노트 인식      |  [ocr_service.py](https://github.com/boostcampaitech7/level4-recsys-finalproject-hackathon-recsys-04-lv3/blob/main/backend/app/services/ocr_service.py)    |
+| **Embeddings**         | 텍스트 데이터를 벡터화하여 의미 기반 검색 및 분석에 활용  | input text 임베딩, RAG data 구축, 시멘틱 검색            | [rag_service.py](https://github.com/boostcampaitech7/level4-recsys-finalproject-hackathon-recsys-04-lv3/blob/main/backend/app/services/rag_service.py)       |
+| **Chat**      | 사용자와의 상호작용을 통해 질문 응답 및 대화 생성     | 피드백, OX퀴즈, 사지선다 퀴즈 생성         | [rag_service.py](https://github.com/boostcampaitech7/level4-recsys-finalproject-hackathon-recsys-04-lv3/blob/main/backend/app/services/rag_service.py) |
 
 
 ## 🗂️ 레파지토리 구조
 
 ## MySQL DB 구조
-
-## Pinecone 구조
-
-## Langsmith
+<img src="ERD.png" alt="ERD">
 
 ## 👥 팀원 구성  
 
-| 이름   | 역할        | GitHub                          | 마지막 한 마디               |
-|--------|------------|--------------------------------|------------------------------|
-| 강현구 | Backend / Feedback   | [@ardkyer](https://github.com/ardkyer) | 많이 배웠습니다!           |
-| 서동준 | RAG / Pinecone   | [@seoo2001](https://github.com/seoo2001) | 유익한 시간이었어요!       |
-| 양시영 | RAG / LangSmith | [@Lagom92](https://github.com/Lagom92) | 팀워크 최고!               |
-| 이도걸 | PM / OCR | [@doffice0827](https://github.com/doffice0827) | 좋은 경험이었습니다!        |
-| 이수미 | Quiz / DB   | [@SooMiiii](https://github.com/SooMiiii) | 재미있는 프로젝트였어요!   |
+| 이름   | GitHub                          | 역할        | 마지막 한 마디               |
+|--------|--------------------------------|------------|------------------------------|
+| 강현구 | [@ardkyer](https://github.com/ardkyer) | Backend / Feedback   | 많이 배웠습니다!           |
+| 서동준 | [@seoo2001](https://github.com/seoo2001) | RAG / Pinecone   | 유익한 시간이었어요!       |
+| 양시영 | [@Lagom92](https://github.com/Lagom92) | RAG / LangSmith | 팀워크 최고!               |
+| 이도걸 | [@doffice0827](https://github.com/doffice0827) | PM / OCR | 좋은 경험이었습니다!        |
+| 이수미 | [@SooMiiii](https://github.com/SooMiiii) | Quiz / DB   | 재미있는 프로젝트였어요!   |
 
 
 ## 🔍 Further Reading
