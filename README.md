@@ -38,37 +38,40 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 🔹 학습 데이터 관리: 학습 진행 상태를 한눈에 확인하고, 피드백 및 퀴즈 기록 조회
 
 
+
 ## 🏗️ 주요 기능  
 
-- ✍️ **노트 업로드**  
-  - 사진, PDF 업로드 및 화이트보드 필기 지원  
+### ✍️ 노트 업로드  
+사진, PDF 업로드 및 화이트보드 필기 지원
 
-- 🔍 **AI 피드백**  
-  - 필기 내용을 분석하여 개념 오류 수정  
+<img src="./docs/screenshots/note_upload.gif" width="70%">
 
-- 🎯 **퀴즈 생성**  
-  - OX 및 객관식 문제 자동 생성  
+### 🔍 AI 피드백  
+필기 내용을 분석하여 개념 오류 수정
 
-- 📊 **학습 데이터 관리**  
-  - 피드백 모아보기 및 학습 통계 제공  
+<img src="./docs/screenshots/ai_feedback.gif" width="70%">
 
 
-## 시연 영상
-- [시연 영상](https://youtu.be/AQfevYXir6k)
-- [광고 영상](https://youtu.be/nvqfXGnnRyg)
+### 🎯 퀴즈 생성
+OX 및 객관식 문제 자동 생성
 
-## 🎬 시연 영상  
-- **[시연 영상 보기](https://youtu.be/AQfevYXir6k) 🎥**  
-- **[광고 영상 보기](https://youtu.be/nvqfXGnnRyg) 📺**  
-## 🎬 시연 영상  
+<img src="./docs/screenshots/quiz.gif" width="70%">
 
-[![시연 영상](https://img.shields.io/badge/▶%20시연%20영상%20보기-AQfevYXir6k-red?style=for-the-badge&logo=youtube)](https://youtu.be/AQfevYXir6k)  
-[![광고 영상](https://img.shields.io/badge/📺%20광고%20영상%20보기-nvqfXGnnRyg-blue?style=for-the-badge&logo=youtube)](https://youtu.be/nvqfXGnnRyg)  
+### 📊 학습 데이터 관리
+피드백 모아보기 및 학습 통계 제공
+
+<img src="./docs/screenshots/mypage.gif" width="70%">
 
 ## 🎬 시연 영상  
 
-[![시연 영상](http://img.youtube.com/vi/AQfevYXir6k/0.jpg)](https://youtu.be/AQfevYXir6k)  
-[![광고 영상](http://img.youtube.com/vi/nvqfXGnnRyg/0.jpg)](https://youtu.be/nvqfXGnnRyg)  
+<p align="center">
+  <a href="https://youtu.be/AQfevYXir6k">
+    <img src="https://img.shields.io/badge/▶%20시연%20영상-red?style=for-the-badge&logo=youtube&logoColor=white" alt="시연 영상">
+  </a>
+  <a href="https://youtu.be/nvqfXGnnRyg">
+    <img src="https://img.shields.io/badge/📺%20광고%20영상-blue?style=for-the-badge&logo=youtube&logoColor=white" alt="광고 영상">
+  </a>
+</p>
 
 
 ## 흐름도
