@@ -1,4 +1,3 @@
-# app/services/rag_service.py
 import time
 from glob import glob
 
@@ -44,7 +43,9 @@ def initialize_pinecone():
 
     except Exception as e:
         print(f"Error initializing Pinecone: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Pinecone initialization failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Pinecone initialization failed: {str(e)}"
+        )
 
 
 def preprocess_documents(split_docs, metadata_keys, min_length, subject="default"):
@@ -77,7 +78,9 @@ def add_document(pdf_dir, subject="default"):
 
         # 기존 문서의 메타데이터에서 파일명 추출
         existing_files = set()
-        query_response = index.query(vector=[0] * 4096, top_k=10000, include_metadata=True)  # 더미 벡터
+        query_response = index.query(
+            vector=[0] * 4096, top_k=10000, include_metadata=True
+        )  # 더미 벡터
         for match in query_response.matches:
             if "source" in match.metadata:
                 existing_files.add(match.metadata["source"])
@@ -98,7 +101,9 @@ def add_document(pdf_dir, subject="default"):
             return {"message": "No new documents to add"}
 
         # 새 문서 처리
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=500, chunk_overlap=100
+        )
         split_documents = text_splitter.split_documents(docs)
         print(f"분할된 청크의수: {len(split_documents)}")
 
@@ -112,61 +117,18 @@ def add_document(pdf_dir, subject="default"):
 
         # 임베딩 생성 및 저장
         embeddings = UpstageEmbeddings(model="embedding-passage")
-        vectorstore = PineconeVectorStore.from_existing_index(index_name=db_index_name, embedding=embeddings)
+        vectorstore = PineconeVectorStore.from_existing_index(
+            index_name=db_index_name, embedding=embeddings
+        )
         vectorstore.add_documents(split_documents_processed)
 
         return {"message": "Documents added successfully", "added_files": new_files}
 
     except Exception as e:
         print(f"Error in add_document: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to add documents: {str(e)}")
-
-
-def create_chain(db_index_name):
-    """RAG 체인 생성"""
-    try:
-        # Pinecone 초기화 확인
-        pc = initialize_pinecone()
-        index = pc.Index(db_index_name)
-
-        # 임베딩 설정
-        embeddings = UpstageEmbeddings(
-            model="embedding-query",
+        raise HTTPException(
+            status_code=500, detail=f"Failed to add documents: {str(e)}"
         )
-        vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
-
-        # 검색기 생성
-        retriever = vectorstore.as_retriever()
-
-        # 프롬프트 설정
-        prompt = PromptTemplate.from_template(
-            """너는 입력을 보고 틀린 부분에 대해서 피드백을 주는 선생님이야.
-            입력과 관련있는 정보를 참고해서 피드백을 생성해줘.
-            참고한 정보의 페이지도 같이 알려줘.
-            만약 틀린 부분이 없을 경우, 칭찬 한문장 작성해줘.
-
-            #정보:
-            {context}
-
-            #입력:
-            {question}
-
-            #답:"""
-        )
-
-        # LLM 설정
-        llm = ChatUpstage(
-            model="solar-pro",
-        )
-
-        # 체인 생성
-        chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
-
-        return chain
-
-    except Exception as e:
-        print(f"Error creating chain: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to create RAG chain: {str(e)}")
 
 
 def analysis_chunk(input_data):
@@ -180,7 +142,9 @@ def analysis_chunk(input_data):
         # 임베딩 및 검색기(Retriever) 설정
         embeddings_query = UpstageEmbeddings(model="embedding-query")
         vectorstore = PineconeVectorStore(index=index, embedding=embeddings_query)
-        retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 1})
+        retriever = vectorstore.as_retriever(
+            search_type="similarity", search_kwargs={"k": 1}
+        )
 
         # 입력 데이터 청크 나누기
         embeddings_passage = UpstageEmbeddings(model="embedding-passage")
@@ -304,17 +268,23 @@ def analysis_chunk(input_data):
 
         # 피드백 생성
         feedback_chain = prompt_feedback | llm | StrOutputParser()
-        response_feedback = feedback_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
+        response_feedback = feedback_chain.invoke(
+            {"context": retrieved_docs, "raw_text": input_data}
+        )
         print("Response Feedback:", response_feedback)  # 디버깅용 로그
 
         # 퀴즈 생성
         quiz_chain = prompt_quiz | llm | StrOutputParser()
-        response_quiz = quiz_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
+        response_quiz = quiz_chain.invoke(
+            {"context": retrieved_docs, "raw_text": input_data}
+        )
         print("Response Quiz:", response_quiz)  # 디버깅용 로그
 
         # 객관식 퀴즈 생성
         multiple_chain = prompt_multiple | llm | StrOutputParser()
-        response_multiple = multiple_chain.invoke({"context": retrieved_docs, "raw_text": input_data})
+        response_multiple = multiple_chain.invoke(
+            {"context": retrieved_docs, "raw_text": input_data}
+        )
         print("Response Multiple:", response_multiple)  # 디버깅용 로그
 
         return {
@@ -327,4 +297,6 @@ def analysis_chunk(input_data):
 
     except Exception as e:
         print(f"Error in analysis_chunk: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to analyze chunk: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to analyze chunk: {str(e)}"
+        )

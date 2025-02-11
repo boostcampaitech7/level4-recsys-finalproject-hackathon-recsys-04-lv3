@@ -1,4 +1,3 @@
-# backend/app/api/endpoints/auth.py
 import uuid
 
 from app.api import deps
@@ -41,12 +40,18 @@ def register(user: UserCreate, db: Session = Depends(deps.get_db)):
 
 @router.post("/login")
 def login(user: UserCreate, db: Session = Depends(deps.get_db)):
-    db_user = db.query(User).filter(User.email == user.email, User.del_yn == "N").first()
+    db_user = (
+        db.query(User).filter(User.email == user.email, User.del_yn == "N").first()
+    )
 
     if not db_user or db_user.password != user.password:
         raise HTTPException(status_code=400, detail="Incorrect ID or password")
 
-    return {"user_id": db_user.user_id, "id": db_user.email, "message": "Login successful"}
+    return {
+        "user_id": db_user.user_id,
+        "id": db_user.email,
+        "message": "Login successful",
+    }
 
 
 @router.get("/user/{user_id}")

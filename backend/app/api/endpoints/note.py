@@ -1,4 +1,3 @@
-# app/api/endpoints/note.py
 import ast
 import json
 import os
@@ -90,7 +89,9 @@ async def create_text_note(
         elif isinstance(quizzes, list):
             quiz_list = quizzes
         else:
-            print("Invalid structure of quizzes. Expected a string, dictionary, or list.")
+            print(
+                "Invalid structure of quizzes. Expected a string, dictionary, or list."
+            )
             quiz_list = []
 
         for quiz in quiz_list:
@@ -287,7 +288,9 @@ async def upload_note(
         elif isinstance(quizzes, list):
             quiz_list = quizzes
         else:
-            print("Invalid structure of quizzes. Expected a string, dictionary, or list.")
+            print(
+                "Invalid structure of quizzes. Expected a string, dictionary, or list."
+            )
             quiz_list = []
 
         for quiz in quiz_list:
@@ -418,7 +421,9 @@ def get_user_notes(
         if subject:
             query = query.filter(Note.subjects_id == subject)
 
-        query = query.order_by(Note.created_at.desc() if sort == "newest" else Note.created_at.asc())
+        query = query.order_by(
+            Note.created_at.desc() if sort == "newest" else Note.created_at.asc()
+        )
 
         notes = query.all()
 
@@ -498,7 +503,9 @@ def get_image(note_id: str, user_id: str, db: Session = Depends(deps.get_db)):
         note, analysis = result
 
         if note.user_id != user_id:
-            raise HTTPException(status_code=403, detail="Not authorized to access this note")
+            raise HTTPException(
+                status_code=403, detail="Not authorized to access this note"
+            )
 
         current_dir = os.path.dirname(__file__)
         print(current_dir.split("app")[0])
@@ -520,12 +527,22 @@ def get_notes_count(user_id: str, db: Session = Depends(deps.get_db)):
         .group_by(Note.subjects_id)
         .all()
     )
-    
-    return {"counts": [{"subjects_id": row.subjects_id, "count": row.count} for row in result]}
+
+    return {
+        "counts": [
+            {"subjects_id": row.subjects_id, "count": row.count} for row in result
+        ]
+    }
+
 
 @router.get("/subjects")
 def get_subjects(user_id: str, db: Session = Depends(deps.get_db)):
-    subjects = db.query(Note.subjects_id).distinct().filter(Note.user_id == user_id, Note.del_yn == "N").all()
+    subjects = (
+        db.query(Note.subjects_id)
+        .distinct()
+        .filter(Note.user_id == user_id, Note.del_yn == "N")
+        .all()
+    )
     return {"subjects": [subject[0] for subject in subjects if subject[0]]}
 
 
@@ -534,7 +551,8 @@ def get_activate_log(user_id: str, db: Session = Depends(deps.get_db)):
     today = date.today()
     start_date = today - timedelta(days=363)
 
-    query = text("""
+    query = text(
+        """
     WITH RECURSIVE date_series AS (
         SELECT :start_date AS date
         UNION ALL
@@ -549,9 +567,12 @@ def get_activate_log(user_id: str, db: Session = Depends(deps.get_db)):
         AND n.user_id = :user_id
     GROUP BY ds.date
     ORDER BY ds.date;
-    """)
-    
-    result = db.execute(query, {"start_date": start_date, "today": today, "user_id": user_id})
+    """
+    )
+
+    result = db.execute(
+        query, {"start_date": start_date, "today": today, "user_id": user_id}
+    )
     counts = [row[0] for row in result.fetchall()]
 
     return counts

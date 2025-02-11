@@ -1,6 +1,4 @@
-# app/api/endpoints/rag.py
-
-from app.core.config import settings  # settings import 추가
+from app.core.config import settings
 from app.services.rag_service import add_document, initialize_pinecone
 from fastapi import APIRouter, HTTPException
 
@@ -51,6 +49,12 @@ async def add_reference_document(directory_path: str, subject: str = "default"):
 
         add_document(directory_path, subject)
 
-        return {"message": "Documents added successfully", "directory": directory_path, "subject": subject}
+        return {
+            "message": "Documents added successfully",
+            "directory": directory_path,
+            "subject": subject,
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to add documents: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to add documents: {str(e)}"
+        )

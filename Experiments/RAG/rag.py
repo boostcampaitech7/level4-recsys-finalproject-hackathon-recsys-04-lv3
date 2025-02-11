@@ -50,7 +50,9 @@ def create_vectorstore(file_path, db_index_name="quickstart"):
         print(f"문서의 페이지수: {len(docs)}")
 
         # 단계 2: 문서 분할(Split Documents)
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=500, chunk_overlap=100
+        )
         split_documents = text_splitter.split_documents(docs)
         print(f"분할된 청크의수: {len(split_documents)}")
 
@@ -66,7 +68,9 @@ def create_vectorstore(file_path, db_index_name="quickstart"):
         embeddings = UpstageEmbeddings(model="embedding-passage")
 
         # 단계 5: DB 생성(Create DB) 저장
-        vectorstore = PineconeVectorStore.from_documents(split_documents, embeddings, db_index_name)
+        vectorstore = PineconeVectorStore.from_documents(
+            split_documents, embeddings, db_index_name
+        )
 
         return vectorstore
 
@@ -110,7 +114,12 @@ def create_chain(db_index_name="quickstart"):
     llm = ChatUpstage(model="solar-pro")
 
     # 체인(Chain) 생성
-    chain = {"context": retriever, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()
+    chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
 
     return chain
 
