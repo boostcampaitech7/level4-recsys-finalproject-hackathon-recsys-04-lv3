@@ -87,13 +87,26 @@ SolarTeacher는 **백지 공부법**을 활용하는 학습자를 위해 **AI �
 
 
 ## 🛠️ 설치 및 활용
-### 1️⃣ 백엔드 실행
+### 1️⃣ root에 .env 파일 생성
+```bash
+OPENAI_API_KEY=
+LANGCHAIN_API_KEY=
+UPSTAGE_API_KEY=
+PINECONE_API_KEY=
+PINECONE_INDEX_NAME=
+DATABASE_USER_NAME=guest
+DATABASE_PASSWORD=1234
+DATABASE_HOST=10.28.224.56
+DATABASE_PORT=30470
+DATABASE_NAME=dev
+```
+### 2️⃣ 백엔드 실행
 ```bash
 cd backend
 pip install -r requirements.txt
 python main.py
 ```
-### 2️⃣ 프론트엔드 실행
+### 3️⃣ 프론트엔드 실행
 ```
 cd frontend
 npm install
