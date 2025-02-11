@@ -164,6 +164,7 @@ npm start
 
 
 ## 🗂️ 레파지토리 구조
+<img src="images/tree-dir.png" alt="tree" height="400">
 
 ## 💾 MySQL DB 구조
 <img src="images/ERD.png" alt="ERD">
