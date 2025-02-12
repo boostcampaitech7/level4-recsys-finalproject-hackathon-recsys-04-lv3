@@ -9,6 +9,7 @@
   백지 공부법의 효과를 극대화하고, 자동 퀴즈 생성을 지원하는 AI 기반 학습 도구입니다.
   <h3><a href="https://solar-teacher.vercel.app"> 📘 직접 사용해보기 🖋️</a></h3>
   <p align="center">
+    <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white" alt="Python badge">
     <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=HTML5&logoColor=white" alt="HTML5 badge">
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=CSS3&logoColor=white" alt="CSS3 badge">
     <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white" alt="JavaScript badge">
