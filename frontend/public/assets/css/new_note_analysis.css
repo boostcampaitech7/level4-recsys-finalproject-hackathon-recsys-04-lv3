@@ -1,0 +1,515 @@
+/* Container & Note Header Styles */
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 110vh; /* 전체 뷰포트 높이 사용 */
+}
+
+Updated Note Styles with Dynamic Heights
+
+/* Container & Note Header Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 전체 뷰포트 높이 사용 */
+}
+
+.note-header {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+}
+
+.note-header h1 {
+  color: #343a40;
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  font-weight: 700;
+}
+
+#subject-name {
+  color: #228be6;
+  font-weight: 500;
+}
+
+#note-date {
+  color: #868e96;
+  font-size: 0.9rem;
+}
+
+/* Note Layout & Content - Updated */
+.note-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* flex child가 부모 크기를 넘지 않도록 설정 */
+}
+
+.note-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  flex: 1; /* 사용 가능한 공간을 모두 채우도록 설정 */
+  min-height: 0; /* Grid 컨테이너가 부모 크기를 넘지 않도록 설정 */
+}
+
+/* Note Box Styles - Updated */
+.note-box {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #dee2e6;
+  overflow: auto; /* 내용이 넘칠 경우 스크롤 표시 */
+}
+
+.note-box.image {
+  grid-column: 1;
+  grid-row: 1;
+  height: 100%; /* 부모 높이에 맞춤 */
+  display: flex;
+  align-items: flex-start;
+  overflow: auto;
+}
+
+.note-box.image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.note-box.image iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.note-box.image pre {
+  width: 100%;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-family: monospace;
+  white-space: pre-wrap;
+}
+
+/* Note Info Styles - Updated */
+.note-info {
+  grid-column: 2;
+  grid-row: 1;
+  height: 100%; /* 이미지 높이에 맞춤 */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: auto; /* 전체 높이가 이미지보다 크면 스크롤 */
+}
+
+
+.note-box.feedback {
+  flex: 6; /* 60% of available height */
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.note-box.recommendation {
+  flex: 4; /* 40% of available height */
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.note-box {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #dee2e6;
+}
+
+/* Section Headers */
+.feedback h3, .recommendation h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #343a40;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.feedback pre {
+  white-space: pre-wrap; /* Preserves line breaks and wraps long lines */
+  word-wrap: break-word; /* Breaks long words if necessary */
+  overflow-wrap: break-word; /* For older browsers */
+  width: 100%; /* Ensure it takes full width of its parent */
+}
+
+/* Quiz Styles */
+.quiz-item {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+.quiz-item p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 1rem;
+}
+
+.quiz-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.quiz-buttons button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quiz-buttons button:first-child {
+  background-color: rgb(34, 197, 94);
+  color: white;
+}
+
+.quiz-buttons button:last-child {
+  background-color: rgb(239, 68, 68);
+  color: white;
+}
+
+.quiz-buttons button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-buttons button:active {
+  transform: translateY(0);
+}
+
+/* Quiz Result Styles */
+.quiz-result {
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  color: #000000;
+  font-weight: 500;
+}
+
+.quiz-result.correct {
+  background-color: #f0f9f0;
+}
+
+.quiz-result.incorrect {
+  background-color: #fff5f5;
+}
+
+.result-badge {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.result-badge.correct {
+  background-color: #28a745;
+}
+
+.result-badge.incorrect {
+  background-color: #dc3545;
+}
+
+.quiz-result p {
+  margin: 10px 0;
+  color: #1a1a1a;
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.explanation {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.explanation.correct {
+  background-color: #e9ecef;
+  border-left: 4px solid #28a745;
+}
+
+.explanation.incorrect {
+  background-color: #ffebee;
+  border-left: 4px solid #dc3545;
+}
+
+/* Button Styles */
+.reset-quiz-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: background-color 0.3s;
+}
+
+.reset-quiz-btn:hover {
+  background-color: #45a049;
+}
+
+.retry-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.retry-btn:hover {
+  background-color: #da190b;
+}
+
+.next-quiz-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 20px;
+  transition: all 0.3s;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.next-quiz-btn.correct {
+  background-color: #28a745;
+}
+
+.next-quiz-btn.correct:hover {
+  background-color: #218838;
+}
+
+.next-quiz-btn.incorrect {
+  background-color: #dc3545;
+}
+
+.next-quiz-btn.incorrect:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .note-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .note-box.image {
+    grid-row: 1;
+    height: auto;
+    max-height: 50vh;
+  }
+
+  .note-info {
+    grid-column: 1;
+    grid-row: 2;
+    height: auto;
+  }
+
+  .note-box.feedback {
+    flex: 6;
+  }
+
+  .note-box.recommendation {
+    flex: 4;
+  }
+  .container {
+    padding: 0.5rem;
+    height: 150vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+    height: 200vh;
+  }
+
+  .note-box {
+    padding: 0.75rem;
+  }
+}
+
+/* 애니메이션 키프레임 정의 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 애니메이션 클래스 */
+.fade-in {
+  opacity: 0;
+}
+
+.fade-in.active {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* 노트 컨텐츠 초기 상태 */
+.note-box.image,
+.note-box.feedback,
+.note-box.recommendation {
+  opacity: 0;
+}
+
+/* 활성화 상태 */
+.note-box.image.active,
+.note-box.feedback.active,
+.note-box.recommendation.active {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* feedback */
+/* 피드백 스타일 */
+.feedback-success,
+.feedback-errors {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+.feedback-success {
+    background-color: #f0fff4;
+    border: 1px solid #68d391;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.success-icon {
+    color: #38a169;
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.success-message {
+    color: #2f855a;
+    font-size: 16px;
+    margin: 0;
+}
+
+.feedback-errors {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+}
+
+.error-item {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    position: relative;
+}
+
+.error-number {
+    background-color: #fc8181;
+    border: 1.5px solid #dee2e6;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    position: absolute;
+    top: -12px;
+    left: 12px;
+}
+
+.error-content {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.wrong-text,
+.correct-text,
+.explanation-text,
+.reference-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.explanation-text {
+    background-color: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    display: flex;
+}
+
+.explanation-text .text {
+    color: #000000;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.label {
+    font-weight: bold;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+.text {
+    color: #2d3748;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.wrong-text .text {
+    color: #e53e3e;
+}
+
+.correct-text .text {
+    color: #38a169;
+}

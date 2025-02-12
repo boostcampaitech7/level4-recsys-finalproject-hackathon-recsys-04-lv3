@@ -1,0 +1,496 @@
+/* 전체 콘테이너 스타일 */
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* 타이틀 스타일 */
+h1 {
+  color: #3b82f6;
+  font-size: 32px;
+  /* margin-bottom: 1rem; */
+}
+
+#page-explanation{
+  text-align: center;
+  color: #868e96;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: #555;
+  font-size: 18px;
+  margin-bottom: 2rem;
+}
+
+.quiz-type-container {
+  margin-bottom: 3rem;  /* 객관식 퀴즈 풀기 버튼과 아래 섹션 사이 간격 */
+}
+
+/* 로고 스타일 조정 */
+.header .logo {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.header .logo img {
+  max-height: 60px;
+  width: auto; /* 원본 비율 유지 */
+  object-fit: contain;
+}
+
+/* 로고에 마우스 올렸을 때 배경색 변경 방지 */
+.header .logo:hover {
+  background-color: transparent !important;
+}
+
+/* 버튼 공통 스타일 */
+.button {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.button-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.button-primary:hover {
+  background-color: #006fc6;
+}
+
+.button-secondary {
+  background-color: white;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.button-secondary:hover {
+  background-color: #f5f5f5;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #006fc6;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #545b62;
+}
+
+/* 과목 선택 관련 스타일 */
+.subjects-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.subject-button {
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.subject-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+/* 퀴즈 컨테이너 스타일 */
+.quiz-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+/* 진행 상태 표시 */
+.progress-container {
+  display: flex;
+  align-items: center; /* 세로 중앙 정렬 추가 */
+  gap: 1rem; /* 바와 텍스트 사이 간격 */
+  margin-bottom: 2rem;
+}
+
+.progress-bar {
+  flex: 1; /* 남은 공간 모두 차지 */
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #007bff;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #333;
+  white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+
+
+/* 문제 컨테이너 */
+.question-container {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+#question-text {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* 보기 옵션 컨테이너 */
+.options-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.option {
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.option:hover {
+  background-color: #f8f9fa;
+}
+
+.option.selected {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.option.correct {
+  background-color: #d4edda;
+  border-color: #28a745;
+}
+
+.option.incorrect {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+}
+
+/* 설명 부분 */
+#explanation {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.result-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.explanation-text {
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 퀴즈 히스토리 관련 스타일 */
+.quiz-history-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+}
+
+.stat-item {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-item h3 {
+  color: #4A5568;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.stat-item p {
+  color: #2B6CB0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.feedback-list {
+  margin-top: 2rem;
+}
+
+.feedback-item {
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #E5E7EB;
+}
+
+.feedback-item:last-child {
+  margin-bottom: 0;
+}
+
+.feedback-item.correct {
+  background-color: #F0FDF4;
+  border-color: #34D399;
+}
+
+.feedback-item.incorrect {
+  background-color: #FEF2F2;
+  border-color: #F87171;
+}
+
+.quiz-question {
+  font-size: 1.1rem;
+  color: #2D3748;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.quiz-answer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+.answer-label {
+  font-weight: 600;
+  color: #4A5568;
+  min-width: 120px;
+}
+
+.answer-value {
+  font-weight: 500;
+}
+
+.answer-value.correct {
+  color: #38A169;
+}
+
+.answer-value.incorrect {
+  color: #E53E3E;
+}
+
+.quiz-history-list {
+  margin-top: 2rem;
+}
+
+.quiz-history-item {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.quiz-history-item.incorrect {
+  border-left: 5px solid #dc3545;
+}
+
+.quiz-history-item.correct {
+  border-left: 5px solid #28a745;
+}
+
+.quiz-content h3 {
+  color: #2d3748;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.quiz-result {
+    font-weight: 600;
+    color: #4a5568;
+    margin: 1rem 0;
+    padding: 0.5rem 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.quiz-explanation {
+  background: #F9FAFB;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  color: #4B5563;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.quiz-date {
+  color: #718096;
+  font-size: 0.9rem;
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.quiz-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.quiz-options .option {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+.quiz-options .option:hover {
+  background: #edf2f7;
+}
+
+.quiz-options .correct-answer {
+  background-color: #e7f7e7;
+  border-color: #28a745;
+  color: #28a745;
+}
+
+.quiz-options .incorrect-answer {
+  background-color: #ffebeb;
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.quiz-result .correct-text {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.quiz-result .incorrect-text {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* 반응형 디자인 */
+@media (min-width: 768px) {
+  .options-container {
+      grid-template-columns: 1fr 1fr;
+  }
+
+  .option {
+      min-height: 80px;
+  }
+}
+
+.reset-buttons-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;  /* 버튼 간격을 0.5rem으로 줄임 */
+  max-width: 200px;
+  margin-left: auto;
+}
+
+.reset-buttons-container h2 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: #333;
+}
+
+#subject-reset-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#subject-reset-buttons button,
+.reset-buttons-container .btn-primary {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    width: 100%;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#subject-reset-buttons button {
+  background-color: #6c757d;
+  color: white;
+}
+
+#subject-reset-buttons button:hover {
+  background-color: #5a6268;
+}
+
+.reset-buttons-container .btn-primary {
+  background-color: #0d6efd;
+  color: white;
+  margin-top: 0.5rem;
+}
+
+.reset-buttons-container .btn-primary:hover {
+  background-color: #006fc6;
+}

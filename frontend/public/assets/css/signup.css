@@ -1,0 +1,63 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  width: 300px;
+  height: 40px;
+  margin: 10px 0;
+  padding: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+button {
+  width: 300px;
+  height: 40px;
+  margin-top: 20px;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+p {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #555;
+}
+
+p a {
+  color: #d946ef;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-header h1 img {
+  max-width: 100%; 
+  height: auto;
+  display: block;
+  margin: 0 auto; 
+  object-fit: contain; /* 이미지 비율 유지 */
+}

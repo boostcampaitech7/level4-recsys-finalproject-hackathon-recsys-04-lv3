@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Solar Teacher | 오늘의 퀴즈</title>
+   <link rel="stylesheet" href="assets/css/quiz_solving.css">
+   <script defer src="assets/js/layout.js"></script>
+   <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+    <div id="header"></div>
+
+   <div class="container">
+       <h1>오늘의 퀴즈</h1>
+       <div class="progress" id="progress-bar">
+           <div class="progress-dot"></div>
+           <div class="progress-dot"></div>
+           <div class="progress-dot"></div>
+           <div class="progress-dot"></div>
+           <div class="progress-dot"></div>
+       </div>
+       <div class="question-box" id="question-box">
+           <strong>Q</strong> <span id="question-text"></span>
+       </div>
+       <div class="answer-box">
+           <div class="answer o" onclick="selectAnswer('O')">O</div>
+           <div class="answer x" onclick="selectAnswer('X')">X</div>
+       </div>
+       <div class="explanation" id="explanation" style="display: none;">
+           <strong id="result"></strong><br>
+           <span id="detail"></span>
+       </div>
+       <div class="btn-container">
+           <button class="next-btn" id="next-btn" onclick="nextQuestion()" style="display: none;">다음 문제로 이동</button>
+       </div>
+   </div>
+   <div id="footer"></div>
+   <script src="assets/js/auth.js"></script>
+   <script src="assets/js/quiz_solving.js"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Teacher | 퀴즈</title>
+    <link rel="stylesheet" href="assets/css/notes.css">
+    <link rel="stylesheet" href="assets/css/quiz.css">
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <h1>퀴즈</h1>
+        <p id="page-explanation">작성한 내용을 바탕으로 퀴즈를 풀어보세요!</p>
+
+        <div class="quiz-type-container">
+            <button class="button button-primary" onclick="goToQuizSolving()">객관식 퀴즈 풀기</button>
+        </div>
+
+        <div class="quiz-history">
+            <h2>이전 퀴즈 기록</h2>
+            <p id="page-explanation">지금까지 풀었던 퀴즈 목록을 확인할 수 있어요!</p>
+            <div class="quiz-history-buttons">
+                <button class="button button-secondary" onclick="goToMultipleQuizHistory()">객관식 퀴즈 기록</button>
+                <button class="button button-secondary" onclick="goToOXQuizHistory()">OX 퀴즈 기록</button>
+            </div>
+        </div>
+    </div>
+    <div id="footer"></div>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/quiz.js"></script>
+</body>
+</html>

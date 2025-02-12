@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Teacher | 보관함</title>
+    <link rel="stylesheet" href="assets/css/notes.css">
+    <script defer src="assets/js/notes.js"></script>
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <h1>노트 보관함</h1>
+        <p id="page-explanation">지금까지 올렸던 노트를 다시 볼 수 있어요! 피드백을 확인하고 OX퀴즈를 풀어봐요~</p>
+
+        <div class="filters">
+            <select id="subjectFilter" class="select-filter">
+                <option value="">전체 과목</option>
+            </select>
+            <button id="sortToggle" class="sort-btn">최신순</button>
+        </div>
+        <div class="main-content">
+            <ul class="note-list" id="note-list"></ul>
+        </div>
+    </div>
+    <script src="assets/js/auth.js"></script>
+    <div id="footer"></div>
+</body>
+
+</html>

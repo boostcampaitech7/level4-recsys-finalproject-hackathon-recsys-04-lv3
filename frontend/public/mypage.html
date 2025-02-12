@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Solar Teacher | 마이페이지</title>
+   <link rel="stylesheet" href="assets/css/mypage.css">
+   <script defer src="assets/js/layout.js"></script>
+   <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+    <div id="header"></div>
+
+   <div class="container">
+       <main>
+           <section id="main-content" class="content">
+               <h1 class="section-title">마이페이지</h1>
+               <p id="page-explanation">내 정보와 학습 기록을 한눈에 확인하세요! </p>
+
+               <div class="profile-section">
+                   <div class="profile-item">
+                       <span class="profile-label">아이디:</span>
+                       <span class="profile-value"></span>
+                   </div>
+                   <div class="profile-item">
+                       <span class="profile-label">이메일:</span>
+                       <span class="profile-value"></span>
+                   </div>
+                   <div class="profile-item">
+                       <span class="profile-label">가입일:</span>
+                       <span class="profile-value"></span>
+                   </div>
+               </div>
+
+               <div class="stats-section">
+                   <h2>학습 통계</h2>
+                   <div id="learningStats" class="stats-grid">
+                   </div>
+               </div>
+
+               <div class="recent-activity">
+                   <h2>최근 활동</h2>
+                   <div id="contributionWrapper">
+                    <div id="daysColumn" class="days-column"></div>
+                    <div id="contributionGridWrapper">
+                        <div id="contributionGrid" class="contribution-grid"></div>
+                        <div id="monthLabels" class="month-labels"></div>
+                    </div>
+                </div>
+                <div id="tooltip" class="tooltip"></div>
+               </div>
+           </section>
+       </main>
+       <div id="footer"></div>
+   </div>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <script src="assets/js/auth.js"></script>
+   <script src="assets/js/mypage.js"></script>
+</body>
+</html>

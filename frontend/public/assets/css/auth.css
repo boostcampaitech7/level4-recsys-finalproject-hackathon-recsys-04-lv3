@@ -1,0 +1,279 @@
+/* auth.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f8f9fa;
+  color: #495057;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.auth-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  border: 1px solid #dee2e6;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.auth-header h1 {
+  color: #364fc7;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: #868e96;
+  font-size: 1rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  color: #495057;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #228be6;
+  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.1);
+}
+
+.input-field::placeholder {
+  color: #adb5bd;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #228be6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 0.5rem;
+}
+
+.submit-btn:hover {
+  background-color: #1c7ed6;
+}
+
+.submit-btn:active {
+  background-color: #1971c2;
+}
+
+.status-message {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.status-message.error {
+  background-color: #fff5f5;
+  color: #ff6b6b;
+  border: 1px solid #ffd8d8;
+}
+
+.status-message.success {
+  background-color: #ebfbee;
+  color: #40c057;
+  border: 1px solid #d3f9d8;
+}
+
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #868e96;
+}
+
+.auth-footer p {
+  margin: 0.5rem 0;
+}
+
+.link {
+  color: #228be6;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #1c7ed6;
+  text-decoration: underline;
+}
+
+/* 비밀번호 힌트 스타일 */
+.password-hint {
+  font-size: 0.8rem;
+  color: #868e96;
+  margin-top: 0.25rem;
+  margin-left: 0.25rem;
+}
+
+/* 상태 메시지 변형 */
+.status-message {
+  text-align: center;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  display: none; /* 기본적으로 숨김 */
+}
+
+.status-message.visible {
+  display: block;
+}
+
+.status-message.error {
+  background-color: #fff5f5;
+  color: #ff6b6b;
+  border: 1px solid #ffd8d8;
+}
+
+.status-message.success {
+  background-color: #ebfbee;
+  color: #40c057;
+  border: 1px solid #d3f9d8;
+}
+
+/* 폼 전환 애니메이션 */
+.auth-form {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+/* 입력 필드 포커스 효과 강화 */
+.input-field:focus {
+  outline: none;
+  border-color: #228be6;
+  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.1);
+}
+
+/* 버튼 스타일 강화 */
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #228be6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn:hover {
+  background-color: #1c7ed6;
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  background-color: #1971c2;
+  transform: translateY(1px);
+}
+
+/* 추가적인 반응형 스타일 */
+@media (max-width: 480px) {
+  .auth-card {
+      padding: 1.25rem;
+  }
+
+  .auth-header h1 {
+      font-size: 1.5rem;
+  }
+
+  .auth-header p {
+      font-size: 0.9rem;
+  }
+
+  .form-group {
+      gap: 0.25rem;
+  }
+
+  .input-field {
+      padding: 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+      padding: 1rem;
+  }
+
+  .auth-card {
+      padding: 1.5rem;
+  }
+
+  .auth-header h1 {
+      font-size: 1.75rem;
+  }
+}
+
+.auth-header h1 img {
+  max-width: 100%; 
+  height: auto;
+  display: block;
+  margin: 0 auto; 
+  object-fit: contain; /* 이미지 비율 유지 */
+}

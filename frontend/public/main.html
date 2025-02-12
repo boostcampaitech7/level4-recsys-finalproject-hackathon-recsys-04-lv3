@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Teacher</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+    <script defer src="assets/js/auth.js"></script>
+    <script defer src="assets/js/drawing.js"></script>
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <script>
+        window.onload = function() {
+            const userId = localStorage.getItem('user_id');
+            if (!userId) {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+
+        <h1>안녕하세요, <span id="userNameContainer"></span>님</h1>
+        <p>자유롭게 필기하고 AI 피드백을 받아보세요!</p>
+        <select class="input-box" id="subjectSelect">
+            <option value="선택 안함">선택 안함</option>
+            <option value="물리학Ⅱ">물리학Ⅱ</option>
+            <option value="화학Ⅱ">화학Ⅱ</option>
+            <option value="생명과학Ⅱ">생명과학Ⅱ</option>
+            <option value="지구과학Ⅱ">지구과학Ⅱ</option>
+            <option value="경제">경제</option>
+            <option value="동아시아사">동아시아사</option>
+            <option value="사회문화">사회문화</option>
+            <option value="생활과윤리">생활과윤리</option>
+            <option value="세계사">세계사</option>
+            <option value="세계지리">세계지리</option>
+            <option value="윤리와사상">윤리와사상</option>
+            <option value="정치와법">정치와법</option>
+            <option value="한국지리">한국지리</option>
+            <option value="정보처리기사">정보처리기사</option>
+        </select>
+
+        <input type="text" id="noteTitle" class="input-box" placeholder="제목을 입력해주세요." />
+
+        <div class="drawing-container">
+            <div class="drawing-header">
+                <div class="tool-buttons">
+                    <button id="penBtn" class="tool-btn active">펜</button>
+                    <button id="eraserBtn" class="tool-btn">지우개</button>
+                </div>
+                <div class="action-buttons">
+                    <button id="undoBtn" class="action-btn">실행취소</button>
+                    <button id="redoBtn" class="action-btn">다시실행</button>
+                    <button id="clearBtn" class="action-btn">전체지우기</button>
+                </div>
+            </div>
+
+            <canvas id="drawingCanvas"></canvas>
+
+            <div class="drawing-footer">
+                <div class="submit-buttons">
+                    <button id="downloadBtn" class="submit-btn">다운로드하기</button>
+                    <button id="submitBtn" class="submit-btn primary">분석하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer"></div>
+</body>
+</html>

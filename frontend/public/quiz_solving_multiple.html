@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Teacher | 객관식 퀴즈</title>
+    <link rel="stylesheet" href="assets/css/notes.css">
+    <link rel="stylesheet" href="assets/css/quiz.css">
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <!-- 과목 선택 컨테이너 -->
+        <div id="subject-selection" class="quiz-container">
+            <h2>과목을 선택하세요</h2>
+            <div id="subjects-list" class="subjects-container">
+                <!-- 여기에 과목 버튼들이 동적으로 추가됨 -->
+            </div>
+        </div>
+
+        <!-- 퀴즈 컨테이너 -->
+        <div id="quiz-container" class="quiz-container" style="display: none;">
+            <div class="progress-container">
+            </div>
+
+            <div class="question-container">
+                <p id="question-text"></p>
+            </div>
+
+            <div class="options-container">
+                <button onclick="selectAnswer('1')" class="option" data-option="1"></button>
+                <button onclick="selectAnswer('2')" class="option" data-option="2"></button>
+                <button onclick="selectAnswer('3')" class="option" data-option="3"></button>
+                <button onclick="selectAnswer('4')" class="option" data-option="4"></button>
+            </div>
+
+            <div id="explanation" style="display: none;">
+                <p id="result" class="result-text"></p>
+                <p id="detail" class="explanation-text"></p>
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="btn btn-primary" style="display: none;">
+                다음 문제
+            </button>
+
+            <button id="back-to-subjects" onclick="backToSubjects()" class="btn btn-secondary" style="display: none;">
+                과목 선택으로 돌아가기
+            </button>
+        </div>
+    </div>
+    <div id="footer"></div>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/quiz_solving_multiple.js"></script>
+</body>
+</html>

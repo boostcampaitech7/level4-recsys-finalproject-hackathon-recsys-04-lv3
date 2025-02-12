@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Teacher | 업로드</title>
+    <link rel="stylesheet" href="assets/css/new_note.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+    <script defer src="assets/js/auth.js"></script>
+    <script defer src="assets/js/new_note.js"></script>
+    <script defer src="assets/js/layout.js"></script>
+    <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <div class="container">
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="loading-spinner"></div>
+        </div>
+        <h1>새 노트</h1>
+        <p id="page-explanation">새 노트 작성을 통해 AI 피드백을 받아보세요!</p>
+        <select class="input-box" id="subjectSelect">
+            <option value="선택 안함">선택 안함</option>
+            <option value="물리학Ⅱ">물리학Ⅱ</option>
+            <option value="화학Ⅱ">화학Ⅱ</option>
+            <option value="생명과학Ⅱ">생명과학Ⅱ</option>
+            <option value="지구과학Ⅱ">지구과학Ⅱ</option>
+            <option value="경제">경제</option>
+            <option value="동아시아사">동아시아사</option>
+            <option value="사회문화">사회문화</option>
+            <option value="생활과윤리">생활과윤리</option>
+            <option value="세계사">세계사</option>
+            <option value="세계지리">세계지리</option>
+            <option value="윤리와사상">윤리와사상</option>
+            <option value="정치와법">정치와법</option>
+            <option value="한국지리">한국지리</option>
+            <option value="정보처리기사">정보처리기사</option>
+        </select>
+
+        <input type="text" class="input-box" placeholder="제목을 입력해주세요." id="titleInput" />
+        <div class="button-select-group">
+            <button id="업로드" class="button-select button">업로드</button>
+            <button id="텍스트" class="button-select button">텍스트</button>
+        </div>
+        <div id="upload-box" class="upload-box">
+            <input type="file" class="input-box-upload" accept="image/*" />
+        </div>
+        <button class="input-box analyze-button" id="analyzeBtn">분석하기</button>
+    </div>
+    <div id="footer"></div>
+</body>
+
+</html>

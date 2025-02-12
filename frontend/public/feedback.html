@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Solar Teacher | 피드백</title>
+   <link rel="stylesheet" href="assets/css/feedback.css">
+   <link rel="stylesheet" href="assets/css/layout.css">
+   <script defer src="assets/js/layout.js"></script>
+</head>
+<body>
+    <div id="header"></div>
+
+   <div class="container">
+       <main>
+           <section id="main-content" class="content">
+               <h1 class="section-title">피드백 보관함</h1>
+               <p id="page-explanation">지금까지 받은 피드백을 모아보세요!</p>
+
+               <div class="filters">
+                   <select id="subjectFilter" class="select-filter">
+                       <option value="">전체 과목</option>
+                   </select>
+                   <button id="sortToggle" class="sort-btn">최신순</button>
+               </div>
+
+               <div class="feedback-section">
+                   <ul class="feedback-list">
+                       <!-- 동적으로 추가될 내용 -->
+                   </ul>
+               </div>
+           </section>
+       </main>
+
+       <div id="footer"></div>
+   </div>
+   <script src="assets/js/auth.js"></script>
+   <script src="assets/js/feedback.js"></script>
+</body>
+</html>
