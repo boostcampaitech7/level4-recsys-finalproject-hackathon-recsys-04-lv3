@@ -1,0 +1,25 @@
+python eval_LLM_batch.py
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 1 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 2 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 3 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 4 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 1 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 2 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 3 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 4 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 1 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 2 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 3 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 4 --index_name test-pre
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 1 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 2 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 3 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 500-150 --k 4 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 1 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 2 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 3 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 1000-150 --k 4 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 1 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 2 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 3 --index_name test
+python eval_LLM_batch.py --model RAG --namespace 250-50 --k 4 --index_name test
