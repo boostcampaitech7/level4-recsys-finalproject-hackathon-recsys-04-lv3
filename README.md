@@ -164,7 +164,32 @@ npm start
 
 
 ## 🗂️ 레파지토리 구조
-<img src="images/tree-dir.png" alt="tree" height="400">
+```
+.
+├── backend
+│   ├── app
+│   │   ├── api
+│   │   │   └── endpoints
+│   │   ├── core
+│   │   ├── db
+│   │   ├── models
+│   │   └── services
+│   ├── data
+│   ├── utils
+├── experiments
+│   ├── OCR
+│   ├── RAG
+│   │   └── rag_utils
+├── frontend
+│   ├── public
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   ├── images
+│   │   │   └── js
+│   │   └── components
+└── images
+
+```
 
 ## 💾 MySQL DB 구조
 <img src="images/ERD.png" alt="ERD">
