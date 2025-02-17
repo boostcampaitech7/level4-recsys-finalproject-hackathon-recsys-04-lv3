@@ -214,5 +214,5 @@ npm start
 
 ## 🔍 Further Reading
 - 발표 영상 
-- 발표 자료
+- [발표 자료](https://drive.google.com/file/d/1vLmWR0GHBhjeH-a0TPbuEThDnWKzJjrt/view?usp=sharing)
 - 랩업 리포트
